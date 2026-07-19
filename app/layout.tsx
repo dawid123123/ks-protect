@@ -7,7 +7,10 @@ import Providers from '../components/Providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ksprotect.is';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
   description:
     'Heimsklassa PPF, gluggatint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk \u2014 stilltu verndina \u00fe\u00edna \u00e1 netinu.',

@@ -11731,16 +11731,71 @@ body.shop-drawer-open {
   text-align: center;
 }
 
-html[lang='en'] .ks-v2 .hero-title {
+html[lang='en'] .ks-v2 .hero-title,
+html[lang='is'] .ks-v2 .hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   max-width: 760px;
   margin-inline: auto;
   font-size: clamp(58px, 6.4vw, 108px);
-  line-height: 0.9;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+html[lang='en'] .ks-v2 .hero-title {
+  line-height: 0.96;
   letter-spacing: clamp(-2px, -0.18vw, -0.5px);
 }
 
-html[lang='en'] .ks-v2 .hero-title span {
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.78);
+html[lang='is'] .ks-v2 .hero-title {
+  line-height: 0.98;
+}
+
+.ks-v2 .hero-title-line {
+  display: block;
+  width: fit-content;
+  color: #fff;
+  -webkit-text-fill-color: currentColor;
+  -webkit-text-stroke: 0;
+}
+
+html[lang='is'] .ks-v2 .hero-title-line {
+  min-width: min(100%, 5.35em);
+  text-align: center;
+}
+
+html[lang='is'] .ks-v2 .hero-title-line:first-of-type {
+  letter-spacing: 0.04em;
+}
+
+html[lang='is'] .ks-v2 .hero-title-line:last-of-type {
+  letter-spacing: 0.08em;
+}
+
+html[lang='en'] .ks-v2 .hero-title-line:first-of-type,
+html[lang='en'] .ks-v2 .hero-title-line:last-of-type {
+  letter-spacing: inherit;
+}
+
+.ks-v2 .hero-title-accent {
+  display: inline-block;
+  margin-block: 0.04em;
+  padding-inline: 0.28em;
+  letter-spacing: 0.24em;
+  color: var(--acid);
+  -webkit-text-fill-color: var(--acid);
+  -webkit-text-stroke: 0;
+  text-shadow:
+    0 0 24px rgba(185, 245, 66, 0.34),
+    0 0 2px rgba(185, 245, 66, 0.45);
+}
+
+html[lang='is'] .ks-v2 .hero-title-accent {
+  min-width: min(100%, 5.35em);
+  text-align: center;
+  letter-spacing: 0.12em;
+  padding-inline: 0;
 }
 
 .ks-v2 .hero-kicker {
@@ -12849,6 +12904,29 @@ body.nav-menu-open {
     font-size: clamp(34px, 11vw, 52px);
     line-height: 0.92;
     letter-spacing: -0.5px;
+  }
+
+  html[lang='is'] .ks-v2 .hero-title {
+    font-size: clamp(34px, 11vw, 52px);
+    line-height: 0.94;
+  }
+
+  html[lang='is'] .ks-v2 .hero-title-line {
+    min-width: min(100%, 4.9em);
+  }
+
+  html[lang='is'] .ks-v2 .hero-title-line:last-of-type {
+    letter-spacing: 0.06em;
+  }
+
+  html[lang='is'] .ks-v2 .hero-title-accent {
+    min-width: min(100%, 4.9em);
+    letter-spacing: 0.1em;
+  }
+
+  html[lang='en'] .ks-v2 .hero-title-accent {
+    letter-spacing: 0.1em;
+    padding-inline: 0.08em;
   }
 
   .ks-v2 .hero-actions {

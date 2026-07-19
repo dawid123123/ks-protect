@@ -21,11 +21,11 @@ export default function Hero() {
             {t.hero.kicker}
           </div>
           <h1 className="hero-title">
-            {t.hero.titleLine1}
-            <br />
-            <span>{t.hero.titleLine2}</span>
-            <br />
-            {t.hero.titleLine3}
+            <span className="hero-title-line">{t.hero.titleLine1}</span>
+            <span className="hero-title-line hero-title-accent">
+              {t.hero.titleLine2}
+            </span>
+            <span className="hero-title-line">{t.hero.titleLine3}</span>
           </h1>
           <p className="hero-description">{t.hero.description}</p>
           <div className="hero-actions">
