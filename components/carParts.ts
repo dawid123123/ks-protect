@@ -14,6 +14,16 @@ export type Part =
   | 'frontDoor'
   | 'rearDoor'
   | 'sideSkirt'
+  | 'splashGuard'
+  | 'rightSplashGuard'
+  | 'frontDoorLower'
+  | 'rightFrontDoorLower'
+  | 'rearDoorLower'
+  | 'rightRearDoorLower'
+  | 'frontWheelArch'
+  | 'rearWheelArch'
+  | 'rightFrontWheelArch'
+  | 'rightRearWheelArch'
   | 'leftRearQuarter'
   | 'rightRearQuarter'
   | 'tailgate'
@@ -26,34 +36,9 @@ export type Part =
   | 'leftCPillar'
   | 'rightCPillar';
 
-export const partPrices: Record<Part, number> = {
-  hood: 109900,
-  roof: 89900,
-  rearWindow: 44900,
-  frontBumper: 89900,
-  rearBumper: 89900,
-  frontLip: 44900,
-  leftHeadlight: 29900,
-  rightHeadlight: 29900,
-  leftMirror: 19900,
-  rightMirror: 19900,
-  leftFender: 59900,
-  rightFender: 59900,
-  frontDoor: 69900,
-  rearDoor: 69900,
-  sideSkirt: 49900,
-  leftRearQuarter: 59900,
-  rightRearQuarter: 59900,
-  tailgate: 79900,
-  leftTaillight: 29900,
-  rightTaillight: 29900,
-  leftAPillar: 24900,
-  rightAPillar: 24900,
-  leftBPillar: 29900,
-  rightBPillar: 29900,
-  leftCPillar: 24900,
-  rightCPillar: 24900,
-};
+import { ppfPartPrices } from '../lib/pricing';
+
+export const partPrices: Record<Part, number> = { ...ppfPartPrices };
 
 export type SelectedParts = Partial<Record<Part, number>>;
 
@@ -63,43 +48,83 @@ export const partZoneAliases: Partial<Record<Part, Part>> = {
   rightRearQuarter: 'leftRearQuarter',
   rightBPillar: 'leftBPillar',
   rightCPillar: 'leftCPillar',
+  rightFrontWheelArch: 'frontWheelArch',
+  rightRearWheelArch: 'rearWheelArch',
+  rightSplashGuard: 'splashGuard',
+  rightFrontDoorLower: 'frontDoorLower',
+  rightRearDoorLower: 'rearDoorLower',
 };
 
 export const partMaxQuantity: Partial<Record<Part, number>> = {
   frontDoor: 2,
   rearDoor: 2,
   sideSkirt: 2,
+  splashGuard: 2,
+  frontDoorLower: 2,
+  rearDoorLower: 2,
+  frontWheelArch: 2,
+  rearWheelArch: 2,
   leftFender: 2,
   leftRearQuarter: 2,
   leftBPillar: 2,
   leftCPillar: 2,
 };
 
-/** All selectable parts in the configurator list (canonical ids only, no zone aliases). */
-export const catalogParts: Part[] = [
-  'hood',
-  'roof',
-  'frontBumper',
-  'frontLip',
+/** Parts hidden from the PPF editor (still priced for tint / reference). */
+export const ppfEditorExcludedParts: Part[] = [
+  'rearWindow',
   'leftHeadlight',
   'rightHeadlight',
-  'leftMirror',
-  'rightMirror',
-  'leftAPillar',
-  'rightAPillar',
-  'leftFender',
-  'frontDoor',
-  'rearDoor',
-  'sideSkirt',
-  'leftBPillar',
-  'leftCPillar',
-  'rearWindow',
-  'tailgate',
   'leftTaillight',
   'rightTaillight',
-  'rearBumper',
-  'leftRearQuarter',
 ];
+
+export type PpfCatalogSectionId = 'front' | 'side' | 'rear';
+
+/** PPF catalog grouped by car view: front → side → rear. */
+export const ppfCatalogSections: {
+  id: PpfCatalogSectionId;
+  parts: Part[];
+}[] = [
+  {
+    id: 'front',
+    parts: [
+      'hood',
+      'frontBumper',
+      'frontLip',
+      'leftMirror',
+      'rightMirror',
+      'leftAPillar',
+      'rightAPillar',
+    ],
+  },
+  {
+    id: 'side',
+    parts: [
+      'leftFender',
+      'frontDoor',
+      'rearDoor',
+      'leftBPillar',
+      'leftCPillar',
+      'splashGuard',
+      'frontDoorLower',
+      'rearDoorLower',
+      'sideSkirt',
+      'frontWheelArch',
+      'rearWheelArch',
+      'leftRearQuarter',
+    ],
+  },
+  {
+    id: 'rear',
+    parts: ['roof', 'tailgate', 'rearBumper'],
+  },
+];
+
+/** All selectable parts in the configurator list (canonical ids only, no zone aliases). */
+export const catalogParts: Part[] = ppfCatalogSections.flatMap(
+  (section) => section.parts
+);
 
 export function resolvePart(part: Part): Part {
   return partZoneAliases[part] ?? part;
@@ -185,6 +210,16 @@ export const partLabels: Record<Part, string> = {
   frontDoor: 'Front Door',
   rearDoor: 'Rear Door',
   sideSkirt: 'Side Skirt',
+  splashGuard: 'Splash Guard',
+  rightSplashGuard: 'Splash Guard',
+  frontDoorLower: 'Front Door Lower',
+  rightFrontDoorLower: 'Front Door Lower',
+  rearDoorLower: 'Rear Door Lower',
+  rightRearDoorLower: 'Rear Door Lower',
+  frontWheelArch: 'Front Wheel Arch',
+  rearWheelArch: 'Rear Wheel Arch',
+  rightFrontWheelArch: 'Front Wheel Arch',
+  rightRearWheelArch: 'Rear Wheel Arch',
   leftRearQuarter: 'Rear Quarter Panel',
   rightRearQuarter: 'Rear Quarter Panel',
   tailgate: 'Tailgate',

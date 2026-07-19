@@ -149,7 +149,7 @@ export function TintPhotoZonePath({
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           onMouseMove={(event) => {
-            setCoords({ x: event.clientX, y: event.clientY });
+            setCoords({ x: event.clientX + 24, y: event.clientY });
           }}
           onClick={(event) => {
             onSelectWindow(zone.window);

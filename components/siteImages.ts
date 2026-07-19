@@ -21,6 +21,13 @@ export function photoThumb(url: string, width = 420) {
   return url.replace('w=1800', 'w=' + width);
 }
 
+/** Compact detail shots for the about page (not the main hero). */
+export const aboutPagePhotos = [
+  photoThumb(verifiedCarPhotos[2], 520),
+  photoThumb(verifiedCarPhotos[1], 420),
+  photoThumb(verifiedCarPhotos[4], 420),
+];
+
 export const centerBackgroundPhoto = photoThumb(verifiedCarPhotos[0], 1600);
 
 export const galleryProjects = [

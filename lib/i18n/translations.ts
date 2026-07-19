@@ -1,4 +1,5 @@
 import type { Language } from './types';
+import { termsEn, termsIs } from './termsContent';
 
 export const translations = {
   is: {
@@ -14,6 +15,8 @@ export const translations = {
       tint: 'TINT',
       shop: 'NETVERSLUN',
       gallery: 'MYNDIR',
+      about: 'UM OKKUR',
+      faq: 'FAQ',
       contact: 'HAFA SAMBAND',
       getQuote: 'F\u00c1 TILBO\u00d0',
       socialLabel: 'Samf\u00e9lagsmi\u00f0lar KS Protect',
@@ -23,7 +26,174 @@ export const translations = {
     footer: {
       tagline:
         'Vernd, gl\u00f6ggun og \u00fej\u00f3nusta \u00ed einu \u00fe\u00e1gu.',
+      contactLabel: 'SAMSKIPTI',
+      hoursLabel: 'OPNUNART\u00cdMI',
+      hoursNote: 'B\u00f3ka\u00f0u t\u00edma \u00ed gegnum vefs\u00ed\u00f0u e\u00f0a hringdu \u00ed 844 4456.',
+      mapLabel: 'STA\u00d0SETNING',
+      openInMaps: 'Opna \u00ed kortum',
+      instagramLabel: 'INSTAGRAM',
+      instagramFollow: 'Fylgja @ks_protect',
+      instagramPhotoAlt: 'KS Protect Instagram mynd',
       copyright: '\u00a9 2026 KS Protect. Allur r\u00e9ttur \u00e1skilinn.',
+      terms: 'Skilm\u00e1lar',
+      company: {
+        address: 'Skemmuvegi 28 (bleik gata)',
+        ktLabel: 'Kt',
+        kt: '530718-1310',
+        vskLabel: 'Vsk nr',
+        vsk: '132280',
+        email: 'ksprotect@ksprotect.is',
+        phone: '844-4456',
+      },
+      hours: {
+        weekdays: 'M\u00e1n\u2013Fim',
+        weekdaysValue: '08:00 \u2013 17:00',
+        friday: 'F\u00f6studagur',
+        fridayValue: '08:00 \u2013 16:00',
+        weekend: 'Laug\u2013Sun',
+        weekendValue: 'Loka\u00f0',
+      },
+    },
+    reviews: {
+      eyebrow: 'UMSAGNIR VI\u00d0SKIPTAVINA',
+      title: '\u00deJ\u00d3NUSTA SEM SKILUR EFTIR SIG.',
+      lead:
+        'Vi\u00f0 leggjum \u00e1herslu \u00e1 faglega uppsetningu, hreint verk og sk\u00fdra samskipti \u2014 \u00feetta eru d\u00e6miger\u00f0ar umsagnir fr\u00e1 vi\u00f0skiptavinum okkar.',
+      note:
+        'S\u00fdnishorn umsagna fyrir vefs\u00ed\u00f0una \u2014 uppf\u00e6ra m\u00e1 me\u00f0 raunverulegum ums\u00f6gnum \u00far Google e\u00f0a Facebook.',
+      items: {
+        one: {
+          text:
+            'Fr\u00e1b\u00e6r graf\u00edn me\u00f0fer\u00f0 og dj\u00fapur glj\u00e1i. \u00dej\u00f3nustan var fagleg og \u00e1\u00e6tlu\u00f0 fr\u00e1 upphafi til enda.',
+          name: 'J\u00f3n K.',
+          meta: 'Mercedes-Benz \u00b7 Graf\u00edn',
+          source: 'Google',
+        },
+        two: {
+          text:
+            'PPF uppsetningin var \u00ed s\u00e9rflokki. B\u00edllinn minn l\u00f3kar eins og n\u00fdr og teymi\u00f0 t\u00f3k vel \u00e1 m\u00f3ti m\u00e9r.',
+          name: 'Sara M.',
+          meta: 'BMW \u00b7 PPF',
+          source: 'Facebook',
+        },
+        three: {
+          text:
+            'Gluggatint og PPF \u00e1 framlj\u00f3sum kom \u00ed lag \u00ed einu. M\u00e6li hiklaust me\u00f0 KS Protect.',
+          name: 'Arnar P.',
+          meta: 'Audi \u00b7 Tint + PPF',
+          source: 'Google',
+        },
+      },
+    },
+    faq: {
+      eyebrow: 'SPURNINGAR & SV\u00d6R',
+      title: 'Allt sem \u00fe\u00fa \u00fearft a\u00f0 vita.',
+      lead:
+        'Sv\u00f6r vi\u00f0 algengustu spurningum um graf\u00edn, PPF, gluggatint og b\u00f3kanir \u2014 byggt \u00e1 \u00fej\u00f3nustu KS Protect.',
+      ctaText: 'Finnur \u00fe\u00fa ekki svari\u00f0? Sendu okkur fyrirspurn.',
+      items: {
+        one: {
+          q: 'Hva\u00f0 er graf\u00edn lakkv\u00f6rn?',
+          a: 'Graf\u00edn lakkv\u00f6rn er h\u00e1tt\u00ed\u00f0a varnarl\u00f6gn sem veitir dj\u00fapan glj\u00e1a, vatnsfr\u00e1hrindingu og sterkari vernd en hef\u00f0bundin ceramic h\u00fa\u00f0. KS Protect var fyrstur \u00e1 \u00cdslandi me\u00f0 alv\u00f6ru graf\u00edn lakkv\u00f6rn.',
+        },
+        two: {
+          q: 'Hversu lengi endist PPF?',
+          a: 'Vi\u00f0 notum heimsklassa LLumar PPF me\u00f0 allt a\u00f0 12 \u00e1ra \u00e1byrg\u00f0, eftir umfangi verndar og umhir\u00f0u \u00e1 b\u00edlnum.',
+        },
+        three: {
+          q: 'Hver er \u00e1byrg\u00f0in \u00e1 graf\u00edn me\u00f0fer\u00f0um?',
+          a: '\u00d6llum lakkvarnarme\u00f0fer\u00f0um fylgir 5 \u00e1ra \u00e1byrg\u00f0 \u00e1n vi\u00f0b\u00f3tarkostna\u00f0ar vi\u00f0 endurkomur \u00e1 \u00e1byrg\u00f0art\u00edma.',
+        },
+        four: {
+          q: 'Hversu lengi tekur uppsetning?',
+          a: 'T\u00edmalengd fer eftir pakka og b\u00edl. Einf\u00f6ld me\u00f0fer\u00f0 getur teki\u00f0 1 dag en st\u00f6r verkefni geta teki\u00f0 lengur. Vi\u00f0 gefum \u00e1\u00e6tla\u00f0an t\u00edma vi\u00f0 tilbo\u00f0.',
+        },
+        five: {
+          q: 'Er gluggatint l\u00f6gm\u00e6t \u00e1 \u00cdslandi?',
+          a: 'J\u00e1, me\u00f0 r\u00e9ttu VLT gildi og r\u00e9ttri uppsetningu. Vi\u00f0 hj\u00e1lpum \u00fe\u00e9r a\u00f0 velja l\u00f6gm\u00e6ta stillingu \u00ed tint stillingunni okkar.',
+        },
+        six: {
+          q: 'Hvar er verkst\u00e6\u00f0i\u00f0?',
+          a: 'Skemmuvegur 28 \u00b7 bleik gata, 200 K\u00f3pavogur. Au\u00f0velt a\u00f0 finna og n\u00e6gilega st\u00f3rt fyrir faglega uppsetningu.',
+        },
+        seven: {
+          q: 'Hvernig b\u00f3ka \u00e9g t\u00edma?',
+          a: 'H\u00e6gt er a\u00f0 b\u00f3ka beint \u00ed gegnum ksprotect.is/booking/, hringja \u00ed 844 4456 e\u00f0a senda fyrirspurn \u00ed gegnum formi\u00f0 \u00e1 vefs\u00ed\u00f0unni.',
+        },
+        eight: {
+          q: 'Hva\u00f0a v\u00f6rur noti\u00f0 \u00fei\u00f0?',
+          a: 'Vi\u00f0 vinnum me\u00f0 h\u00e1g\u00ael\u00f6gum v\u00f6rum eins og LLumar PPF og Waxedshine graf\u00edn, sem eru framleiddar til a\u00f0 standast erfi\u00f0ar ve\u00f0ur\u00e0ttir \u00e1 \u00cdslandi.',
+        },
+      },
+    },
+    terms: termsIs,
+    about: {
+      eyebrow: 'UM OKKUR',
+      title: 'AF HVERJU GRAF\u00cdN?',
+      lead:
+        'Margir spyrja um muninn \u00e1 ceramic og graf\u00edn. Vi\u00f0 seljum eing\u00f6ngu graf\u00edn \u2014 h\u00e9r \u00fatsk\u00fdrum vi\u00f0 af hverju.',
+      introKicker: 'KS PROTECT \u00b7 GRAF\u00cdN LAKKV\u00d6RN',
+      introText:
+        'KS Protect s\u00e9rh\u00e6fir sig \u00ed alv\u00f6ru graf\u00edn lakkv\u00f6rn. Ceramic kemur h\u00e9r a\u00f0eins fyrir sem samanbur\u00f0ur til sk\u00fdringar \u2014 ekki sem valkostur hj\u00e1 okkur.',
+      techSectionTitle: 'T\u00e6knin \u00ed stuttu m\u00e1li',
+      imageAlt: 'KS Protect graf\u00edn lakkv\u00f6rn',
+      ceramic: {
+        label: 'CERAMIC',
+        title: 'Ceramic h\u00fa\u00f0un',
+        text: 'Ceramic h\u00fa\u00f0 notar nan\u00f3t\u00e6kni til a\u00f0 b\u00faa til f\u00ednt hl\u00edf\u00f0arlag ofan \u00e1 m\u00e1lningu b\u00edlsins. Nan\u00f3agnirnar leyfa h\u00fa\u00f0inni a\u00f0 sameinast lakkinu \u00e1 sameindarstigi og \u00fe\u00e9tta holur \u00ed yfirbor\u00f0inu.',
+        note: 'Ekki \u00ed bo\u00f0i hj\u00e1 KS Protect.',
+      },
+      graphene: {
+        label: 'GRAF\u00cdN',
+        title: 'Graf\u00ednh\u00fa\u00f0un',
+        text: 'Graf\u00edn h\u00fa\u00f0un notar einnig nan\u00f3t\u00e6kni til a\u00f0 bindast vi\u00f0 m\u00e1lningu b\u00edlsins \u00e1 sameindarstigi. H\u00fan er \u00feynnri, sterkari og sveigjanlegri en hef\u00f0bundin ceramic h\u00fa\u00f0.',
+      },
+      compare: {
+        title: 'Graf\u00edn vs. ceramic',
+        lead:
+          'Vi\u00f0 bj\u00f3\u00f0um ekki ceramic h\u00fa\u00f0un. \u00deetta s\u00fdnir af hverju graf\u00edn er okkar einasta val.',
+        grapheneTitle: 'GRAF\u00cdN',
+        ceramicTitle: 'CERAMIC',
+        ceramicNote: 'A\u00f0eins til samanbur\u00f0ar \u2014 ekki \u00ed bo\u00f0i',
+        grapheneItems: [
+          'Mj\u00f6g litlar l\u00edkur \u00e1 vatnsblettamyndun',
+          'Dregur \u00far hita \u00e1 yfirbor\u00f0i lakks',
+          'Gr\u00ed\u00f0arleg og endingarmikil vatnsfr\u00e1hrinding',
+          'Minna ryk festist \u00e1 yfirbor\u00f0inu',
+          'Mikill sveigjanleiki og betri ending',
+          'Gr\u00ed\u00f0arlegur styrkur og efna\u00feol',
+        ],
+        ceramicItems: [
+          'T\u00f6luver\u00f0ar l\u00edkur \u00e1 vatnsblettamyndun',
+          'Dregur \u00ed sig hita \u00e1 yfirbor\u00f0i lakks',
+          'Vatnsfr\u00e1hrinding sem \u00fearnast talsvert vi\u00f0hald',
+          'Getur dregi\u00f0 \u00ed sig ryk \u00e1 yfirbor\u00f0',
+          'Minni sveigjanleiki en graf\u00edn',
+          'Minni styrkur og ending en graf\u00edn h\u00fa\u00f0',
+        ],
+      },
+      conclusionTitle: 'Okkar ni\u00f0ursta\u00f0a er \u00feessi!',
+      conclusionText:
+        '\u00c1n vafa er graf\u00edn \u00f3tr\u00falegt efni. E\u00f0lisfr\u00e6\u00f0ilegir eiginleikar \u00feess gera \u00fea\u00f0 greinilega betra en samb\u00e6rileg efni \u2014 og KS Protect var fyrstur \u00e1 \u00cdslandi me\u00f0 alv\u00f6ru graf\u00edn lakkv\u00f6rn.',
+      whatTitle: 'Hva\u00f0 er graf\u00edn?',
+      whatParagraphs: [
+        'Graf\u00edn er at\u00f3m\u00feykinn hj\u00farpur af kolefnisat\u00f3mum \u2014 sterkasta \u00feekkta efni\u00f0 sem menn vita um. Har\u00f0ara en demantur en samt sveigjanlegra en g\u00famm\u00ed.',
+        'Vegna uppbyggingar graf\u00edns hefur \u00fea\u00f0 mj\u00f3g miki\u00f0 vatnssn\u00faningshorn mi\u00f0a\u00f0 vi\u00f0 flest ceramic efni. Raki rennur au\u00f0veldara burt og minnkar h\u00e6ttu \u00e1 vatnsblettum.',
+        'Raf- og hitalei\u00f0ni graf\u00edns hj\u00e1lpar a\u00f0 hrekja burt ryk og \u00f6ragnir, sem au\u00f0veldar daglega umhir\u00f0u \u00e1 b\u00edlnum.',
+      ],
+      benefitsTitle: 'Hver er \u00e1vinningurinn af graf\u00edn h\u00fa\u00f0un?',
+      benefits: [
+        'Meira slit\u00feol lakks',
+        'Meiri gl\u00e6sileiki og glj\u00e1i',
+        'Vernd gegn t\u00e6ringu og salti',
+        'Au\u00f0veldari umhir\u00f0a og \u00ferif',
+        'Endingarg\u00f3\u00f0 vatnsfr\u00e1hrindandi',
+        'F\u00e6rri \u00fevottar og minna vi\u00f0hald',
+        'Sveigjanleiki sem eykur endingu',
+        'Miki\u00f0 efna\u00feol og ending',
+      ],
+      ctaText: 'Viltu sj\u00e1 pakka okkar e\u00f0a f\u00e1 pers\u00f3nulegt tilbo\u00f0?',
+      ctaPackages: 'SKO\u00d0A PAKKA',
     },
     hero: {
       kicker: 'KS PROTECT \u00b7 REYKJAV\u00cdK',
@@ -127,8 +297,6 @@ export const translations = {
     gallery: {
       eyebrow: 'MERCEDES-BENZ \u00b7 VERKEFNIN OKKAR',
       title: 'MYNDASAFN',
-      lead:
-        'Mercedes-AMG GT \u00ed svi\u00f0slj\u00f3sinu \u2014 gr\u00e6nn t\u00f3nn, sportleg sm\u00e1atri\u00f0i og n\u00e1kv\u00e6mur KS Protect fr\u00e1gangur.',
       imageAlt: 'KS Protect myndasafn',
     },
     contact: {
@@ -139,7 +307,7 @@ export const translations = {
       phone: 'S\u00cdMI',
       email: 'NETFANG',
       location: 'STA\u00d0SETNING',
-      locationValue: 'Skemmuvegur 28 \u00b7 bleik gata',
+      locationValue: 'Skemmuvegi 28 (bleik gata)',
       bookDirectly: 'B\u00d3KA T\u00cdMA BEINT',
       formHeading: 'Tilbo\u00f0sbei\u00f0ni',
       formSubheading: 'Fylltu \u00fat uppl\u00fdsingarnar h\u00e9r a\u00f0 ne\u00f0an.',
@@ -339,9 +507,9 @@ export const translations = {
       openSvgEditor: 'Open SVG path editor',
       selectView: 'Veldu sj\u00f3narhorn',
       topView: 'TOP VIEW',
-      sideView: 'SIDE VIEW',
-      rearView: 'REAR VIEW',
-      frontView: 'framan fr\u00e1',
+      sideView: 'Hli\u00f0ar\u00fats\u00fdni',
+      rearView: 'Aftur\u00fats\u00fdni',
+      frontView: 'Framsk\u00fdn',
       showView: 'S\u00fdna b\u00edl',
       selectBodyParts: 'Veldu b\u00edlahluta',
       selectWindow: 'Veldu r\u00fa\u00f0u',
@@ -350,20 +518,20 @@ export const translations = {
       choosePackage: 'Veldu pakka',
       packages: {
         essential: {
-          label: 'Essential Protection',
-          subtitle: 'Grunnvernd',
+          label: 'Ne\u00f0ri partur',
+          subtitle: '',
         },
         completeFront: {
-          label: 'Complete Front',
-          subtitle: 'Heila framhli\u00f0',
+          label: 'Full Front',
+          subtitle: '',
         },
         fullWrap: {
           label: 'Full Wrap',
-          subtitle: 'Heildarulag',
+          subtitle: '',
         },
         custom: {
-          label: 'S\u00e9rsni\u00f0i\u00f0',
-          subtitle: 'Veldu sj\u00e1lfur',
+          label: 'S\u00e9rni\u00f0i',
+          subtitle: '',
         },
       },
       emptyPpf: {
@@ -393,6 +561,16 @@ export const translations = {
       ppfWindscreenStrip: 'PPF v\u00f6rn \u00e1 vindskj\u00e1sh\u00e1ls',
       ppfAutoSelect: 'Velur sj\u00e1lfkrafa vi\u00f0 \u00fe\u00ed a\u00f0 velja',
       tintSummaryNote: 'Ver\u00f0 mi\u00f0ast vi\u00f0 keram\u00edskan filmu og st\u00e6r\u00f0 bifrei\u00f0ar.',
+      priceGuide: {
+        title: 'Ver\u00f0lei\u00f0beining',
+        small: 'L\u00edtill hluti',
+        smallNote: 't.d. handf\u00f6ng',
+        smallPriceSuffix: 'm.vsk',
+        large: 'St\u00f3r hluti',
+        largeExample: 't.d. framgrill',
+        dechrome: 'Dechrome',
+        dechromeNote: '\u00e1\u00e6tla\u00f0 ver\u00f0',
+      },
       legalNotes: {
         front:
           'Tint \u00e1 framr\u00fa\u00f0um og vindskj\u00e1 er ekki leyft. A\u00f0eins PPF v\u00f6rn \u00e1 vindskj\u00e1sh\u00e1ls og d\u00f6kk PPF \u00e1 vinstra og h\u00e6gra framlj\u00f3si.',
@@ -436,6 +614,16 @@ export const translations = {
       frontDoor: 'Framhur\u00f0',
       rearDoor: 'Afturhur\u00f0',
       sideSkirt: 'S\u00edlsa',
+      splashGuard: 'Skvettv\u00f6rn',
+      rightSplashGuard: 'Skvettv\u00f6rn',
+      frontDoorLower: 'Ne\u00f0ri framhur\u00f0',
+      rightFrontDoorLower: 'Ne\u00f0ri framhur\u00f0',
+      rearDoorLower: 'Ne\u00f0ri afturhur\u00f0',
+      rightRearDoorLower: 'Ne\u00f0ri afturhur\u00f0',
+      frontWheelArch: 'Framhj\u00f3lahvolf',
+      rearWheelArch: 'Afturhj\u00f3lahvolf',
+      rightFrontWheelArch: 'Framhj\u00f3lahvolf',
+      rightRearWheelArch: 'Afturhj\u00f3lahvolf',
       leftRearQuarter: 'Afturbretti',
       rightRearQuarter: 'Afturbretti',
       tailgate: 'Skottlok',
@@ -494,6 +682,8 @@ export const translations = {
       tint: 'TINT',
       shop: 'SHOP',
       gallery: 'GALLERY',
+      about: 'ABOUT',
+      faq: 'FAQ',
       contact: 'CONTACT',
       getQuote: 'GET A QUOTE',
       socialLabel: 'KS Protect social media',
@@ -502,13 +692,180 @@ export const translations = {
     },
     footer: {
       tagline: 'Protection, clarity, and service \u2014 all in one place.',
+      contactLabel: 'CONTACT',
+      hoursLabel: 'OPENING HOURS',
+      hoursNote: 'Book online or call 844 4456 for an appointment.',
+      mapLabel: 'LOCATION',
+      openInMaps: 'Open in Maps',
+      instagramLabel: 'INSTAGRAM',
+      instagramFollow: 'Follow @ks_protect',
+      instagramPhotoAlt: 'KS Protect Instagram photo',
       copyright: '\u00a9 2026 KS Protect. All rights reserved.',
+      terms: 'Terms',
+      company: {
+        address: 'Skemmuvegur 28 (pink street)',
+        ktLabel: 'Co. ID',
+        kt: '530718-1310',
+        vskLabel: 'VAT no.',
+        vsk: '132280',
+        email: 'ksprotect@ksprotect.is',
+        phone: '844-4456',
+      },
+      hours: {
+        weekdays: 'Mon\u2013Thu',
+        weekdaysValue: '08:00 \u2013 17:00',
+        friday: 'Friday',
+        fridayValue: '08:00 \u2013 16:00',
+        weekend: 'Sat\u2013Sun',
+        weekendValue: 'Closed',
+      },
+    },
+    reviews: {
+      eyebrow: 'CUSTOMER REVIEWS',
+      title: 'SERVICE THAT LEAVES A MARK.',
+      lead:
+        'We focus on professional installation, clean workmanship, and clear communication \u2014 these are representative reviews from our customers.',
+      note:
+        'Sample reviews for the website skeleton \u2014 replace with real Google or Facebook reviews when available.',
+      items: {
+        one: {
+          text:
+            'Excellent graphene treatment and deep gloss. The service was professional from start to finish.',
+          name: 'Jon K.',
+          meta: 'Mercedes-Benz \u00b7 Graphene',
+          source: 'Google',
+        },
+        two: {
+          text:
+            'The PPF installation was outstanding. My car looks brand new and the team was very welcoming.',
+          name: 'Sara M.',
+          meta: 'BMW \u00b7 PPF',
+          source: 'Facebook',
+        },
+        three: {
+          text:
+            'Window tint and headlight PPF done in one visit. I highly recommend KS Protect.',
+          name: 'Arnar P.',
+          meta: 'Audi \u00b7 Tint + PPF',
+          source: 'Google',
+        },
+      },
+    },
+    faq: {
+      eyebrow: 'QUESTIONS & ANSWERS',
+      title: 'Everything you need to know.',
+      lead:
+        'Answers to the most common questions about graphene, PPF, window tint, and bookings \u2014 based on KS Protect services.',
+      ctaText: 'Can\u2019t find your answer? Send us a message.',
+      items: {
+        one: {
+          q: 'What is graphene paint protection?',
+          a: 'Graphene coating is a premium protection layer that delivers deep gloss, water repellency, and stronger protection than traditional ceramic coatings. KS Protect was the first in Iceland to offer true graphene paint protection.',
+        },
+        two: {
+          q: 'How long does PPF last?',
+          a: 'We use world-class LLumar PPF with up to a 12-year warranty, depending on coverage and how the vehicle is maintained.',
+        },
+        three: {
+          q: 'What warranty comes with graphene packages?',
+          a: 'All paint protection treatments include a 5-year warranty with no extra charge for warranty check-ups during the warranty period.',
+        },
+        four: {
+          q: 'How long does installation take?',
+          a: 'Timing depends on the package and vehicle. A simpler treatment may take one day while larger projects can take longer. We provide an estimated timeline with your quote.',
+        },
+        five: {
+          q: 'Is window tint legal in Iceland?',
+          a: 'Yes, with the correct VLT level and proper installation. We help you choose a compliant setup in our tint configurator.',
+        },
+        six: {
+          q: 'Where is the workshop?',
+          a: 'Skemmuvegur 28 \u00b7 pink street, 200 K\u00f3pavogur. Easy to find with enough space for professional installation.',
+        },
+        seven: {
+          q: 'How do I book an appointment?',
+          a: 'Book directly at ksprotect.is/booking/, call 844 4456, or send a request through the form on this website.',
+        },
+        eight: {
+          q: 'Which products do you use?',
+          a: 'We work with premium brands such as LLumar PPF and Waxedshine graphene, built to handle Iceland\u2019s demanding weather conditions.',
+        },
+      },
+    },
+    terms: termsEn,
+    about: {
+      eyebrow: 'ABOUT US',
+      title: 'WHY GRAPHENE?',
+      lead:
+        'Many people ask about ceramic vs. graphene. We only sell graphene \u2014 here is why.',
+      introKicker: 'KS PROTECT \u00b7 GRAPHENE COATING',
+      introText:
+        'KS Protect specializes in true graphene paint protection. Ceramic appears here only as a reference comparison \u2014 not as something we offer.',
+      techSectionTitle: 'The technology in brief',
+      imageAlt: 'KS Protect graphene paint protection',
+      ceramic: {
+        label: 'CERAMIC',
+        title: 'Ceramic coating',
+        text: 'Ceramic coating uses nanotechnology to create a fine protective layer over the paint. Nano particles bond at a molecular level and help seal microscopic pores in the finish.',
+        note: 'Not offered by KS Protect.',
+      },
+      graphene: {
+        label: 'GRAPHENE',
+        title: 'Graphene coating',
+        text: 'Graphene coating uses similar nanotechnology but delivers a thinner, stronger, and more flexible layer than traditional ceramic coatings.',
+      },
+      compare: {
+        title: 'Graphene vs. ceramic',
+        lead:
+          'We do not offer ceramic coating. This shows why graphene is our only choice.',
+        grapheneTitle: 'GRAPHENE',
+        ceramicTitle: 'CERAMIC',
+        ceramicNote: 'Reference only \u2014 not available',
+        grapheneItems: [
+          'Very low risk of water spotting',
+          'Reduces heat buildup on paint',
+          'Extremely durable water repellency',
+          'Less dust sticks to the surface',
+          'High flexibility and better longevity',
+          'Superior strength and chemical resistance',
+        ],
+        ceramicItems: [
+          'Higher risk of water spotting',
+          'Absorbs more heat on the surface',
+          'Water repellency that often needs maintenance',
+          'Can attract dust on the surface',
+          'Less flexibility than graphene',
+          'Lower strength and durability than graphene',
+        ],
+      },
+      conclusionTitle: 'Our conclusion',
+      conclusionText:
+        'Without doubt, graphene is an incredible material. Its physical properties make it clearly superior to comparable alternatives \u2014 and KS Protect was the first in Iceland to offer true graphene paint protection.',
+      whatTitle: 'What is graphene?',
+      whatParagraphs: [
+        'Graphene is a one-atom-thick layer of carbon \u2014 the strongest known material. Harder than diamond yet more flexible than rubber.',
+        'Because of its structure, graphene has a much higher water contact angle than most ceramic products. Moisture sheets off more easily and reduces spotting.',
+        'Its thermal and electrical properties help repel dust and fine particles, making day-to-day car care easier.',
+      ],
+      benefitsTitle: 'What are the benefits of graphene coating?',
+      benefits: [
+        'Better paint durability',
+        'More gloss and depth',
+        'Protection against corrosion and salt',
+        'Easier maintenance and cleaning',
+        'Long-lasting hydrophobic finish',
+        'Fewer washes and less upkeep',
+        'Flexibility that improves longevity',
+        'Strong chemical resistance',
+      ],
+      ctaText: 'Want to see our packages or get a personal quote?',
+      ctaPackages: 'VIEW PACKAGES',
     },
     hero: {
       kicker: 'KS PROTECT \u00b7 REYKJAV\u00cdK',
       titleLine1: 'PROTECT',
-      titleLine2: 'WHAT YOU',
-      titleLine3: 'DRIVE',
+      titleLine2: 'WHAT',
+      titleLine3: 'YOU DRIVE',
       description:
         'World-class PPF paint protection and serious graphene coating \u2014 expert installation, deep gloss, and protection built to last.',
       getFreeQuote: 'GET A FREE QUOTE',
@@ -606,8 +963,6 @@ export const translations = {
     gallery: {
       eyebrow: 'MERCEDES-BENZ \u00b7 OUR WORK',
       title: 'GALLERY',
-      lead:
-        'Mercedes-AMG GT in the spotlight \u2014 green tone, sharp details, and precise KS Protect finish.',
       imageAlt: 'KS Protect gallery photo',
     },
     contact: {
@@ -618,7 +973,7 @@ export const translations = {
       phone: 'PHONE',
       email: 'EMAIL',
       location: 'LOCATION',
-      locationValue: 'Skemmuvegur 28 \u00b7 pink street',
+      locationValue: 'Skemmuvegur 28 (pink street)',
       bookDirectly: 'BOOK DIRECTLY',
       formHeading: 'Quote request',
       formSubheading: 'Fill in your details below.',
@@ -828,20 +1183,20 @@ export const translations = {
       choosePackage: 'Choose a package',
       packages: {
         essential: {
-          label: 'Essential Protection',
-          subtitle: 'Essential coverage',
+          label: 'Lower Parts',
+          subtitle: '',
         },
         completeFront: {
-          label: 'Complete Front',
-          subtitle: 'Full front end',
+          label: 'Full Front',
+          subtitle: '',
         },
         fullWrap: {
           label: 'Full Wrap',
-          subtitle: 'Complete wrap',
+          subtitle: '',
         },
         custom: {
           label: 'Custom',
-          subtitle: 'Build your own',
+          subtitle: '',
         },
       },
       emptyPpf: {
@@ -871,6 +1226,16 @@ export const translations = {
       ppfWindscreenStrip: 'PPF protection on windscreen strip',
       ppfAutoSelect: 'Selected automatically when you choose this zone',
       tintSummaryNote: 'Prices are based on ceramic film and vehicle size.',
+      priceGuide: {
+        title: 'Price guide',
+        small: 'Small element',
+        smallNote: 'e.g. door handles',
+        smallPriceSuffix: 'm.vsk',
+        large: 'Large element',
+        largeExample: 'e.g. front grille',
+        dechrome: 'De-chrome',
+        dechromeNote: 'approx. price',
+      },
       legalNotes: {
         front:
           'Tint on front windows and the windscreen is not permitted. Only PPF protection on the windscreen strip and dark PPF on the left and right headlights.',
@@ -914,6 +1279,16 @@ export const translations = {
       frontDoor: 'Front Door',
       rearDoor: 'Rear Door',
       sideSkirt: 'Side Skirt',
+      splashGuard: 'Splash Guard',
+      rightSplashGuard: 'Splash Guard',
+      frontDoorLower: 'Front Door Lower',
+      rightFrontDoorLower: 'Front Door Lower',
+      rearDoorLower: 'Rear Door Lower',
+      rightRearDoorLower: 'Rear Door Lower',
+      frontWheelArch: 'Front Wheel Arch',
+      rearWheelArch: 'Rear Wheel Arch',
+      rightFrontWheelArch: 'Front Wheel Arch',
+      rightRearWheelArch: 'Rear Wheel Arch',
       leftRearQuarter: 'Rear Quarter Panel',
       rightRearQuarter: 'Rear Quarter Panel',
       tailgate: 'Tailgate',

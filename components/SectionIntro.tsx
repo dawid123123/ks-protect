@@ -9,7 +9,7 @@ export default function SectionIntro({
   eyebrow,
   title,
   lead,
-  align = 'left',
+  align = 'center',
 }: SectionIntroProps) {
   return (
     <div className={'section-intro' + (align === 'center' ? ' section-intro-center' : '')}>

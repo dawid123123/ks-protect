@@ -30,16 +30,6 @@ const rearZones: PhotoZone[] = [
     d: 'M 16.1,19.4 L 27.7,16.0 L 40.9,15.4 L 59.5,15.2 L 73.4,17.7 L 79.1,19.7 L 80.2,19.1 L 78.0,15.9 L 74.3,11.6 L 71.4,10.2 L 55.2,9.1 L 35.9,9.3 L 28.0,10.0 L 19.8,11.8 L 17.7,15.9 Z',
   },
   {
-    part: 'leftTaillight',
-    label: 'LEFT TAILLIGHT',
-    d: 'M -3.4,48.3 L 3.0,48.0 L 9.5,47.8 L 19.3,46.4 L 25.0,45.5 L 28.0,42.6 L 17.7,41.2 L 10.9,40.3 L 6.4,39.2 L 2.0,38.5 L 0.0,38.0 L -2.3,40.8 Z',
-  },
-  {
-    part: 'rightTaillight',
-    label: 'RIGHT TAILLIGHT',
-    d: 'M 68.0,42.1 L 70.9,45.1 L 76.1,46.7 L 83.2,47.6 L 87.5,48.0 L 96.4,47.8 L 99.3,48.0 L 99.1,43.5 L 97.3,39.6 L 96.1,37.3 L 86.8,39.6 Z',
-  },
-  {
     part: 'tailgate',
     label: 'TAILGATE',
     d: 'M 10.0,34.4 L 9.8,39.8 L 28.9,42.1 L 26.4,44.8 L 18.6,46.9 L 11.8,47.3 L 10.0,47.8 L 11.1,52.1 L 14.8,56.0 L 19.1,59.4 L 23.9,61.0 L 32.7,61.4 L 48.4,61.7 L 60.2,61.9 L 72.3,61.9 L 78.0,58.9 L 83.6,54.2 L 86.1,48.5 L 86.1,47.1 L 75.0,46.2 L 69.3,43.7 L 67.5,42.3 L 79.8,40.3 L 86.4,39.8 L 85.7,34.4 L 81.1,22.8 L 77.7,16.4 L 78.9,20.5 L 80.9,28.3 L 75.9,29.6 L 53.0,29.8 L 33.9,29.6 L 18.2,29.2 L 14.5,27.8 L 16.1,20.3 L 15.0,18.3 Z',
@@ -278,20 +268,6 @@ export default function RearView({
               part="roof"
               label="ROOF"
               className="rear-roof-zone"
-              selected={selected}
-              toggle={toggle}
-            />
-            <Zone
-              part="leftTaillight"
-              label="L. LIGHT"
-              className="rear-light-left"
-              selected={selected}
-              toggle={toggle}
-            />
-            <Zone
-              part="rightTaillight"
-              label="R. LIGHT"
-              className="rear-light-right"
               selected={selected}
               toggle={toggle}
             />

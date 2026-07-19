@@ -29,7 +29,13 @@ function InstagramIcon() {
 }
 
 function navClass(pathname: string, href: string) {
-  if (href === '/ppf' || href === '/tint' || href === '/netverslun') {
+  if (
+    href === '/ppf' ||
+    href === '/tint' ||
+    href === '/netverslun' ||
+    href === '/faq' ||
+    href === '/um-okkur'
+  ) {
     return pathname === href || pathname.startsWith(href + '/')
       ? 'nav-active'
       : '';
@@ -37,8 +43,19 @@ function navClass(pathname: string, href: string) {
   return '';
 }
 
+const navLinks = [
+  { href: '/#home', key: 'home' as const, match: '/#home' },
+  { href: '/#graphene', key: 'graphene' as const, match: '/#graphene' },
+  { href: '/ppf', key: 'ppf' as const, match: '/ppf' },
+  { href: '/tint', key: 'tint' as const, match: '/tint' },
+  { href: '/netverslun', key: 'shop' as const, match: '/netverslun' },
+  { href: '/um-okkur', key: 'about' as const, match: '/um-okkur' },
+  { href: '/faq', key: 'faq' as const, match: '/faq' },
+] as const;
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const t = useTranslation();
 
@@ -48,38 +65,107 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.classList.toggle('nav-menu-open', menuOpen);
+    return () => document.body.classList.remove('nav-menu-open');
+  }, [menuOpen]);
+
+  const headerClass =
+    'navbar navbar-v2 ' +
+    (scrolled ? 'navbarScrolled ' : '') +
+    (menuOpen ? 'navbar-menu-open ' : '');
+
   return (
-    <header className={'navbar navbar-v2 ' + (scrolled ? 'navbarScrolled' : '')}>
+    <header className={headerClass}>
       <Link href="/" className="logo">
         KS <span>PROTECT</span>
       </Link>
 
-      <nav className="navigation">
-        <Link href="/#home" className={navClass(pathname, '/#home')}>
-          {t.nav.home}
-        </Link>
-        <Link href="/#graphene" className={navClass(pathname, '/#graphene')}>
-          {t.nav.graphene}
-        </Link>
-        <Link href="/ppf" className={navClass(pathname, '/ppf')}>
-          {t.nav.ppf}
-        </Link>
-        <Link href="/tint" className={navClass(pathname, '/tint')}>
-          {t.nav.tint}
-        </Link>
-        <a
-          href="/netverslun"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={navClass(pathname, '/netverslun')}
-        >
-          {t.nav.shop}
-        </a>
-        <Link href="/#gallery" className={navClass(pathname, '/#gallery')}>
-          {t.nav.gallery}
-        </Link>
-        <Link href="/#contact">{t.nav.contact}</Link>
+      <nav className="navigation navigation-v2" aria-label="Main">
+        <div className="navigation-track">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={navClass(pathname, link.match)}
+            >
+              {t.nav[link.key]}
+            </Link>
+          ))}
+        </div>
       </nav>
+
+      <button
+        type="button"
+        className="navToggle"
+        aria-expanded={menuOpen}
+        aria-controls="nav-mobile-menu"
+        aria-label={menuOpen ? 'Loka valmynd' : 'Opna valmynd'}
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        <span className="navToggle-bar" />
+        <span className="navToggle-bar" />
+        <span className="navToggle-bar" />
+      </button>
+
+      <div
+        id="nav-mobile-menu"
+        className={'nav-mobile-menu' + (menuOpen ? ' open' : '')}
+        aria-hidden={!menuOpen}
+      >
+        <div
+          className="nav-mobile-backdrop"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden="true"
+        />
+        <div className="nav-mobile-panel">
+          <nav className="nav-mobile-links" aria-label="Mobile">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={navClass(pathname, link.match)}
+                onClick={() => setMenuOpen(false)}
+              >
+                {t.nav[link.key]}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="nav-mobile-footer">
+            <div className="navSocials" aria-label={t.nav.socialLabel}>
+              <a
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+              >
+                <FacebookIcon />
+              </a>
+              <a
+                href="https://www.instagram.com/ks_protect/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+              >
+                <InstagramIcon />
+              </a>
+            </div>
+            <LanguageSwitcher />
+            <Link
+              href="/#contact"
+              className="navButton navButton-mobile navButton-v2"
+              onClick={() => setMenuOpen(false)}
+            >
+              {t.nav.getQuote} <span className="navButton-arrow">{'\u2197'}</span>
+            </Link>
+          </div>
+        </div>
+      </div>
 
       <div className="navRight">
         <div className="navSocials" aria-label={t.nav.socialLabel}>
@@ -92,7 +178,7 @@ export default function Navbar() {
             <FacebookIcon />
           </a>
           <a
-            href="https://www.instagram.com/"
+            href="https://www.instagram.com/ks_protect/"
             target="_blank"
             rel="noreferrer"
             aria-label="Instagram"
@@ -103,8 +189,8 @@ export default function Navbar() {
 
         <LanguageSwitcher />
 
-        <Link href="/#contact" className="navButton">
-          {t.nav.getQuote}
+        <Link href="/#contact" className="navButton navButton-v2">
+          {t.nav.getQuote} <span className="navButton-arrow">{'\u2197'}</span>
         </Link>
       </div>
     </header>

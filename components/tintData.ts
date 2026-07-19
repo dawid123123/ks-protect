@@ -9,6 +9,13 @@ import {
   TintVehicleId,
   TintWindow,
 } from './tintTypes';
+import {
+  tintLevelMultipliers,
+  tintPpfBasePrices,
+  tintPriceGuideAmounts,
+  tintVehicleSizeMultipliers,
+  tintWindowBasePrices,
+} from '../lib/pricing';
 
 /** VLT % - lower value = darker tint (5% is darkest). */
 export const tintLevels: TintLevel[] = [5, 15, 25, 50];
@@ -151,41 +158,11 @@ export function isTintPpfZone(window: TintWindow): window is TintPpfZone {
  * darker levels often use premium ceramic - we add a modest premium for 5-15%.
  */
 const baseWindowPrices: Record<TintWindow, number> = {
-  windscreenStrip: 14900,
-  frontLeft: 19900,
-  frontRight: 19900,
-  leftHeadlight: 0,
-  rightHeadlight: 0,
-  leftTaillight: 0,
-  rightTaillight: 0,
-  rearLeft: 17900,
-  rearRight: 17900,
-  rearWindow: 27900,
-};
-
-/** Modest premium for darker ceramic-grade films and trickier installs. */
-const tintLevelMultipliers: Record<TintLevel, number> = {
-  5: 1.12,
-  15: 1.06,
-  25: 1,
-  50: 0.95,
+  ...tintWindowBasePrices,
 };
 
 const vehicleSizeMultipliers: Record<TintVehicleId, number> = {
-  gle: 1,
-  cla: 0.92,
-  cclass: 0.94,
-  eclass: 0.96,
-  gclass: 1.14,
-  amggt: 0.9,
-};
-
-const tintPpfBasePrices: Record<TintPpfZone, number> = {
-  windscreenStrip: 44900,
-  leftHeadlight: 29900,
-  rightHeadlight: 29900,
-  leftTaillight: 29900,
-  rightTaillight: 29900,
+  ...tintVehicleSizeMultipliers,
 };
 
 /** @deprecated Use tintPpfBasePrices via getTintPpfPrice */
@@ -300,3 +277,14 @@ export function tintPpfOverlayFill(zone: TintPpfZone): string {
 
 export const tintResearchNote =
   'Research: within the same film line, price usually changes little with darkness (VLT). Darker levels (5\u201315%) carry a modest premium for premium ceramic film and enhanced heat rejection.';
+
+export type TintPriceGuideId = 'small' | 'large' | 'dechrome';
+
+export const tintPriceGuide: {
+  id: TintPriceGuideId;
+  price: number;
+}[] = [
+  { id: 'small', price: tintPriceGuideAmounts.small },
+  { id: 'large', price: tintPriceGuideAmounts.large },
+  { id: 'dechrome', price: tintPriceGuideAmounts.dechrome },
+];

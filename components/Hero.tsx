@@ -8,7 +8,7 @@ export default function Hero() {
   const quickLinks = [
     { href: '/ppf', label: t.hero.quickLinks.ppfConfigurator },
     { href: '/tint', label: t.hero.quickLinks.tintConfigurator },
-    { href: '/netverslun', label: t.hero.quickLinks.onlineShop, external: true },
+    { href: '/netverslun', label: t.hero.quickLinks.onlineShop },
     { href: '/#contact', label: t.hero.quickLinks.getQuote },
   ];
 
@@ -51,22 +51,11 @@ export default function Hero() {
             </div>
           </div>
           <div className="hero-quick-links">
-            {quickLinks.map((link) =>
-              link.external ? (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <a key={link.href} href={link.href}>
-                  {link.label}
-                </a>
-              )
-            )}
+            {quickLinks.map((link) => (
+              <a key={link.href} href={link.href}>
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
 

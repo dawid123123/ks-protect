@@ -28,7 +28,7 @@ export function TintWindowIcon({
         'tint-tile-icon-wrap' +
         (active ? ' active' : '') +
         (selected ? ' selected' : '') +
-        (isPpf ? ' ppf ppf-' + ppfKind : ' tint')
+        (isPpf ? ' ppf-' + ppfKind : ' tint')
       }
     >
       <svg
@@ -47,7 +47,7 @@ export function TintWindowIcon({
         )}
         {isPpf && ppfSelected && (
           <path
-            className={'tint-tile-icon-fill ppf ppf-' + ppfKind}
+            className={'tint-tile-icon-fill ppf-' + ppfKind}
             d={icon.d}
           />
         )}

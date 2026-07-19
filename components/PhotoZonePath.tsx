@@ -55,7 +55,7 @@ export function PhotoZonePath({
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           onMouseMove={(event) => {
-            setCoords({ x: event.clientX, y: event.clientY });
+            setCoords({ x: event.clientX + 24, y: event.clientY });
           }}
           onClick={(event) => {
             toggle(zone.part);
@@ -67,7 +67,7 @@ export function PhotoZonePath({
         typeof document !== 'undefined' &&
         createPortal(
           <div
-            className="part-tooltip zone-hover-tooltip zone-hover-tooltip-ppf"
+            className="part-tooltip zone-hover-tooltip zone-hover-tooltip-tint"
             style={{ left: coords.x, top: coords.y }}
             role="tooltip"
           >

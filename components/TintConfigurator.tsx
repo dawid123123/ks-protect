@@ -25,6 +25,7 @@ import {
   tintLevels,
   tintOverlayOpacity,
   tintVehicles,
+  tintPriceGuide,
 } from './tintData';
 import {
   tintViewWindows,
@@ -632,6 +633,36 @@ export default function TintConfigurator() {
               }
             </small>
             <p>{t.configurator.tintSummaryNote}</p>
+          </div>
+
+          <div className="tint-price-guide">
+            <h4>{t.configurator.priceGuide.title}</h4>
+            <ul>
+              {tintPriceGuide.map((item) => {
+                const copy = t.configurator.priceGuide[item.id];
+                const note =
+                  item.id === 'small'
+                    ? t.configurator.priceGuide.smallNote
+                    : item.id === 'large'
+                      ? t.configurator.priceGuide.largeExample
+                      : t.configurator.priceGuide.dechromeNote;
+                const priceLabel =
+                  item.id === 'small'
+                    ? formatPrice(item.price) +
+                      ' ' +
+                      t.configurator.priceGuide.smallPriceSuffix
+                    : formatPrice(item.price);
+                return (
+                  <li key={item.id}>
+                    <span>
+                      <strong>{copy}</strong>
+                      <small>{note}</small>
+                    </span>
+                    <em>{priceLabel}</em>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
           <div className="summaryDivider" />

@@ -13,7 +13,6 @@ export default function Gallery() {
         <SectionIntro
           eyebrow={t.gallery.eyebrow}
           title={t.gallery.title}
-          lead={t.gallery.lead}
         />
         <div className="galleryGrid galleryGrid-v2">
           {galleryProjects.map((project, index) => (

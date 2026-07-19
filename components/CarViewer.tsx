@@ -16,6 +16,7 @@ import {
 import { PartTileIcon } from './PartTileIcon';
 import {
   Part,
+  PpfCatalogSectionId,
   SelectedParts,
   catalogParts,
   getPartMaxQuantity,
@@ -26,6 +27,8 @@ import {
   partLabels,
   partPrices,
   partsToSelection,
+  ppfCatalogSections,
+  ppfEditorExcludedParts,
   resolvePart,
 } from './carParts';
 
@@ -40,6 +43,8 @@ export {
   partLabels,
   partPrices,
   partsToSelection,
+  ppfCatalogSections,
+  ppfEditorExcludedParts,
   resolvePart,
 } from './carParts';
 
@@ -56,8 +61,8 @@ const packageTranslationKeys: Record<PackageId, PackageTranslationKey> = {
   custom: 'custom',
 };
 
-const viewTabLabels: Record<View, 'topView' | 'sideView' | 'rearView'> = {
-  front: 'topView',
+const viewTabLabels: Record<View, 'frontView' | 'sideView' | 'rearView'> = {
+  front: 'frontView',
   side: 'sideView',
   rear: 'rearView',
 };
@@ -68,15 +73,23 @@ const viewAriaLabels: Record<View, 'frontView' | 'sideView' | 'rearView'> = {
   rear: 'rearView',
 };
 
+const ppfSectionTitleKeys: Record<
+  PpfCatalogSectionId,
+  'frontView' | 'sideView' | 'rearView'
+> = {
+  front: 'frontView',
+  side: 'sideView',
+  rear: 'rearView',
+};
+
 const viewParts: Record<View, Part[]> = {
   front: [
     'hood',
+    'leftAPillar',
     'rightAPillar',
     'frontBumper',
     'leftMirror',
     'rightMirror',
-    'leftHeadlight',
-    'rightHeadlight',
     'frontLip',
   ],
   side: [
@@ -84,13 +97,17 @@ const viewParts: Record<View, Part[]> = {
     'frontDoor',
     'rearDoor',
     'leftRearQuarter',
+    'splashGuard',
+    'frontDoorLower',
+    'rearDoorLower',
     'sideSkirt',
-    'leftMirror',
+    'frontWheelArch',
+    'rearWheelArch',
     'leftAPillar',
     'leftBPillar',
     'leftCPillar',
   ],
-  rear: ['roof', 'leftTaillight', 'rightTaillight', 'tailgate', 'rearBumper'],
+  rear: ['roof', 'tailgate', 'rearBumper'],
 };
 
 const zoneSnippetNames: Record<View, string> = {
@@ -105,29 +122,66 @@ const packages: {
 }[] = [
   {
     id: 'essential',
-    parts: ['hood'],
+    parts: [
+      'splashGuard',
+      'rightSplashGuard',
+      'frontDoorLower',
+      'rearDoorLower',
+      'sideSkirt',
+      'sideSkirt',
+      'frontWheelArch',
+      'rightFrontWheelArch',
+      'rearWheelArch',
+      'rightRearWheelArch',
+    ],
   },
   {
     id: 'complete-front',
     parts: [
       'hood',
       'frontBumper',
+      'frontLip',
+      'leftMirror',
+      'rightMirror',
+      'leftAPillar',
+      'rightAPillar',
       'leftFender',
       'rightFender',
-      'leftHeadlight',
-      'rightHeadlight',
-      'frontLip',
+      'frontWheelArch',
+      'rightFrontWheelArch',
     ],
   },
   {
     id: 'full-wrap',
-    parts: Object.keys(partPrices) as Part[],
+    parts: (Object.keys(partPrices) as Part[]).filter(
+      (part) => !ppfEditorExcludedParts.includes(part)
+    ),
   },
   {
     id: 'custom',
     parts: [],
   },
 ];
+
+const combinablePackageIds: PackageId[] = ['essential', 'complete-front'];
+
+function selectionFromPackages(packageIds: PackageId[]): SelectedParts {
+  const parts: Part[] = [];
+  for (const id of packageIds) {
+    const preset = packages.find((item) => item.id === id);
+    if (preset?.parts.length) {
+      parts.push(...preset.parts);
+    }
+  }
+  return partsToSelection(parts);
+}
+
+function isPackageActive(id: PackageId, activePackages: PackageId[]): boolean {
+  if (id === 'custom') {
+    return activePackages.length === 0;
+  }
+  return activePackages.includes(id);
+}
 
 const vehicles = [
   {
@@ -170,7 +224,7 @@ export default function CarViewer() {
   const vehicle = vehicles.find((item) => item.id === vehicleId) || vehicles[0];
   const [view, setView] = useState<View>('front');
   const [selected, setSelected] = useState<SelectedParts>({});
-  const [packageId, setPackageId] = useState<PackageId>('custom');
+  const [activePackages, setActivePackages] = useState<PackageId[]>([]);
   const [traceMode, setTraceMode] = useState(false);
   const pathEditor = useSvgPathEditor();
   const { setActivePart } = pathEditor;
@@ -183,7 +237,7 @@ export default function CarViewer() {
 
   function increment(part: Part) {
     const canonical = resolvePart(part);
-    setPackageId('custom');
+    setActivePackages([]);
     setSelected((current) => {
       const qty = getPartQuantity(current, canonical);
       const max = getPartMaxQuantity(canonical);
@@ -196,7 +250,7 @@ export default function CarViewer() {
 
   function decrement(part: Part) {
     const canonical = resolvePart(part);
-    setPackageId('custom');
+    setActivePackages([]);
     setSelected((current) => {
       const qty = getPartQuantity(current, canonical);
       if (qty <= 0) {
@@ -213,7 +267,7 @@ export default function CarViewer() {
 
   function toggle(part: Part) {
     const canonical = resolvePart(part);
-    setPackageId('custom');
+    setActivePackages([]);
     setSelected((current) => {
       const qty = getPartQuantity(current, canonical);
       const max = getPartMaxQuantity(canonical);
@@ -236,7 +290,7 @@ export default function CarViewer() {
 
   function remove(part: Part) {
     const canonical = resolvePart(part);
-    setPackageId('custom');
+    setActivePackages([]);
     setSelected((current) => {
       if (!isPartSelected(current, canonical)) {
         return current;
@@ -247,12 +301,34 @@ export default function CarViewer() {
     });
   }
 
-  function selectPackage(nextPackageId: PackageId) {
-    setPackageId(nextPackageId);
-    const preset = packages.find((item) => item.id === nextPackageId);
-    if (preset && preset.parts.length > 0) {
-      setSelected(partsToSelection(preset.parts));
+  function togglePackage(nextPackageId: PackageId) {
+    if (nextPackageId === 'custom') {
+      setActivePackages([]);
+      setSelected({});
+      return;
     }
+
+    if (nextPackageId === 'full-wrap') {
+      const preset = packages.find((item) => item.id === 'full-wrap');
+      setActivePackages(['full-wrap']);
+      setSelected(preset ? partsToSelection(preset.parts) : {});
+      return;
+    }
+
+    if (!combinablePackageIds.includes(nextPackageId)) {
+      return;
+    }
+
+    setActivePackages((current) => {
+      const base = current.filter((id) => id !== 'full-wrap');
+      const nextPackages = base.includes(nextPackageId)
+        ? base.filter((id) => id !== nextPackageId)
+        : [...base, nextPackageId];
+      setSelected(
+        nextPackages.length > 0 ? selectionFromPackages(nextPackages) : {}
+      );
+      return nextPackages;
+    });
   }
 
   const selectedEntries = getSelectedEntries(selected);
@@ -372,80 +448,92 @@ export default function CarViewer() {
         )}
 
         <div
-          className={'parts-grid' + (traceMode ? ' parts-grid-hidden' : '')}
+          className={'ppf-parts-sections' + (traceMode ? ' parts-grid-hidden' : '')}
           aria-label={t.configurator.selectBodyParts}
         >
-          {catalogParts.map((part) => {
-            const qty = getPartQuantity(selected, part);
-            const maxQty = getPartMaxQuantity(part);
-            const active = qty > 0;
-            const partLabel = localizedPartLabels[part];
-            return (
-              <div key={part} className="part-tile-shell">
-                <div className={'part-tile' + (active ? ' active' : '')}>
-                  <button
-                    type="button"
-                    className="part-tile-hit"
-                    aria-pressed={active}
-                    onClick={() => toggle(part)}
-                  >
-                    <PartTileIcon part={part} active={active} />
-                    <span className="part-tile-label">{partLabel}</span>
-                    {maxQty > 1 && (
-                      <span className="part-tile-qty-badge">
-                        {qty}/{maxQty}
-                      </span>
-                    )}
-                    <span className="part-tooltip part-tile-tooltip" role="tooltip">
-                      <small>{partLabel}</small>
-                      <strong>{formatLocalizedPrice(lang, partPrices[part])}</strong>
-                      <em>
-                        {maxQty > 1
-                          ? t.configurator.tooltipUseQty + maxQty
-                          : active
-                            ? t.configurator.tooltipSelected
-                            : t.configurator.tooltipClickSelect}
-                      </em>
-                    </span>
-                  </button>
-                  {maxQty > 1 ? (
-                    <div className="part-qty-controls">
-                      <button
-                        type="button"
-                        className="part-qty-btn"
-                        aria-label={t.configurator.tooltipUseQty + partLabel}
-                        disabled={qty === 0}
-                        onClick={() => decrement(part)}
+          {ppfCatalogSections
+            .filter((section) => section.id === view)
+            .map((section) => (
+            <section key={section.id} className="ppf-parts-section">
+              <h3 className="ppf-parts-section-title">
+                {t.configurator[ppfSectionTitleKeys[section.id]]}
+              </h3>
+              <div className="ppf-parts-grid">
+                {section.parts.map((part) => {
+                  const qty = getPartQuantity(selected, part);
+                  const maxQty = getPartMaxQuantity(part);
+                  const active = qty > 0;
+                  const partLabel = localizedPartLabels[part];
+                  return (
+                    <div key={part} className="part-tile-shell ppf-part-tile-shell">
+                      <div
+                        className={
+                          'part-tile tint-part-tile ppf-part-tile' +
+                          (active ? ' active selected' : '')
+                        }
                       >
-                        −
-                      </button>
-                      <span className="part-qty-value">{qty}</span>
-                      <button
-                        type="button"
-                        className="part-qty-btn"
-                        aria-label={t.configurator.tooltipClickSelect + ' ' + partLabel}
-                        disabled={qty >= maxQty}
-                        onClick={() => increment(part)}
-                      >
-                        +
-                      </button>
+                        <button
+                          type="button"
+                          className="part-tile-hit ppf-part-tile-hit"
+                          aria-pressed={active}
+                          onClick={() => toggle(part)}
+                        >
+                          <span className="ppf-part-tile-icon-stage">
+                            <PartTileIcon part={part} active={active} />
+                          </span>
+                          <span className="ppf-part-tile-meta">
+                            <span className="part-tile-label">{partLabel}</span>
+                            <span className="ppf-part-tile-price">
+                              {formatLocalizedPrice(lang, partPrices[part])}
+                            </span>
+                          </span>
+                        </button>
+                        {maxQty > 1 && (
+                          <div className="ppf-part-tile-footer">
+                            <div className="part-qty-controls part-qty-controls-compact">
+                              <button
+                                type="button"
+                                className="part-qty-btn"
+                                aria-label={t.configurator.tooltipUseQty + partLabel}
+                                disabled={qty === 0}
+                                onClick={() => decrement(part)}
+                              >
+                                −
+                              </button>
+                              <span className="part-qty-value">
+                                {qty}/{maxQty}
+                              </span>
+                              <button
+                                type="button"
+                                className="part-qty-btn"
+                                aria-label={
+                                  t.configurator.tooltipClickSelect + ' ' + partLabel
+                                }
+                                disabled={qty >= maxQty}
+                                onClick={() => increment(part)}
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        {active && maxQty === 1 && (
+                          <button
+                            type="button"
+                            className="part-tile-remove"
+                            aria-label={t.configurator.tooltipSelected + ' ' + partLabel}
+                            onClick={() => remove(part)}
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  ) : (
-                    active && (
-                      <button
-                        type="button"
-                        className="part-tile-remove"
-                        aria-label={t.configurator.tooltipSelected + ' ' + partLabel}
-                        onClick={() => remove(part)}
-                      >
-                        ×
-                      </button>
-                    )
-                  )}
-                </div>
+                  );
+                })}
               </div>
-            );
-          })}
+            </section>
+          ))}
         </div>
       </div>
 
@@ -478,12 +566,13 @@ export default function CarViewer() {
                     key={item.id}
                     type="button"
                     className={
-                      'package-option' + (packageId === item.id ? ' active' : '')
+                      'package-option' +
+                      (isPackageActive(item.id, activePackages) ? ' active' : '')
                     }
-                    onClick={() => selectPackage(item.id)}
+                    aria-pressed={isPackageActive(item.id, activePackages)}
+                    onClick={() => togglePackage(item.id)}
                   >
                     <strong>{copy.label}</strong>
-                    <small>{copy.subtitle}</small>
                   </button>
                 );
               })}
@@ -508,32 +597,13 @@ export default function CarViewer() {
                   <div key={item} className="summaryRow">
                     <span>
                       <i aria-hidden="true" /> {partLabel}
-                      {qty > 1 ? ' \u00d7 ' + qty : ''}
+                      {maxQty > 1 && qty > 1 && (
+                        <small className="tint-summary-level">
+                          {' \u00b7 ' + qty + '/2'}
+                        </small>
+                      )}
                     </span>
                     <div className="summaryRow-actions">
-                      {maxQty > 1 && (
-                        <div className="part-qty-controls part-qty-controls-compact">
-                          <button
-                            type="button"
-                            className="part-qty-btn"
-                            aria-label={t.configurator.tooltipUseQty + partLabel}
-                            disabled={qty === 0}
-                            onClick={() => decrement(item)}
-                          >
-                            −
-                          </button>
-                          <span className="part-qty-value">{qty}</span>
-                          <button
-                            type="button"
-                            className="part-qty-btn"
-                            aria-label={t.configurator.tooltipClickSelect + ' ' + partLabel}
-                            disabled={qty >= maxQty}
-                            onClick={() => increment(item)}
-                          >
-                            +
-                          </button>
-                        </div>
-                      )}
                       <strong>{formatLocalizedPrice(lang, lineTotal)}</strong>
                       <button
                         type="button"
@@ -541,7 +611,7 @@ export default function CarViewer() {
                         aria-label={t.configurator.tooltipSelected + ' ' + partLabel}
                         onClick={() => remove(item)}
                       >
-                        ×
+                        {'\u00d7'}
                       </button>
                     </div>
                   </div>
