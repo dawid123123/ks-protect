@@ -4,35 +4,62 @@ import { Inter } from 'next/font/google';
 import PageBackground from '../components/PageBackground';
 import PageEffects from '../components/PageEffects';
 import Providers from '../components/Providers';
+import { heroImage } from '../components/siteImages';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ksprotect.is';
+const siteDescription =
+  'Heimsklassa PPF, gluggatint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk \u2014 stilltu verndina \u00fe\u00edna \u00e1 netinu.';
+
+function getSiteUrl() {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+
+  if (process.env.VERCEL_URL) {
+    return 'https://' + process.env.VERCEL_URL;
+  }
+
+  return 'https://ksprotect.is';
+}
+
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
-  description:
-    'Heimsklassa PPF, gluggatint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk \u2014 stilltu verndina \u00fe\u00edna \u00e1 netinu.',
+  description: siteDescription,
+  applicationName: 'KS Protect',
+  authors: [{ name: 'KS Protect' }],
+  creator: 'KS Protect',
+  publisher: 'KS Protect',
   viewport: {
     width: 'device-width',
     initialScale: 1,
     maximumScale: 5,
   },
   openGraph: {
+    type: 'website',
+    locale: 'is_IS',
+    alternateLocale: ['en_US'],
+    url: siteUrl,
+    siteName: 'KS Protect',
+    title: 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
+    description: siteDescription,
     images: [
       {
-        url: 'https://bolt.new/static/og_default.png',
+        url: heroImage,
+        width: 1200,
+        height: 630,
+        alt: 'KS Protect \u2014 PPF, tint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    images: [
-      {
-        url: 'https://bolt.new/static/og_default.png',
-      },
-    ],
+    title: 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
+    description: siteDescription,
+    images: [heroImage],
   },
 };
 
