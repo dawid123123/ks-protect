@@ -1,7 +1,6 @@
 'use client';
 
 import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useLanguage } from '../lib/i18n/context';
 import {
   LivePricing,
@@ -176,7 +175,6 @@ export default function PriceBossAdmin({
 }: PriceBossAdminProps) {
   const { lang } = useLanguage();
   const isIs = lang === 'is';
-  const [mounted, setMounted] = useState(false);
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
   const [password, setPassword] = useState('');
@@ -196,7 +194,6 @@ export default function PriceBossAdmin({
               mode === 'ppf'
                 ? 'Breyttu aðeins PPF verðum. Vistað fyrir alla strax.'
                 : 'Breyttu aðeins tint / dark PPF verðum. Vistað fyrir alla strax.',
-            login: 'Innskráning',
             password: 'Lykilorð',
             signIn: 'Skrá inn',
             signOut: 'Útskrá',
@@ -206,9 +203,8 @@ export default function PriceBossAdmin({
             wrongPassword: 'Rangt lykilorð',
             saved: 'Verð vistuð fyrir alla',
             resetDone: 'Sjálfgefin verð endurstillt',
-            tip: 'Ábending: sama lykilorð og Netverslun. Á Vercel þarf Blob storage.',
-            blobWarn:
-              'Blob er ekki tengt — vistað aðeins á þessari vél / preview.',
+            tip: 'Sama lykilorð og Netverslun (ksprotect2026).',
+            blobWarn: 'Blob er ekki tengt — vistað aðeins hér.',
           }
         : {
             title: mode === 'ppf' ? 'PPF price boss' : 'Tint price boss',
@@ -216,7 +212,6 @@ export default function PriceBossAdmin({
               mode === 'ppf'
                 ? 'Change PPF prices only. Saves for everyone immediately.'
                 : 'Change tint / dark PPF prices only. Saves for everyone immediately.',
-            login: 'Sign in',
             password: 'Password',
             signIn: 'Sign in',
             signOut: 'Sign out',
@@ -226,15 +221,11 @@ export default function PriceBossAdmin({
             wrongPassword: 'Wrong password',
             saved: 'Prices saved for everyone',
             resetDone: 'Default prices restored',
-            tip: 'Tip: same password as Netverslun. On Vercel you need Blob storage.',
-            blobWarn: 'Blob not linked — saving only on this machine / preview.',
+            tip: 'Same password as Netverslun (ksprotect2026).',
+            blobWarn: 'Blob not linked — saving only here.',
           },
     [isIs, mode]
   );
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!open) {
@@ -298,7 +289,7 @@ export default function PriceBossAdmin({
     };
   }, [open, mode]);
 
-  if (!open || !mounted) {
+  if (!open) {
     return null;
   }
 
@@ -361,8 +352,8 @@ export default function PriceBossAdmin({
     } catch {
       setNotice(
         isIs
-          ? 'Mistókst að vista á netinu. Athugaðu Blob / innskráningu.'
-          : 'Failed to save online. Check Blob setup / login.'
+          ? 'Mistókst að vista. Athugaðu Blob / innskráningu.'
+          : 'Failed to save. Check Blob / login.'
       );
     } finally {
       setSaving(false);
@@ -371,18 +362,14 @@ export default function PriceBossAdmin({
 
   function handleSave(event: FormEvent) {
     event.preventDefault();
-    const nextLive = rowsToLive(mode, rows, live);
-    void persist(liveToOverrides(nextLive), copy.saved);
+    void persist(liveToOverrides(rowsToLive(mode, rows, live)), copy.saved);
   }
 
   function handleReset() {
     const defaults = getDefaultPricingSnapshot();
     const nextLive: LivePricing =
       mode === 'ppf'
-        ? {
-            ...live,
-            ppfPartPrices: { ...defaults.ppfPartPrices },
-          }
+        ? { ...live, ppfPartPrices: { ...defaults.ppfPartPrices } }
         : {
             ...live,
             tintWindowBasePrices: { ...defaults.tintWindowBasePrices },
@@ -392,7 +379,7 @@ export default function PriceBossAdmin({
     void persist(liveToOverrides(nextLive), copy.resetDone);
   }
 
-  return createPortal(
+  return (
     <div className="shop-admin-overlay" role="dialog" aria-modal="true">
       <div className="shop-admin-panel price-boss-panel">
         <div className="shop-admin-head">
@@ -469,7 +456,6 @@ export default function PriceBossAdmin({
           </div>
         )}
       </div>
-    </div>,
-    document.body
+    </div>
   );
 }
