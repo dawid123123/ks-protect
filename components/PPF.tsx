@@ -5,7 +5,7 @@ import {
   applyPricingOverrides,
   PricingOverrides,
 } from '../lib/pricingRuntime';
-import PriceBossAdmin, { PriceBossMode } from './PriceBossAdmin';
+import PriceBossAdmin from './PriceBossAdmin';
 import CarViewer from './CarViewer';
 import ConfiguratorFrame from './ConfiguratorFrame';
 
@@ -67,31 +67,19 @@ export default function PPF() {
     <>
       <section className="ppf ppf-v2" id="ppf">
         <div className="section-block">
-          <div className="price-boss-bar">
-            <button
-              type="button"
-              className="price-boss-secret"
-              onClick={onSecretClick}
-              aria-hidden="true"
-              tabIndex={-1}
-            />
-            <button
-              type="button"
-              className="shop-admin-link"
-              onClick={() => setAdminOpen(true)}
-            >
-              Admin
-            </button>
-          </div>
           <ConfiguratorFrame accent="ppf">
-            <CarViewer key={'ppf-' + pricingTick} />
+            <CarViewer
+              key={'ppf-' + pricingTick}
+              onAdminSecretClick={onSecretClick}
+              onOpenAdmin={() => setAdminOpen(true)}
+            />
           </ConfiguratorFrame>
         </div>
       </section>
 
       <PriceBossAdmin
         open={adminOpen}
-        mode={'ppf' as PriceBossMode}
+        mode="ppf"
         onClose={() => setAdminOpen(false)}
         onPricingApplied={bumpPricing}
       />

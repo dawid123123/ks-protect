@@ -216,7 +216,13 @@ const vehicles = [
   },
 ] as const;
 
-export default function CarViewer() {
+export default function CarViewer({
+  onAdminSecretClick,
+  onOpenAdmin,
+}: {
+  onAdminSecretClick?: () => void;
+  onOpenAdmin?: () => void;
+} = {}) {
   const t = useTranslation();
   const { lang } = useLanguage();
   const localizedPartLabels = t.partLabels;
@@ -340,7 +346,13 @@ export default function CarViewer() {
       <div className="viewer">
         <div className="ppf-config-header">
           <div>
-            <p className="ppf-config-eyebrow">{t.configurator.ppfEyebrow}</p>
+            <p
+              className="ppf-config-eyebrow shop-admin-trigger"
+              onClick={onAdminSecretClick}
+              title=""
+            >
+              {t.configurator.ppfEyebrow}
+            </p>
             <h2>{t.configurator.ppfTitle}</h2>
             <p>{t.configurator.ppfLead}</p>
           </div>
@@ -628,6 +640,15 @@ export default function CarViewer() {
           <a href="/#contact" className="configurator-cta configurator-cta-mockup">
             {t.configurator.getQuote}
           </a>
+          {onOpenAdmin ? (
+            <button
+              type="button"
+              className="shop-admin-link"
+              onClick={onOpenAdmin}
+            >
+              Admin
+            </button>
+          ) : null}
         </div>
       </aside>
     </div>

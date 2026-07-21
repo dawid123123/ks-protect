@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useLanguage } from '../lib/i18n/context';
 import {
   LivePricing,
@@ -175,6 +176,7 @@ export default function PriceBossAdmin({
 }: PriceBossAdminProps) {
   const { lang } = useLanguage();
   const isIs = lang === 'is';
+  const [mounted, setMounted] = useState(false);
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
   const [password, setPassword] = useState('');
@@ -231,6 +233,10 @@ export default function PriceBossAdmin({
   );
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (!open) {
       return;
     }
@@ -277,7 +283,6 @@ export default function PriceBossAdmin({
           const next = data.pricing || getLivePricing();
           setLive(next);
           setRows(pricingToRows(mode, next));
-          onPricingApplied();
         }
       )
       .catch(() => {
@@ -291,9 +296,9 @@ export default function PriceBossAdmin({
     return () => {
       cancelled = true;
     };
-  }, [open, mode, onPricingApplied]);
+  }, [open, mode]);
 
-  if (!open) {
+  if (!open || !mounted) {
     return null;
   }
 
@@ -387,7 +392,7 @@ export default function PriceBossAdmin({
     void persist(liveToOverrides(nextLive), copy.resetDone);
   }
 
-  return (
+  return createPortal(
     <div className="shop-admin-overlay" role="dialog" aria-modal="true">
       <div className="shop-admin-panel price-boss-panel">
         <div className="shop-admin-head">
@@ -464,6 +469,7 @@ export default function PriceBossAdmin({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

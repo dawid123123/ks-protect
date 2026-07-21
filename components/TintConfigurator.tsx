@@ -95,7 +95,13 @@ const tintViewTabKeys: Record<TintView, 'frontView' | 'sideView' | 'rearView'> =
   rear: 'rearView',
 };
 
-export default function TintConfigurator() {
+export default function TintConfigurator({
+  onAdminSecretClick,
+  onOpenAdmin,
+}: {
+  onAdminSecretClick?: () => void;
+  onOpenAdmin?: () => void;
+} = {}) {
   const t = useTranslation();
   const { lang } = useLanguage();
   const tintWindowLabels = t.tintWindowLabels;
@@ -298,7 +304,13 @@ export default function TintConfigurator() {
       <div className="viewer">
         <div className="ppf-config-header">
           <div>
-            <p className="ppf-config-eyebrow">{t.configurator.tintEyebrow}</p>
+            <p
+              className="ppf-config-eyebrow shop-admin-trigger"
+              onClick={onAdminSecretClick}
+              title=""
+            >
+              {t.configurator.tintEyebrow}
+            </p>
             <h2>{t.configurator.tintTitle}</h2>
             <p>{viewLegalNote}</p>
           </div>
@@ -744,6 +756,15 @@ export default function TintConfigurator() {
           <a href="/#contact" className="configurator-cta configurator-cta-mockup">
             {t.configurator.getQuote}
           </a>
+          {onOpenAdmin ? (
+            <button
+              type="button"
+              className="shop-admin-link"
+              onClick={onOpenAdmin}
+            >
+              Admin
+            </button>
+          ) : null}
         </div>
       </aside>
     </div>

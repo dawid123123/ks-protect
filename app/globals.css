@@ -10943,7 +10943,7 @@ section {
 .shop-admin-overlay {
   position: fixed;
   inset: 0;
-  z-index: 80;
+  z-index: 12000;
   display: grid;
   place-items: center;
   padding: 18px;
@@ -11168,25 +11168,6 @@ section {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-}
-
-.price-boss-bar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  margin: 0 0 10px;
-  min-height: 28px;
-}
-
-.price-boss-secret {
-  width: 18px;
-  height: 18px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  opacity: 0.01;
-  cursor: default;
 }
 
 .price-boss-panel {

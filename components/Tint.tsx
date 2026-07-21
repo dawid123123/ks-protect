@@ -5,7 +5,7 @@ import {
   applyPricingOverrides,
   PricingOverrides,
 } from '../lib/pricingRuntime';
-import PriceBossAdmin, { PriceBossMode } from './PriceBossAdmin';
+import PriceBossAdmin from './PriceBossAdmin';
 import TintConfigurator from './TintConfigurator';
 import ConfiguratorFrame from './ConfiguratorFrame';
 
@@ -67,31 +67,19 @@ export default function Tint() {
     <>
       <section className="ppf tint-section tint-v2" id="tint">
         <div className="section-block">
-          <div className="price-boss-bar">
-            <button
-              type="button"
-              className="price-boss-secret"
-              onClick={onSecretClick}
-              aria-hidden="true"
-              tabIndex={-1}
-            />
-            <button
-              type="button"
-              className="shop-admin-link"
-              onClick={() => setAdminOpen(true)}
-            >
-              Admin
-            </button>
-          </div>
           <ConfiguratorFrame accent="tint">
-            <TintConfigurator key={'tint-' + pricingTick} />
+            <TintConfigurator
+              key={'tint-' + pricingTick}
+              onAdminSecretClick={onSecretClick}
+              onOpenAdmin={() => setAdminOpen(true)}
+            />
           </ConfiguratorFrame>
         </div>
       </section>
 
       <PriceBossAdmin
         open={adminOpen}
-        mode={'tint' as PriceBossMode}
+        mode="tint"
         onClose={() => setAdminOpen(false)}
         onPricingApplied={bumpPricing}
       />
