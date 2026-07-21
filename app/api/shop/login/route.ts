@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server';
-import { createHmac, timingSafeEqual } from 'crypto';
-
-function expectedPassword() {
-  return process.env.SHOP_ADMIN_PASSWORD || 'ksprotect2026';
-}
-
-function makeToken(password: string) {
-  return createHmac('sha256', password).update('ks-shop-admin-v1').digest('hex');
-}
+import {
+  expectedShopPassword,
+  makeShopAdminToken,
+} from '../../../../lib/shopAuth';
+import { timingSafeEqual } from 'crypto';
 
 export async function POST(request: Request) {
   let body: { password?: string } = {};
@@ -19,7 +15,7 @@ export async function POST(request: Request) {
   }
 
   const password = String(body.password || '');
-  const expected = expectedPassword();
+  const expected = expectedShopPassword();
 
   const a = Buffer.from(password);
   const b = Buffer.from(expected);
@@ -28,7 +24,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const token = makeToken(expected);
+  const token = makeShopAdminToken(expected);
   const response = NextResponse.json({ ok: true });
   response.cookies.set('ks_shop_admin', token, {
     httpOnly: true,

@@ -10,6 +10,7 @@ import {
   cloneDefaultProducts,
   loadPublicCatalog,
   loadStoredProducts,
+  saveStoredProducts,
 } from '../lib/shopStorage';
 import ShopAdmin from './ShopAdmin';
 import ShopCartDrawer from './ShopCartDrawer';
@@ -59,6 +60,21 @@ export default function ShopCatalog() {
     let cancelled = false;
 
     async function load() {
+      try {
+        const response = await fetch('/api/shop/products', { cache: 'no-store' });
+        if (response.ok) {
+          const data = (await response.json()) as { products?: ShopProduct[] };
+          if (!cancelled && Array.isArray(data.products) && data.products.length) {
+            setProducts(data.products);
+            saveStoredProducts(data.products);
+            setReady(true);
+            return;
+          }
+        }
+      } catch {
+        // fall through
+      }
+
       const stored = loadStoredProducts();
       if (stored) {
         if (!cancelled) {

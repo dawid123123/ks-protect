@@ -31,6 +31,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# shop catalog runtime file (saved via admin API locally)
+/public/shop-catalog.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -82,14 +82,16 @@ export default function ShopAdmin({
   const [draft, setDraft] = useState<Draft>(emptyDraft());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [busyImage, setBusyImage] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState('');
+  const [blobConfigured, setBlobConfigured] = useState(true);
 
   const copy = useMemo(
     () =>
       isIs
         ? {
             title: 'Verslunarstj\u00f3ri',
-            lead: 'B\u00e6ttu vi\u00f0, breyttu og fjarl\u00e6g\u00f0u v\u00f6rur. Breytingar vistast \u00ed \u00feessum vafra.',
+            lead: 'B\u00e6ttu vi\u00f0, breyttu og fjarl\u00e6g\u00f0u v\u00f6rur. Breytingar vistast strax fyrir alla.',
             login: 'Innskr\u00e1ning',
             password: 'Lykilor\u00f0',
             signIn: 'Skr\u00e1 inn',
@@ -113,15 +115,15 @@ export default function ShopAdmin({
             importJson: 'Flytja inn JSON',
             reset: 'Endurstilla sj\u00e1lfgefnar',
             wrongPassword: 'Rangt lykilor\u00f0',
-            saved: 'Vara vistu\u00f0',
-            deleted: 'Vara fjarl\u00e6g\u00f0',
-            resetDone: 'Sj\u00e1lfgefnar v\u00f6rur endurstilltar',
-            imported: 'V\u00f6rur fluttar inn',
-            tip: '\u00c1bending: til a\u00f0 allir sj\u00e1i breytingar \u2014 s\u00e6ktu JSON og settu sem public/shop-catalog.json + push \u00e1 GitHub.',
+            saved: 'Vara vistu\u00f0 fyrir alla',
+            deleted: 'Vara fjarl\u00e6g\u00f0 fyrir alla',
+            resetDone: 'Sj\u00e1lfgefnar v\u00f6rur endurstilltar fyrir alla',
+            imported: 'V\u00f6rur fluttar inn fyrir alla',
+            tip: '\u00c1bending: Vista\u00f0 \u00e1 vef\u00fej\u00f3ninni svo allir sj\u00e1i strax. \u00c1 Vercel \u00fearftu Blob storage.',
           }
         : {
             title: 'Shop admin',
-            lead: 'Add, edit, and remove products. Changes save in this browser.',
+            lead: 'Add, edit, and remove products. Changes save for everyone immediately.',
             login: 'Sign in',
             password: 'Password',
             signIn: 'Sign in',
@@ -145,11 +147,11 @@ export default function ShopAdmin({
             importJson: 'Import JSON',
             reset: 'Reset to defaults',
             wrongPassword: 'Wrong password',
-            saved: 'Product saved',
-            deleted: 'Product deleted',
-            resetDone: 'Defaults restored',
-            imported: 'Products imported',
-            tip: 'Tip: for everyone to see changes \u2014 download JSON, put it as public/shop-catalog.json, then push to GitHub.',
+            saved: 'Product saved for everyone',
+            deleted: 'Product deleted for everyone',
+            resetDone: 'Defaults restored for everyone',
+            imported: 'Products imported for everyone',
+            tip: 'Tip: saved on the server so everyone sees changes immediately. On Vercel you need Blob storage.',
           },
     [isIs]
   );
@@ -179,6 +181,15 @@ export default function ShopAdmin({
           setChecking(false);
         }
       });
+
+    fetch('/api/shop/products')
+      .then((res) => res.json())
+      .then((data: { blobConfigured?: boolean }) => {
+        if (!cancelled && typeof data.blobConfigured === 'boolean') {
+          setBlobConfigured(data.blobConfigured);
+        }
+      })
+      .catch(() => undefined);
 
     return () => {
       cancelled = true;
@@ -215,9 +226,46 @@ export default function ShopAdmin({
     setEditingId(null);
   }
 
-  function persist(next: ShopProduct[]) {
-    saveStoredProducts(next);
-    onProductsChange(next);
+  async function persist(next: ShopProduct[], successMessage: string) {
+    setSaving(true);
+    setNotice('');
+
+    try {
+      const response = await fetch('/api/shop/products', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ products: next }),
+      });
+
+      const data = (await response.json()) as {
+        ok?: boolean;
+        products?: ShopProduct[];
+        blobConfigured?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok || !Array.isArray(data.products)) {
+        throw new Error(data.error || 'save_failed');
+      }
+
+      if (typeof data.blobConfigured === 'boolean') {
+        setBlobConfigured(data.blobConfigured);
+      }
+
+      saveStoredProducts(data.products);
+      onProductsChange(data.products);
+      setNotice(successMessage);
+      return data.products;
+    } catch {
+      setNotice(
+        isIs
+          ? 'Mist\u00f3kst a\u00f0 vista \u00e1 netinu. Athuga\u00f0u Blob / innskr\u00e1ningu.'
+          : 'Failed to save online. Check Blob setup / login.'
+      );
+      return null;
+    } finally {
+      setSaving(false);
+    }
   }
 
   function startNew() {
@@ -239,6 +287,20 @@ export default function ShopAdmin({
 
     setBusyImage(true);
     try {
+      if (blobConfigured) {
+        const form = new FormData();
+        form.append('file', file);
+        const response = await fetch('/api/shop/upload', {
+          method: 'POST',
+          body: form,
+        });
+        const data = (await response.json()) as { ok?: boolean; url?: string };
+        if (response.ok && data.ok && data.url) {
+          setDraft((prev) => ({ ...prev, image: data.url || '' }));
+          return;
+        }
+      }
+
       const dataUrl = await resizeImageFile(file);
       setDraft((prev) => ({ ...prev, image: dataUrl }));
     } catch {
@@ -248,7 +310,7 @@ export default function ShopAdmin({
     }
   }
 
-  function handleSave(event: FormEvent) {
+  async function handleSave(event: FormEvent) {
     event.preventDefault();
 
     const price = Number(draft.price.replace(/\s/g, '').replace(',', '.'));
@@ -275,21 +337,26 @@ export default function ShopAdmin({
       ? products.map((item) => (item.id === editingId ? nextProduct : item))
       : [nextProduct, ...products];
 
-    persist(next);
+    const saved = await persist(next, copy.saved);
+    if (!saved) {
+      return;
+    }
+
     setEditingId(nextProduct.id);
     setDraft(productToDraft(nextProduct));
-    setNotice(copy.saved);
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!editingId) {
       return;
     }
 
     const next = products.filter((item) => item.id !== editingId);
-    persist(next);
+    const saved = await persist(next, copy.deleted);
+    if (!saved) {
+      return;
+    }
     startNew();
-    setNotice(copy.deleted);
   }
 
   function handleExport() {
@@ -305,13 +372,13 @@ export default function ShopAdmin({
     URL.revokeObjectURL(url);
   }
 
-  function handleImport(file: File | null) {
+  async function handleImport(file: File | null) {
     if (!file) {
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const parsed = JSON.parse(String(reader.result)) as {
           products?: ShopProduct[];
@@ -319,9 +386,10 @@ export default function ShopAdmin({
         if (!Array.isArray(parsed.products)) {
           throw new Error('invalid');
         }
-        persist(parsed.products);
-        startNew();
-        setNotice(copy.imported);
+        const saved = await persist(parsed.products, copy.imported);
+        if (saved) {
+          startNew();
+        }
       } catch {
         setNotice(isIs ? '\u00d3gildur JSON skr\u00e1' : 'Invalid JSON file');
       }
@@ -329,12 +397,13 @@ export default function ShopAdmin({
     reader.readAsText(file);
   }
 
-  function handleReset() {
+  async function handleReset() {
     const defaults = cloneDefaultProducts();
-    clearStoredProducts();
-    onProductsChange(defaults);
-    startNew();
-    setNotice(copy.resetDone);
+    const saved = await persist(defaults, copy.resetDone);
+    if (saved) {
+      clearStoredProducts();
+      startNew();
+    }
   }
 
   return (
@@ -398,6 +467,13 @@ export default function ShopAdmin({
             </div>
 
             <p className="shop-admin-tip">{copy.tip}</p>
+            {!blobConfigured ? (
+              <p className="shop-admin-error">
+                {isIs
+                  ? 'Vercel Blob er ekki tengt. Vista virkar lokalt, en ekki fyrir alla \u00e1 netinu fyrr en Blob er sett upp.'
+                  : 'Vercel Blob is not connected. Saves work locally, but not for everyone online until Blob is set up.'}
+              </p>
+            ) : null}
             {notice ? <p className="shop-admin-note">{notice}</p> : null}
 
             <div className="shop-admin-grid">
@@ -590,14 +666,15 @@ export default function ShopAdmin({
                   <span>{copy.active}</span>
                 </label>
                 <div className="shop-admin-actions">
-                  <button type="submit" className="btn-primary">
-                    {copy.save}
+                  <button type="submit" className="btn-primary" disabled={saving}>
+                    {saving ? '...' : copy.save}
                   </button>
                   {editingId ? (
                     <button
                       type="button"
                       className="btn-ghost"
                       onClick={handleDelete}
+                      disabled={saving}
                     >
                       {copy.delete}
                     </button>
