@@ -10011,6 +10011,7 @@ section {
   min-height: calc(100vh - 84px);
   padding-top: 108px;
   padding-bottom: 80px;
+  overflow: visible;
 }
 
 @media (max-width: 980px) {

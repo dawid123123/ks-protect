@@ -9,6 +9,14 @@ import PriceBossAdmin from './PriceBossAdmin';
 import CarViewer from './CarViewer';
 import ConfiguratorFrame from './ConfiguratorFrame';
 
+function shouldOpenAdmin() {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+  const params = new URLSearchParams(window.location.search);
+  return params.get('admin') === '1' || window.location.hash === '#admin';
+}
+
 export default function PPF() {
   const [adminOpen, setAdminOpen] = useState(false);
   const [pricingTick, setPricingTick] = useState(0);
@@ -18,7 +26,15 @@ export default function PPF() {
     setPricingTick((n) => n + 1);
   }, []);
 
+  const openAdmin = useCallback(() => {
+    setAdminOpen(true);
+  }, []);
+
   useEffect(() => {
+    if (shouldOpenAdmin()) {
+      setAdminOpen(true);
+    }
+
     let cancelled = false;
 
     async function loadPricing() {
@@ -39,16 +55,6 @@ export default function PPF() {
 
     loadPricing();
 
-    function openAdminFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('admin') === '1' || window.location.hash === '#admin') {
-        setAdminOpen(true);
-      }
-    }
-
-    openAdminFromUrl();
-    window.setTimeout(openAdminFromUrl, 0);
-
     return () => {
       cancelled = true;
     };
@@ -58,7 +64,7 @@ export default function PPF() {
     const next = secretClicks + 1;
     setSecretClicks(next);
     if (next >= 5) {
-      setAdminOpen(true);
+      openAdmin();
       setSecretClicks(0);
     }
   }
@@ -71,7 +77,6 @@ export default function PPF() {
             <CarViewer
               key={'ppf-' + pricingTick}
               onAdminSecretClick={onSecretClick}
-              onOpenAdmin={() => setAdminOpen(true)}
             />
           </ConfiguratorFrame>
         </div>

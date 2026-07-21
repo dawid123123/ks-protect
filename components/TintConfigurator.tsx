@@ -97,10 +97,8 @@ const tintViewTabKeys: Record<TintView, 'frontView' | 'sideView' | 'rearView'> =
 
 export default function TintConfigurator({
   onAdminSecretClick,
-  onOpenAdmin,
 }: {
   onAdminSecretClick?: () => void;
-  onOpenAdmin?: () => void;
 } = {}) {
   const t = useTranslation();
   const { lang } = useLanguage();
@@ -756,15 +754,6 @@ export default function TintConfigurator({
           <a href="/#contact" className="configurator-cta configurator-cta-mockup">
             {t.configurator.getQuote}
           </a>
-          {onOpenAdmin ? (
-            <button
-              type="button"
-              className="shop-admin-link"
-              onClick={onOpenAdmin}
-            >
-              Admin
-            </button>
-          ) : null}
         </div>
       </aside>
     </div>

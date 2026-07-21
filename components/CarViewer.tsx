@@ -218,10 +218,8 @@ const vehicles = [
 
 export default function CarViewer({
   onAdminSecretClick,
-  onOpenAdmin,
 }: {
   onAdminSecretClick?: () => void;
-  onOpenAdmin?: () => void;
 } = {}) {
   const t = useTranslation();
   const { lang } = useLanguage();
@@ -640,15 +638,6 @@ export default function CarViewer({
           <a href="/#contact" className="configurator-cta configurator-cta-mockup">
             {t.configurator.getQuote}
           </a>
-          {onOpenAdmin ? (
-            <button
-              type="button"
-              className="shop-admin-link"
-              onClick={onOpenAdmin}
-            >
-              Admin
-            </button>
-          ) : null}
         </div>
       </aside>
     </div>
