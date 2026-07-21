@@ -25,7 +25,7 @@ import {
   tintLevels,
   tintOverlayOpacity,
   tintVehicles,
-  tintPriceGuide,
+  getTintPriceGuide,
 } from './tintData';
 import {
   tintViewWindows,
@@ -638,7 +638,7 @@ export default function TintConfigurator() {
           <div className="tint-price-guide">
             <h4>{t.configurator.priceGuide.title}</h4>
             <ul>
-              {tintPriceGuide.map((item) => {
+              {getTintPriceGuide().map((item) => {
                 const copy = t.configurator.priceGuide[item.id];
                 const note =
                   item.id === 'small'

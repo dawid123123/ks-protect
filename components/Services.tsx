@@ -3,9 +3,8 @@
 import { useTranslation } from '../lib/i18n/context';
 import SectionIntro from './SectionIntro';
 
-const packageKeys = ['bronze', 'silver', 'gold', 'diamond'] as const;
+const packageKeys = ['silver', 'gold', 'diamond'] as const;
 const packageHrefs: Record<(typeof packageKeys)[number], string> = {
-  bronze: 'https://ksprotect.is/services/bronz/',
   silver: 'https://ksprotect.is/services/silfur/',
   gold: 'https://ksprotect.is/services/gull/',
   diamond: 'https://ksprotect.is/services/demants/',

@@ -36,9 +36,29 @@ export type Part =
   | 'leftCPillar'
   | 'rightCPillar';
 
-import { ppfPartPrices } from '../lib/pricing';
+import { getLivePricing } from '../lib/pricingRuntime';
 
-export const partPrices: Record<Part, number> = { ...ppfPartPrices };
+export const partPrices: Record<Part, number> = new Proxy(
+  {} as Record<Part, number>,
+  {
+    get(_target, prop: string) {
+      const prices = getLivePricing().ppfPartPrices;
+      return prices[prop as keyof typeof prices] ?? 0;
+    },
+    ownKeys() {
+      return Reflect.ownKeys(getLivePricing().ppfPartPrices);
+    },
+    getOwnPropertyDescriptor(_target, prop) {
+      return {
+        configurable: true,
+        enumerable: true,
+        value: getLivePricing().ppfPartPrices[
+          prop as keyof ReturnType<typeof getLivePricing>['ppfPartPrices']
+        ],
+      };
+    },
+  }
+);
 
 export type SelectedParts = Partial<Record<Part, number>>;
 

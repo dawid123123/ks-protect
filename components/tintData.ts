@@ -1,3 +1,4 @@
+import { getLivePricing } from '../lib/pricingRuntime';
 import {
   FrontPpfSelection,
   FrontPpfZone,
@@ -9,13 +10,6 @@ import {
   TintVehicleId,
   TintWindow,
 } from './tintTypes';
-import {
-  tintLevelMultipliers,
-  tintPpfBasePrices,
-  tintPriceGuideAmounts,
-  tintVehicleSizeMultipliers,
-  tintWindowBasePrices,
-} from '../lib/pricing';
 
 /** VLT % - lower value = darker tint (5% is darkest). */
 export const tintLevels: TintLevel[] = [5, 15, 25, 50];
@@ -157,23 +151,24 @@ export function isTintPpfZone(window: TintWindow): window is TintPpfZone {
  * Research: within the same film line, VLT darkness rarely changes material cost;
  * darker levels often use premium ceramic - we add a modest premium for 5-15%.
  */
-const baseWindowPrices: Record<TintWindow, number> = {
-  ...tintWindowBasePrices,
-};
+function baseWindowPrices(): Record<TintWindow, number> {
+  return getLivePricing().tintWindowBasePrices;
+}
 
-const vehicleSizeMultipliers: Record<TintVehicleId, number> = {
-  ...tintVehicleSizeMultipliers,
-};
-
-/** @deprecated Use tintPpfBasePrices via getTintPpfPrice */
-const frontPpfBasePrices = tintPpfBasePrices;
+function vehicleSizeMultipliers(): Record<TintVehicleId, number> {
+  return getLivePricing().tintVehicleSizeMultipliers;
+}
 
 export function getTintPpfPrice(
   zone: TintPpfZone,
   vehicleId: TintVehicleId = 'gle'
 ): number {
-  const vehicleFactor = vehicleSizeMultipliers[vehicleId] ?? 1;
-  return Math.round((tintPpfBasePrices[zone] * vehicleFactor) / 100) * 100;
+  const vehicleFactor = vehicleSizeMultipliers()[vehicleId] ?? 1;
+  return (
+    Math.round(
+      (getLivePricing().tintPpfBasePrices[zone] * vehicleFactor) / 100
+    ) * 100
+  );
 }
 
 /** @deprecated Use getTintPpfPrice */
@@ -221,9 +216,9 @@ export function getTintWindowPrice(
   level: TintLevel,
   vehicleId: TintVehicleId = 'gle'
 ): number {
-  const base = baseWindowPrices[window];
-  const levelFactor = tintLevelMultipliers[level];
-  const vehicleFactor = vehicleSizeMultipliers[vehicleId] ?? 1;
+  const base = baseWindowPrices()[window];
+  const levelFactor = getLivePricing().tintLevelMultipliers[level];
+  const vehicleFactor = vehicleSizeMultipliers()[vehicleId] ?? 1;
   return Math.round((base * levelFactor * vehicleFactor) / 100) * 100;
 }
 
@@ -280,11 +275,17 @@ export const tintResearchNote =
 
 export type TintPriceGuideId = 'small' | 'large' | 'dechrome';
 
-export const tintPriceGuide: {
+export function getTintPriceGuide(): {
   id: TintPriceGuideId;
   price: number;
-}[] = [
-  { id: 'small', price: tintPriceGuideAmounts.small },
-  { id: 'large', price: tintPriceGuideAmounts.large },
-  { id: 'dechrome', price: tintPriceGuideAmounts.dechrome },
-];
+}[] {
+  const amounts = getLivePricing().tintPriceGuideAmounts;
+  return [
+    { id: 'small', price: amounts.small },
+    { id: 'large', price: amounts.large },
+    { id: 'dechrome', price: amounts.dechrome },
+  ];
+}
+
+/** @deprecated Prefer getTintPriceGuide() for live boss pricing */
+export const tintPriceGuide = getTintPriceGuide();
