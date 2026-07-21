@@ -40,7 +40,9 @@ function CartIcon() {
 export default function ShopCatalog() {
   const t = useTranslation();
   const { lang } = useLanguage();
-  const [products, setProducts] = useState<ShopProduct[]>(cloneDefaultProducts);
+  const [products, setProducts] = useState<ShopProduct[]>(() =>
+    cloneDefaultProducts()
+  );
   const [ready, setReady] = useState(false);
   const [category, setCategory] = useState<ShopCategory>('all');
   const [sort, setSort] = useState<SortMode>('default');
@@ -75,10 +77,15 @@ export default function ShopCatalog() {
 
     load();
 
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('admin') === '1' || window.location.hash === '#admin') {
-      setAdminOpen(true);
+    function openAdminFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('admin') === '1' || window.location.hash === '#admin') {
+        setAdminOpen(true);
+      }
     }
+
+    openAdminFromUrl();
+    window.setTimeout(openAdminFromUrl, 0);
 
     return () => {
       cancelled = true;
@@ -240,6 +247,13 @@ export default function ShopCatalog() {
               <div className="shop-panel shop-panel-note">
                 <h3>{t.shop.pickUpInStore}</h3>
                 <p>{t.shop.pickUpNote}</p>
+                <button
+                  type="button"
+                  className="shop-admin-link"
+                  onClick={() => setAdminOpen(true)}
+                >
+                  Admin
+                </button>
               </div>
             </aside>
 
