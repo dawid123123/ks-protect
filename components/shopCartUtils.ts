@@ -5,8 +5,11 @@ import { ShopProduct, shopProducts } from './shopData';
 
 export type CartState = Record<string, number>;
 
-export function getCartLines(cart: CartState) {
-  return shopProducts
+export function getCartLines(
+  cart: CartState,
+  products: ShopProduct[] = shopProducts
+) {
+  return products
     .filter((product) => (cart[product.id] || 0) > 0)
     .map((product) => ({
       product,
@@ -19,8 +22,14 @@ export function getCartCount(cart: CartState) {
   return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 }
 
-export function getCartTotal(cart: CartState) {
-  return getCartLines(cart).reduce((sum, line) => sum + line.lineTotal, 0);
+export function getCartTotal(
+  cart: CartState,
+  products: ShopProduct[] = shopProducts
+) {
+  return getCartLines(cart, products).reduce(
+    (sum, line) => sum + line.lineTotal,
+    0
+  );
 }
 
 export const VALID_COUPON = 'KSP';
@@ -42,8 +51,12 @@ export function getCartDiscount(subtotal: number, appliedCoupon: string | null) 
   return Math.round(subtotal * COUPON_DISCOUNT_RATE);
 }
 
-export function getCartGrandTotal(cart: CartState, appliedCoupon: string | null) {
-  const subtotal = getCartTotal(cart);
+export function getCartGrandTotal(
+  cart: CartState,
+  appliedCoupon: string | null,
+  products: ShopProduct[] = shopProducts
+) {
+  const subtotal = getCartTotal(cart, products);
   return subtotal - getCartDiscount(subtotal, appliedCoupon);
 }
 
@@ -58,12 +71,13 @@ export function buildOrderMailBody(
     notes: string;
   },
   appliedCoupon: string | null = null,
-  lang: Language = 'is'
+  lang: Language = 'is',
+  products: ShopProduct[] = shopProducts
 ) {
   const cartT = translations[lang].shop.cart;
   const productLabels = translations[lang].shop.products;
-  const lines = getCartLines(cart);
-  const subtotal = getCartTotal(cart);
+  const lines = getCartLines(cart, products);
+  const subtotal = getCartTotal(cart, products);
   const discount = getCartDiscount(subtotal, appliedCoupon);
   const grandTotal = subtotal - discount;
   const deliveryLabel =
@@ -130,6 +144,9 @@ export function buildOrderMailBody(
   );
 }
 
-export function findProduct(id: string): ShopProduct | undefined {
-  return shopProducts.find((product) => product.id === id);
+export function findProduct(
+  id: string,
+  products: ShopProduct[] = shopProducts
+): ShopProduct | undefined {
+  return products.find((product) => product.id === id);
 }

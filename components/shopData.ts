@@ -8,16 +8,39 @@ export type ShopCategory =
   | 'hlidar'
   | 'ppf';
 
+export type ShopProductTone = 'green' | 'blue' | 'amber' | 'violet' | 'slate';
+
 export type ShopProduct = {
   id: string;
   name: string;
   subtitle: string;
+  description?: string;
   category: Exclude<ShopCategory, 'all'>;
   price: number;
   size: string;
-  tone: 'green' | 'blue' | 'amber' | 'violet' | 'slate';
+  tone: ShopProductTone;
   badge?: string;
+  image?: string;
+  active?: boolean;
 };
+
+export const shopTones: ShopProductTone[] = [
+  'green',
+  'blue',
+  'amber',
+  'violet',
+  'slate',
+];
+
+export const shopProductCategories: Exclude<ShopCategory, 'all'>[] = [
+  'thvottur',
+  'innretting',
+  'bon',
+  'mossun',
+  'felgur',
+  'hlidar',
+  'ppf',
+];
 
 export const shopCategories: {
   id: ShopCategory;

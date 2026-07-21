@@ -13,6 +13,7 @@ import {
   getCartCount,
   getCartLines,
 } from './shopCartUtils';
+import { ShopProduct } from './shopData';
 
 type DrawerStep = 'cart' | 'checkout';
 
@@ -20,6 +21,7 @@ type ShopCartDrawerProps = {
   open: boolean;
   step: DrawerStep;
   cart: CartState;
+  products: ShopProduct[];
   subtotal: number;
   discount: number;
   grandTotal: number;
@@ -53,6 +55,7 @@ export default function ShopCartDrawer({
   open,
   step,
   cart,
+  products,
   subtotal,
   discount,
   grandTotal,
@@ -70,7 +73,7 @@ export default function ShopCartDrawer({
   const t = useTranslation();
   const { lang } = useLanguage();
   const cartT = t.shop.cart;
-  const lines = getCartLines(cart);
+  const lines = getCartLines(cart, products);
   const count = getCartCount(cart);
 
   useEffect(() => {
@@ -97,7 +100,8 @@ export default function ShopCartDrawer({
         notes: String(data.get('notes') || ''),
       },
       appliedCoupon,
-      lang
+      lang,
+      products
     );
 
     const subject = encodeURIComponent(

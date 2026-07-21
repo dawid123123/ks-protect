@@ -1,11 +1,17 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   formatLocalizedPrice,
   useLanguage,
   useTranslation,
 } from '../lib/i18n/context';
+import {
+  cloneDefaultProducts,
+  loadPublicCatalog,
+  loadStoredProducts,
+} from '../lib/shopStorage';
+import ShopAdmin from './ShopAdmin';
 import ShopCartDrawer from './ShopCartDrawer';
 import {
   getCartCount,
@@ -15,7 +21,7 @@ import {
   isValidCoupon,
   normalizeCoupon,
 } from './shopCartUtils';
-import { ShopCategory, shopCategories, shopProducts } from './shopData';
+import { ShopCategory, ShopProduct, shopCategories } from './shopData';
 
 type SortMode = 'default' | 'price-asc' | 'price-desc' | 'name';
 type DrawerStep = 'cart' | 'checkout';
@@ -34,6 +40,8 @@ function CartIcon() {
 export default function ShopCatalog() {
   const t = useTranslation();
   const { lang } = useLanguage();
+  const [products, setProducts] = useState<ShopProduct[]>(cloneDefaultProducts);
+  const [ready, setReady] = useState(false);
   const [category, setCategory] = useState<ShopCategory>('all');
   const [sort, setSort] = useState<SortMode>('default');
   const [cart, setCart] = useState<Record<string, number>>({});
@@ -42,12 +50,51 @@ export default function ShopCatalog() {
   const [couponInput, setCouponInput] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [couponError, setCouponError] = useState('');
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [secretClicks, setSecretClicks] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      const stored = loadStoredProducts();
+      if (stored) {
+        if (!cancelled) {
+          setProducts(stored);
+          setReady(true);
+        }
+        return;
+      }
+
+      const published = await loadPublicCatalog();
+      if (!cancelled) {
+        setProducts(published || cloneDefaultProducts());
+        setReady(true);
+      }
+    }
+
+    load();
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('admin') === '1' || window.location.hash === '#admin') {
+      setAdminOpen(true);
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const visibleProducts = useMemo(
+    () => products.filter((item) => item.active !== false),
+    [products]
+  );
 
   const filtered = useMemo(() => {
     let items =
       category === 'all'
-        ? shopProducts
-        : shopProducts.filter((item) => item.category === category);
+        ? visibleProducts
+        : visibleProducts.filter((item) => item.category === category);
 
     if (sort === 'price-asc') {
       items = [...items].sort((a, b) => a.price - b.price);
@@ -55,19 +102,21 @@ export default function ShopCatalog() {
       items = [...items].sort((a, b) => b.price - a.price);
     } else if (sort === 'name') {
       items = [...items].sort((a, b) => {
-        const nameA = t.shop.products[a.id as keyof typeof t.shop.products]?.name ?? a.name;
-        const nameB = t.shop.products[b.id as keyof typeof t.shop.products]?.name ?? b.name;
+        const nameA =
+          t.shop.products[a.id as keyof typeof t.shop.products]?.name ?? a.name;
+        const nameB =
+          t.shop.products[b.id as keyof typeof t.shop.products]?.name ?? b.name;
         return nameA.localeCompare(nameB);
       });
     }
 
     return items;
-  }, [category, sort, t]);
+  }, [category, sort, t, visibleProducts]);
 
   const cartCount = getCartCount(cart);
-  const subtotal = getCartTotal(cart);
+  const subtotal = getCartTotal(cart, products);
   const discount = getCartDiscount(subtotal, appliedCoupon);
-  const grandTotal = getCartGrandTotal(cart, appliedCoupon);
+  const grandTotal = getCartGrandTotal(cart, appliedCoupon, products);
 
   function openDrawer(nextStep: DrawerStep = 'cart') {
     setDrawerStep(nextStep);
@@ -143,13 +192,28 @@ export default function ShopCatalog() {
     return badge;
   }
 
+  function onSecretClick() {
+    const next = secretClicks + 1;
+    setSecretClicks(next);
+    if (next >= 5) {
+      setAdminOpen(true);
+      setSecretClicks(0);
+    }
+  }
+
   return (
     <>
       <section className="shop-page">
         <div className="shop-shell">
           <div className="shop-hero">
             <div>
-              <p className="eyebrow">{t.shop.eyebrow}</p>
+              <p
+                className="eyebrow shop-admin-trigger"
+                onClick={onSecretClick}
+                title=""
+              >
+                {t.shop.eyebrow}
+              </p>
               <h1>{t.shop.title}</h1>
               <p className="shop-lead">{t.shop.lead}</p>
             </div>
@@ -182,7 +246,7 @@ export default function ShopCatalog() {
             <div className="shop-main">
               <div className="shop-toolbar">
                 <p>
-                  {filtered.length}{' '}
+                  {ready ? filtered.length : '...'}{' '}
                   {filtered.length === 1
                     ? t.shop.productCount
                     : t.shop.productCountPlural}
@@ -217,18 +281,34 @@ export default function ShopCatalog() {
                         </span>
                       )}
                       <div className="shop-card-visual">
-                        <div className="shop-bottle">
-                          <span>{product.size}</span>
-                        </div>
+                        {product.image ? (
+                          <img
+                            className="shop-card-image"
+                            src={product.image}
+                            alt={copy?.name ?? product.name}
+                          />
+                        ) : (
+                          <div className="shop-bottle">
+                            <span>{product.size}</span>
+                          </div>
+                        )}
                       </div>
                       <div className="shop-card-meta">
                         <span>{t.shop.categories[product.category]}</span>
                         <h3>{copy?.name ?? product.name}</h3>
                         <p>{copy?.subtitle ?? product.subtitle}</p>
+                        {product.description ? (
+                          <p className="shop-card-desc">{product.description}</p>
+                        ) : null}
                       </div>
                       <div className="shop-card-footer">
-                        <strong>{formatLocalizedPrice(lang, product.price)}</strong>
-                        <button type="button" onClick={() => addToCart(product.id)}>
+                        <strong>
+                          {formatLocalizedPrice(lang, product.price)}
+                        </strong>
+                        <button
+                          type="button"
+                          onClick={() => addToCart(product.id)}
+                        >
                           <CartIcon />
                           {t.shop.addToCart}
                         </button>
@@ -257,6 +337,7 @@ export default function ShopCatalog() {
         open={drawerOpen}
         step={drawerStep}
         cart={cart}
+        products={products}
         subtotal={subtotal}
         discount={discount}
         grandTotal={grandTotal}
@@ -270,6 +351,13 @@ export default function ShopCatalog() {
         onCouponInputChange={setCouponInput}
         onApplyCoupon={applyCoupon}
         onClearCoupon={clearCoupon}
+      />
+
+      <ShopAdmin
+        open={adminOpen}
+        products={products}
+        onClose={() => setAdminOpen(false)}
+        onProductsChange={setProducts}
       />
     </>
   );
