@@ -33,6 +33,7 @@ yarn-error.log*
 
 # shop catalog runtime file (saved via admin API locally)
 /public/shop-catalog.json
+/public/pricing-overrides.json
 
 # typescript
 *.tsbuildinfo

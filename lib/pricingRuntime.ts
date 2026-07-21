@@ -97,7 +97,7 @@ export function mergePricingOverrides(
   });
 
   (
-    Object.entries(overrides.tintLevelMultipliers || {}) as [
+    Object.entries(overrides.tintLevelMultipliers || {}) as unknown as [
       keyof typeof tintLevelMultipliers,
       number
     ][]

@@ -58,7 +58,7 @@ function sanitizeOverrides(input: PricingOverrides | null | undefined): PricingO
     merged.tintPriceGuideAmounts,
     defaults.tintPriceGuideAmounts
   );
-  // Multipliers are not editable in boss menu ó keep any existing ones from input.
+  // Multipliers are not editable in boss menu ù keep any existing ones from input.
   if (input?.tintLevelMultipliers) {
     overrides.tintLevelMultipliers = input.tintLevelMultipliers;
   }
