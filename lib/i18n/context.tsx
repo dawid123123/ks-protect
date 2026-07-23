@@ -10,6 +10,8 @@ import {
 } from 'react';
 import { translations, type Translations } from './translations';
 import { DEFAULT_LANGUAGE, type Language } from './types';
+import { isDemo } from '../brand';
+import { applyDemoCopy } from './demoCopy';
 
 const STORAGE_KEY = 'ks-protect-lang';
 
@@ -20,6 +22,11 @@ type LanguageContextValue = {
 };
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
+
+function resolveCopy(lang: Language): Translations {
+  const base = translations[lang];
+  return isDemo ? applyDemoCopy(base) : base;
+}
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Language>(DEFAULT_LANGUAGE);
@@ -39,6 +46,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
     document.documentElement.lang = lang;
     window.localStorage.setItem(STORAGE_KEY, lang);
+    document.body.classList.toggle('demo-mode', isDemo);
   }, [lang, ready]);
 
   const setLang = (next: Language) => {
@@ -49,7 +57,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     () => ({
       lang,
       setLang,
-      t: translations[lang],
+      t: resolveCopy(lang),
     }),
     [lang]
   );

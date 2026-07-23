@@ -5,11 +5,13 @@ import PageBackground from '../components/PageBackground';
 import PageEffects from '../components/PageEffects';
 import Providers from '../components/Providers';
 import { heroImage } from '../components/siteImages';
+import { isDemo } from '../lib/brand';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const siteDescription =
-  'Heimsklassa PPF, gluggatint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk \u2014 stilltu verndina \u00fe\u00edna \u00e1 netinu.';
+const siteDescription = isDemo
+  ? 'Sýnishorn af sniðmáti — PPF, tint og grafín. Merki og texti verða sérsniðin.'
+  : 'Heimsklassa PPF, gluggatint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk \u2014 stilltu verndina \u00fe\u00edna \u00e1 netinu.';
 
 function getSiteUrl() {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
@@ -24,15 +26,18 @@ function getSiteUrl() {
 }
 
 const siteUrl = getSiteUrl();
+const brandName = isDemo ? 'Sniðmát' : 'KS Protect';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
+  title: isDemo
+    ? 'Sniðmát · PPF, Tint & Grafín'
+    : 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
   description: siteDescription,
-  applicationName: 'KS Protect',
-  authors: [{ name: 'KS Protect' }],
-  creator: 'KS Protect',
-  publisher: 'KS Protect',
+  applicationName: brandName,
+  authors: [{ name: brandName }],
+  creator: brandName,
+  publisher: brandName,
   viewport: {
     width: 'device-width',
     initialScale: 1,

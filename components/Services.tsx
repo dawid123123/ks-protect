@@ -1,14 +1,19 @@
 'use client';
 
 import { useTranslation } from '../lib/i18n/context';
+import { isDemo } from '../lib/brand';
 import SectionIntro from './SectionIntro';
 
 const packageKeys = ['silver', 'gold', 'diamond'] as const;
+
+/** Real site links to old WP package pages; demo stays inside the template. */
 const packageHrefs: Record<(typeof packageKeys)[number], string> = {
   silver: 'https://ksprotect.is/services/silfur/',
   gold: 'https://ksprotect.is/services/gull/',
   diamond: 'https://ksprotect.is/services/demants/',
 };
+
+const demoPackageHref = '/#contact';
 
 const benefitKeys = ['hydrophobic', 'heat', 'dust', 'chemical'] as const;
 
@@ -61,9 +66,9 @@ export default function Graphene() {
   const t = useTranslation();
 
   const packages = packageKeys.map((key, index) => ({
-    tier: index + 1,
     featured: key === 'gold',
-    href: packageHrefs[key],
+    href: isDemo ? demoPackageHref : packageHrefs[key],
+    external: !isDemo,
     ...t.services.packages[key],
   }));
 
@@ -86,23 +91,6 @@ export default function Graphene() {
                 <span className="popular-badge">{t.services.mostPopular}</span>
               )}
               <div className="package-top">
-                <div
-                  className="package-tier"
-                  aria-label={
-                    t.services.tierLabel + ' ' + item.tier + ' ' + t.services.tierOf
-                  }
-                >
-                  <div className="package-tier-stars">
-                    {[1, 2, 3, 4].map((level) => (
-                      <span
-                        key={level}
-                        className={'tier-star' + (level <= item.tier ? ' on' : '')}
-                      >
-                        {'\u2605'}
-                      </span>
-                    ))}
-                  </div>
-                </div>
                 <small>{item.tag}</small>
               </div>
               <h3>{item.name}</h3>
@@ -112,7 +100,13 @@ export default function Graphene() {
                 ))}
               </ul>
               <p className="package-note">{item.note}</p>
-              <a href={item.href} target="_blank" rel="noreferrer" className="service-link">
+              <a
+                href={item.href}
+                className="service-link"
+                {...(item.external
+                  ? { target: '_blank', rel: 'noreferrer' }
+                  : {})}
+              >
                 {t.services.viewPackage} <span>{'\u2197'}</span>
               </a>
             </article>

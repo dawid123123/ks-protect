@@ -10,8 +10,11 @@ import {
   getLivePricing,
 } from '../lib/pricingRuntime';
 import { partLabels, partZoneAliases, Part } from './carParts';
+import { PartTileIcon } from './PartTileIcon';
 import { tintPpfLabels, tintWindowLabels } from './tintData';
+import { TintWindowIcon } from './TintWindowIcon';
 import { TintPpfZone, TintWindow } from './tintTypes';
+import { frontPhoto } from './TopView';
 
 export type PriceBossMode = 'ppf' | 'tint';
 
@@ -26,18 +29,103 @@ type PriceRow = {
   key: string;
   label: string;
   value: string;
+  groupId: string;
+  kind: 'ppf' | 'tint-window' | 'tint-ppf' | 'guide';
+  part?: Part;
+  window?: TintWindow;
 };
+
+type PriceGroup = {
+  id: string;
+  title: string;
+  photo: string;
+  hint: string;
+};
+
+const SIDE_PHOTO = '/gle-side.png';
+const REAR_PHOTO = '/gle-rear.png';
+
+const ppfGroupParts: Record<string, Part[]> = {
+  front: [
+    'hood',
+    'frontBumper',
+    'frontLip',
+    'leftMirror',
+    'leftAPillar',
+    'leftHeadlight',
+  ],
+  side: [
+    'leftFender',
+    'frontDoor',
+    'rearDoor',
+    'leftRearQuarter',
+    'splashGuard',
+    'frontDoorLower',
+    'rearDoorLower',
+    'sideSkirt',
+    'frontWheelArch',
+    'rearWheelArch',
+    'leftBPillar',
+    'leftCPillar',
+  ],
+  rear: [
+    'roof',
+    'tailgate',
+    'rearBumper',
+    'rearWindow',
+    'leftTaillight',
+  ],
+};
+
+function formatIsk(value: string) {
+  const n = Math.round(Number(String(value).replace(/\s/g, '')));
+  if (!Number.isFinite(n)) {
+    return value;
+  }
+  return n.toLocaleString('is-IS');
+}
 
 function pricingToRows(mode: PriceBossMode, pricing: LivePricing): PriceRow[] {
   if (mode === 'ppf') {
     const aliasTargets = new Set(Object.keys(partZoneAliases) as Part[]);
-    return (Object.keys(pricing.ppfPartPrices) as Part[])
-      .filter((key) => !aliasTargets.has(key))
-      .map((key) => ({
-        key,
-        label: partLabels[key] || key,
-        value: String(pricing.ppfPartPrices[key]),
-      }));
+    const placed = new Set<Part>();
+    const rows: PriceRow[] = [];
+
+    (['front', 'side', 'rear'] as const).forEach((groupId) => {
+      ppfGroupParts[groupId].forEach((part) => {
+        if (aliasTargets.has(part) || placed.has(part)) {
+          return;
+        }
+        if (!(part in pricing.ppfPartPrices)) {
+          return;
+        }
+        placed.add(part);
+        rows.push({
+          key: part,
+          label: partLabels[part] || part,
+          value: String(pricing.ppfPartPrices[part]),
+          groupId,
+          kind: 'ppf',
+          part,
+        });
+      });
+    });
+
+    (Object.keys(pricing.ppfPartPrices) as Part[]).forEach((part) => {
+      if (aliasTargets.has(part) || placed.has(part)) {
+        return;
+      }
+      rows.push({
+        key: part,
+        label: partLabels[part] || part,
+        value: String(pricing.ppfPartPrices[part]),
+        groupId: 'front',
+        kind: 'ppf',
+        part,
+      });
+    });
+
+    return rows;
   }
 
   const windowRows = (Object.keys(pricing.tintWindowBasePrices) as TintWindow[])
@@ -45,15 +133,21 @@ function pricingToRows(mode: PriceBossMode, pricing: LivePricing): PriceRow[] {
     .filter((key) => key !== 'frontRight' && key !== 'rearRight')
     .map((key) => ({
       key: 'window:' + key,
-      label: 'Tint · ' + (tintWindowLabels[key] || key),
+      label: tintWindowLabels[key] || key,
       value: String(pricing.tintWindowBasePrices[key]),
+      groupId: 'tint',
+      kind: 'tint-window' as const,
+      window: key,
     }));
 
   const ppfRows = (Object.keys(pricing.tintPpfBasePrices) as TintPpfZone[]).map(
     (key) => ({
       key: 'ppf:' + key,
-      label: 'Dark PPF · ' + (tintPpfLabels[key] || key),
+      label: tintPpfLabels[key] || key,
       value: String(pricing.tintPpfBasePrices[key]),
+      groupId: 'dark-ppf',
+      kind: 'tint-ppf' as const,
+      window: key as TintWindow,
     })
   );
 
@@ -63,11 +157,13 @@ function pricingToRows(mode: PriceBossMode, pricing: LivePricing): PriceRow[] {
     key: 'guide:' + key,
     label:
       key === 'small'
-        ? 'Price guide · Small'
+        ? 'Small car'
         : key === 'large'
-          ? 'Price guide · Large'
-          : 'Price guide · Dechrome',
+          ? 'Large car'
+          : 'Dechrome',
     value: String(pricing.tintPriceGuideAmounts[key]),
+    groupId: 'guide',
+    kind: 'guide' as const,
   }));
 
   return [...windowRows, ...ppfRows, ...guideRows];
@@ -167,6 +263,23 @@ function pickDiff<T extends Record<string, number>>(
   return changed ? diff : undefined;
 }
 
+function defaultValueForRow(row: PriceRow, defaults: LivePricing): number {
+  if (row.kind === 'ppf' && row.part) {
+    return defaults.ppfPartPrices[row.part];
+  }
+  if (row.kind === 'tint-window' && row.window) {
+    return defaults.tintWindowBasePrices[row.window];
+  }
+  if (row.kind === 'tint-ppf' && row.window) {
+    return defaults.tintPpfBasePrices[row.window as TintPpfZone];
+  }
+  if (row.kind === 'guide') {
+    const key = row.key.slice(6) as keyof LivePricing['tintPriceGuideAmounts'];
+    return defaults.tintPriceGuideAmounts[key];
+  }
+  return 0;
+}
+
 export default function PriceBossAdmin({
   open,
   mode,
@@ -184,6 +297,56 @@ export default function PriceBossAdmin({
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState('');
   const [blobConfigured, setBlobConfigured] = useState(true);
+  const [query, setQuery] = useState('');
+  const [activeGroup, setActiveGroup] = useState('all');
+
+  const defaults = useMemo(() => getDefaultPricingSnapshot(), []);
+
+  const groups: PriceGroup[] = useMemo(() => {
+    if (mode === 'ppf') {
+      return [
+        {
+          id: 'front',
+          title: isIs ? 'Framskýn' : 'Front view',
+          photo: frontPhoto,
+          hint: isIs ? 'Húdd, stuðari, speglar…' : 'Hood, bumper, mirrors…',
+        },
+        {
+          id: 'side',
+          title: isIs ? 'Hliðarútsýni' : 'Side view',
+          photo: SIDE_PHOTO,
+          hint: isIs ? 'Hurðir, fender, skirt…' : 'Doors, fender, skirt…',
+        },
+        {
+          id: 'rear',
+          title: isIs ? 'Afturútsýni' : 'Rear view',
+          photo: REAR_PHOTO,
+          hint: isIs ? 'Þak, afturhluti…' : 'Roof, tailgate…',
+        },
+      ];
+    }
+
+    return [
+      {
+        id: 'tint',
+        title: isIs ? 'Gluggatint' : 'Window tint',
+        photo: SIDE_PHOTO,
+        hint: isIs ? 'Grunnverð á rúður' : 'Base window prices',
+      },
+      {
+        id: 'dark-ppf',
+        title: 'Dark PPF',
+        photo: frontPhoto,
+        hint: isIs ? 'Ljós / ræma' : 'Lights / strip',
+      },
+      {
+        id: 'guide',
+        title: isIs ? 'Verðleiðarvísir' : 'Price guide',
+        photo: REAR_PHOTO,
+        hint: isIs ? 'Fastar leiðbeinandi tölur' : 'Static guide amounts',
+      },
+    ];
+  }, [isIs, mode]);
 
   const copy = useMemo(
     () =>
@@ -192,37 +355,47 @@ export default function PriceBossAdmin({
             title: mode === 'ppf' ? 'PPF verðstjóri' : 'Tint verðstjóri',
             lead:
               mode === 'ppf'
-                ? 'Breyttu aðeins PPF verðum. Vistað fyrir alla strax.'
-                : 'Breyttu aðeins tint / dark PPF verðum. Vistað fyrir alla strax.',
+                ? 'Smelltu á hluta, breyttu verði. Vistað fyrir alla.'
+                : 'Breyttu tint og dark PPF verðum. Vistað fyrir alla.',
             password: 'Lykilorð',
             signIn: 'Skrá inn',
             signOut: 'Útskrá',
             close: 'Loka',
-            save: 'Vista verð',
+            save: 'Vista öll verð',
             reset: 'Endurstilla',
             wrongPassword: 'Rangt lykilorð',
             saved: 'Verð vistuð fyrir alla',
             resetDone: 'Sjálfgefin verð endurstillt',
-            tip: 'Sama lykilorð og Netverslun (ksprotect2026).',
+            tip: 'Sama lykilorð og Netverslun.',
             blobWarn: 'Blob er ekki tengt — vistað aðeins hér.',
+            search: 'Leita að hluta…',
+            all: 'Allt',
+            changed: 'Breytt',
+            default: 'Sjálfgefið',
+            kr: 'kr.',
           }
         : {
             title: mode === 'ppf' ? 'PPF price boss' : 'Tint price boss',
             lead:
               mode === 'ppf'
-                ? 'Change PPF prices only. Saves for everyone immediately.'
-                : 'Change tint / dark PPF prices only. Saves for everyone immediately.',
+                ? 'Pick a panel, edit the price. Saves for everyone.'
+                : 'Edit tint and dark PPF prices. Saves for everyone.',
             password: 'Password',
             signIn: 'Sign in',
             signOut: 'Sign out',
             close: 'Close',
-            save: 'Save prices',
+            save: 'Save all prices',
             reset: 'Reset defaults',
             wrongPassword: 'Wrong password',
             saved: 'Prices saved for everyone',
             resetDone: 'Default prices restored',
-            tip: 'Same password as Netverslun (ksprotect2026).',
+            tip: 'Same password as Netverslun.',
             blobWarn: 'Blob not linked — saving only here.',
+            search: 'Search part…',
+            all: 'All',
+            changed: 'Changed',
+            default: 'Default',
+            kr: 'kr.',
           },
     [isIs, mode]
   );
@@ -232,6 +405,8 @@ export default function PriceBossAdmin({
       return;
     }
 
+    setQuery('');
+    setActiveGroup('all');
     let cancelled = false;
     setChecking(true);
     setNotice('');
@@ -288,6 +463,35 @@ export default function PriceBossAdmin({
       cancelled = true;
     };
   }, [open, mode]);
+
+  const filteredRows = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return rows.filter((row) => {
+      if (activeGroup !== 'all' && row.groupId !== activeGroup) {
+        return false;
+      }
+      if (!q) {
+        return true;
+      }
+      return row.label.toLowerCase().includes(q) || row.key.toLowerCase().includes(q);
+    });
+  }, [rows, query, activeGroup]);
+
+  const grouped = useMemo(() => {
+    return groups
+      .map((group) => ({
+        group,
+        rows: filteredRows.filter((row) => row.groupId === group.id),
+      }))
+      .filter((item) => item.rows.length > 0);
+  }, [groups, filteredRows]);
+
+  const changedCount = useMemo(() => {
+    return rows.filter((row) => {
+      const current = Math.round(Number(row.value.replace(/\s/g, '')));
+      return current !== defaultValueForRow(row, defaults);
+    }).length;
+  }, [rows, defaults]);
 
   if (!open) {
     return null;
@@ -366,17 +570,23 @@ export default function PriceBossAdmin({
   }
 
   function handleReset() {
-    const defaults = getDefaultPricingSnapshot();
+    const snap = getDefaultPricingSnapshot();
     const nextLive: LivePricing =
       mode === 'ppf'
-        ? { ...live, ppfPartPrices: { ...defaults.ppfPartPrices } }
+        ? { ...live, ppfPartPrices: { ...snap.ppfPartPrices } }
         : {
             ...live,
-            tintWindowBasePrices: { ...defaults.tintWindowBasePrices },
-            tintPpfBasePrices: { ...defaults.tintPpfBasePrices },
-            tintPriceGuideAmounts: { ...defaults.tintPriceGuideAmounts },
+            tintWindowBasePrices: { ...snap.tintWindowBasePrices },
+            tintPpfBasePrices: { ...snap.tintPpfBasePrices },
+            tintPriceGuideAmounts: { ...snap.tintPriceGuideAmounts },
           };
     void persist(liveToOverrides(nextLive), copy.resetDone);
+  }
+
+  function updateRow(key: string, value: string) {
+    setRows((prev) =>
+      prev.map((item) => (item.key === key ? { ...item, value } : item))
+    );
   }
 
   return (
@@ -384,6 +594,7 @@ export default function PriceBossAdmin({
       <div className="shop-admin-panel price-boss-panel">
         <div className="shop-admin-head">
           <div>
+            <p className="eyebrow">{mode === 'ppf' ? 'PPF' : 'TINT'}</p>
             <h2>{copy.title}</h2>
             <p>{copy.lead}</p>
           </div>
@@ -410,50 +621,150 @@ export default function PriceBossAdmin({
             {loginError ? <p className="shop-admin-error">{loginError}</p> : null}
           </form>
         ) : (
-          <div className="shop-admin-body">
-            <div className="shop-admin-toolbar">
-              <button type="button" onClick={handleReset} disabled={saving}>
-                {copy.reset}
-              </button>
-              <button type="button" onClick={handleLogout}>
-                {copy.signOut}
-              </button>
+          <form className="price-boss-shell" onSubmit={handleSave}>
+            <div className="price-boss-toolbar">
+              <input
+                className="price-boss-search"
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={copy.search}
+              />
+              <div className="price-boss-tabs">
+                <button
+                  type="button"
+                  className={activeGroup === 'all' ? 'active' : ''}
+                  onClick={() => setActiveGroup('all')}
+                >
+                  {copy.all}
+                </button>
+                {groups.map((group) => (
+                  <button
+                    key={group.id}
+                    type="button"
+                    className={activeGroup === group.id ? 'active' : ''}
+                    onClick={() => setActiveGroup(group.id)}
+                  >
+                    {group.title}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <p className="shop-admin-tip">{copy.tip}</p>
             {!blobConfigured ? (
               <p className="shop-admin-error">{copy.blobWarn}</p>
             ) : null}
             {notice ? <p className="shop-admin-note">{notice}</p> : null}
 
-            <form className="shop-admin-form price-boss-form" onSubmit={handleSave}>
-              <div className="price-boss-grid">
-                {rows.map((row) => (
-                  <label key={row.key}>
-                    <span>{row.label}</span>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={row.value}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setRows((prev) =>
-                          prev.map((item) =>
-                            item.key === row.key ? { ...item, value } : item
-                          )
-                        );
-                      }}
-                    />
-                  </label>
-                ))}
-              </div>
-              <div className="shop-admin-actions">
+            <div className="price-boss-sections">
+              {grouped.map(({ group, rows: sectionRows }) => (
+                <section key={group.id} className="price-boss-section">
+                  <div className="price-boss-section-head">
+                    <div className="price-boss-section-photo">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={group.photo} alt="" />
+                    </div>
+                    <div>
+                      <h3>{group.title}</h3>
+                      <p>{group.hint}</p>
+                    </div>
+                  </div>
+
+                  <div className="price-boss-cards">
+                    {sectionRows.map((row) => {
+                      const def = defaultValueForRow(row, defaults);
+                      const current = Math.round(
+                        Number(row.value.replace(/\s/g, ''))
+                      );
+                      const changed =
+                        Number.isFinite(current) && current !== def;
+
+                      return (
+                        <label
+                          key={row.key}
+                          className={
+                            'price-boss-card' + (changed ? ' changed' : '')
+                          }
+                        >
+                          <span className="price-boss-card-preview">
+                            {row.kind === 'ppf' && row.part ? (
+                              <PartTileIcon part={row.part} active={changed} />
+                            ) : row.window ? (
+                              <TintWindowIcon
+                                window={row.window}
+                                active={changed}
+                                level={row.kind === 'tint-window' ? 25 : null}
+                                ppfSelected={row.kind === 'tint-ppf'}
+                              />
+                            ) : (
+                              <span className="price-boss-card-fallback">
+                                {row.label.slice(0, 1)}
+                              </span>
+                            )}
+                          </span>
+                          <span className="price-boss-card-meta">
+                            <strong>{row.label}</strong>
+                            <small>
+                              {copy.default}: {def.toLocaleString('is-IS')}{' '}
+                              {copy.kr}
+                            </small>
+                            {changed ? (
+                              <em className="price-boss-changed">{copy.changed}</em>
+                            ) : null}
+                          </span>
+                          <span className="price-boss-card-input">
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              value={row.value}
+                              onChange={(e) =>
+                                updateRow(row.key, e.target.value)
+                              }
+                              onBlur={() =>
+                                updateRow(row.key, formatIsk(row.value))
+                              }
+                            />
+                            <span>{copy.kr}</span>
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
+            </div>
+
+            <div className="price-boss-footer">
+              <p>
+                {changedCount > 0
+                  ? changedCount +
+                    (isIs ? ' breytt verð' : ' changed prices')
+                  : isIs
+                    ? 'Engar breytingar'
+                    : 'No changes'}
+              </p>
+              <div className="price-boss-footer-actions">
+                <button
+                  type="button"
+                  className="price-boss-footer-secondary"
+                  onClick={handleReset}
+                  disabled={saving}
+                >
+                  {copy.reset}
+                </button>
+                <button
+                  type="button"
+                  className="price-boss-footer-secondary"
+                  onClick={handleLogout}
+                >
+                  {copy.signOut}
+                </button>
                 <button type="submit" disabled={saving}>
                   {saving ? '...' : copy.save}
                 </button>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         )}
       </div>
     </div>

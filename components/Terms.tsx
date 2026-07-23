@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from '../lib/i18n/context';
+import { brand } from '../lib/brand';
 
 const sectionKeys = [
   'general',
@@ -54,9 +55,9 @@ export default function Terms() {
 
         <div className="terms-contact">
           <p>{t.terms.contactText}</p>
-          <a href="mailto:ksprotect@ksprotect.is">ksprotect@ksprotect.is</a>
+          <a href={'mailto:' + brand.email}>{brand.email}</a>
           <span className="terms-contact-sep">{'\u00b7'}</span>
-          <a href="tel:+3548444456">844 4456</a>
+          <a href={brand.phoneTel}>{brand.phoneDisplay}</a>
         </div>
       </div>
     </section>

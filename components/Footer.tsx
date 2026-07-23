@@ -1,11 +1,16 @@
 'use client';
 
 import { useTranslation } from '../lib/i18n/context';
+import { brand, isDemo } from '../lib/brand';
 import InstagramStrip from './InstagramStrip';
 
-const MAP_QUERY = 'Skemmuvegur+28,+101+Reykjav%C3%ADk,+Iceland';
-const MAP_EMBED_URL = `https://www.google.com/maps?q=${MAP_QUERY}&z=16&output=embed`;
-const MAP_EXTERNAL_URL = `https://www.google.com/maps/search/?api=1&query=${MAP_QUERY}`;
+const MAP_QUERY = brand.mapQuery;
+const MAP_EMBED_URL = MAP_QUERY
+  ? `https://www.google.com/maps?q=${MAP_QUERY}&z=16&output=embed`
+  : '';
+const MAP_EXTERNAL_URL = MAP_QUERY
+  ? `https://www.google.com/maps/search/?api=1&query=${MAP_QUERY}`
+  : '#';
 
 const hourRows = [
   ['weekdays', 'weekdaysValue'],
@@ -22,7 +27,13 @@ export default function Footer() {
         <div className="footer-top">
           <div className="footer-brand">
             <strong>
-              KS <span>PROTECT</span>
+              {brand.logoPrimary}
+              {brand.logoAccent ? (
+                <>
+                  {' '}
+                  <span>{brand.logoAccent}</span>
+                </>
+              ) : null}
             </strong>
             <p>{t.footer.tagline}</p>
           </div>
@@ -30,11 +41,11 @@ export default function Footer() {
           <div className="footer-contact-block">
             <p className="footer-block-label">{t.footer.contactLabel}</p>
             <div className="footer-contact-list">
-              <a href="tel:+3548444456">
+              <a href={brand.phoneTel}>
                 <span>{t.contact.phone}</span>
                 {t.footer.company.phone}
               </a>
-              <a href="mailto:ksprotect@ksprotect.is">
+              <a href={'mailto:' + brand.email}>
                 <span>{t.contact.email}</span>
                 {t.footer.company.email}
               </a>
@@ -60,23 +71,29 @@ export default function Footer() {
 
           <div className="footer-map-block">
             <p className="footer-block-label">{t.footer.mapLabel}</p>
-            <div className="footer-map">
-              <iframe
-                title={t.footer.mapLabel}
-                src={MAP_EMBED_URL}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
-            <a
-              className="footer-map-link"
-              href={MAP_EXTERNAL_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t.footer.openInMaps} <span>{'\u2197'}</span>
-            </a>
+            {brand.showMap && MAP_EMBED_URL ? (
+              <>
+                <div className="footer-map">
+                  <iframe
+                    title={t.footer.mapLabel}
+                    src={MAP_EMBED_URL}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                  />
+                </div>
+                <a
+                  className="footer-map-link"
+                  href={MAP_EXTERNAL_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t.footer.openInMaps} <span>{'\u2197'}</span>
+                </a>
+              </>
+            ) : (
+              <p className="footer-address">{t.footer.company.address}</p>
+            )}
           </div>
         </div>
 
@@ -105,7 +122,7 @@ export default function Footer() {
               <a href={`mailto:${t.footer.company.email}`}>{t.footer.company.email}</a>
               <span className="footer-meta-sep">{' \u00b7 '}</span>
               {t.contact.phone}:{' '}
-              <a href="tel:+3548444456">{t.footer.company.phone}</a>
+              <a href={brand.phoneTel}>{t.footer.company.phone}</a>
             </p>
           </div>
           <p className="footer-copy">
@@ -115,6 +132,15 @@ export default function Footer() {
             </a>
           </p>
         </div>
+
+        {isDemo && brand.agencyUrl ? (
+          <p className="footer-agency">
+            Sniðmát frá{' '}
+            <a href={brand.agencyUrl} target="_blank" rel="noreferrer">
+              {brand.agencyName}
+            </a>
+          </p>
+        ) : null}
       </div>
     </footer>
   );

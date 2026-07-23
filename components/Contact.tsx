@@ -2,6 +2,7 @@
 
 import { FormEvent } from 'react';
 import { useTranslation } from '../lib/i18n/context';
+import { brand } from '../lib/brand';
 import SectionIntro from './SectionIntro';
 
 export default function Contact() {
@@ -46,7 +47,7 @@ export default function Contact() {
     );
 
     window.location.href =
-      'mailto:ksprotect@ksprotect.is?subject=' + subject + '&body=' + body;
+      'mailto:' + brand.email + '?subject=' + subject + '&body=' + body;
   }
 
   return (
@@ -60,13 +61,13 @@ export default function Contact() {
           />
 
           <div className="contact-details contact-details-v2">
-            <a href="tel:+3548444456">
+            <a href={brand.phoneTel}>
               <span>{t.contact.phone}</span>
-              844 4456
+              {brand.phoneDisplay}
             </a>
-            <a href="mailto:ksprotect@ksprotect.is">
+            <a href={'mailto:' + brand.email}>
               <span>{t.contact.email}</span>
-              ksprotect@ksprotect.is
+              {brand.email}
             </a>
             <div>
               <span>{t.contact.location}</span>
@@ -76,9 +77,9 @@ export default function Contact() {
 
           <a
             className="booking-link"
-            href="https://ksprotect.is/booking/"
-            target="_blank"
-            rel="noreferrer"
+            href={brand.bookingUrl}
+            target={brand.bookingUrl.startsWith('http') ? '_blank' : undefined}
+            rel={brand.bookingUrl.startsWith('http') ? 'noreferrer' : undefined}
           >
             {t.contact.bookDirectly} <span>{'\u2197'}</span>
           </a>

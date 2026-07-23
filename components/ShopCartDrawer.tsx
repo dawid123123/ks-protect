@@ -6,6 +6,7 @@ import {
   useLanguage,
   useTranslation,
 } from '../lib/i18n/context';
+import { brand } from '../lib/brand';
 import {
   CartState,
   VALID_COUPON,
@@ -105,11 +106,11 @@ export default function ShopCartDrawer({
     );
 
     const subject = encodeURIComponent(
-      cartT.orderSubject + ' ' + String(data.get('name') || 'KS Protect shop')
+      cartT.orderSubject + ' ' + String(data.get('name') || brand.logoPrimary)
     );
 
     window.location.href =
-      'mailto:ksprotect@ksprotect.is?subject=' + subject + '&body=' + encodeURIComponent(body);
+      'mailto:' + brand.email + '?subject=' + subject + '&body=' + encodeURIComponent(body);
   }
 
   return (

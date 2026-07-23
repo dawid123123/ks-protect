@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from '../lib/i18n/context';
+import { brand } from '../lib/brand';
 
 function FacebookIcon() {
   return (
@@ -82,7 +83,13 @@ export default function Navbar() {
   return (
     <header className={headerClass}>
       <Link href="/" className="logo">
-        KS <span>PROTECT</span>
+        {brand.logoPrimary}
+        {brand.logoAccent ? (
+          <>
+            {' '}
+            <span>{brand.logoAccent}</span>
+          </>
+        ) : null}
       </Link>
 
       <nav className="navigation navigation-v2" aria-label="Main">
@@ -147,7 +154,7 @@ export default function Navbar() {
                 <FacebookIcon />
               </a>
               <a
-                href="https://www.instagram.com/ks_protect/"
+                href={brand.instagramUrl}
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
@@ -178,7 +185,7 @@ export default function Navbar() {
             <FacebookIcon />
           </a>
           <a
-            href="https://www.instagram.com/ks_protect/"
+            href={brand.instagramUrl}
             target="_blank"
             rel="noreferrer"
             aria-label="Instagram"
