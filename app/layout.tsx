@@ -48,21 +48,27 @@ export const metadata: Metadata = {
     locale: 'is_IS',
     alternateLocale: ['en_US'],
     url: siteUrl,
-    siteName: 'KS Protect',
-    title: 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
+    siteName: brandName,
+    title: isDemo
+      ? 'Sniðmát · PPF, Tint & Grafín'
+      : 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
     description: siteDescription,
     images: [
       {
         url: heroImage,
         width: 1200,
         height: 630,
-        alt: 'KS Protect \u2014 PPF, tint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk',
+        alt: isDemo
+          ? 'Sniðmát — PPF, tint og grafín'
+          : 'KS Protect \u2014 PPF, tint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
+    title: isDemo
+      ? 'Sniðmát · PPF, Tint & Grafín'
+      : 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
     description: siteDescription,
     images: [heroImage],
   },

@@ -2,7 +2,8 @@
  * Real client brand vs blank template demo for marketplace preview.
  * Run with NEXT_PUBLIC_DEMO=1 for placeholder mode.
  */
-export const isDemo = process.env.NEXT_PUBLIC_DEMO === '1';
+/** Always demo on this Next deploy — real KS site is WordPress at ksprotect.is */
+export const isDemo = true;
 
 const demo = {
   logoPrimary: 'Logo',
