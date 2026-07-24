@@ -1826,8 +1826,6 @@ section {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: heroCinematic 10s ease-in-out infinite alternate;
-  filter: saturate(0.88) contrast(1.08);
 }
 
 @keyframes heroCinematic {
@@ -2185,13 +2183,11 @@ body.demo-mode .galleryCard::after {
 }
 
 .galleryImage {
-  filter: saturate(0.82) contrast(1.06);
-  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .galleryCard:hover .galleryImage {
   transform: scale(1.055);
-  filter: saturate(1) contrast(1.08);
 }
 
 @media (max-width: 980px) {
@@ -4646,8 +4642,6 @@ body.demo-mode .galleryCard::after {
 }
 
 .galleryCard img {
-  filter: saturate(0.68) contrast(1.12) brightness(0.8) sepia(0.07)
-    hue-rotate(38deg);
 }
 
 .galleryCard:hover::before {
@@ -4655,8 +4649,6 @@ body.demo-mode .galleryCard::after {
 }
 
 .galleryCard:hover img {
-  filter: saturate(0.84) contrast(1.14) brightness(0.9) sepia(0.04)
-    hue-rotate(24deg);
 }
 
 @media (max-width: 540px) {
@@ -9957,7 +9949,6 @@ body.demo-mode .galleryCard::after {
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s ease;
-  filter: saturate(0.95) contrast(1.08) sepia(0.1) hue-rotate(48deg);
 }
 
 .configurator-hub-card:hover .configurator-hub-media img {
@@ -12083,9 +12074,8 @@ body.shop-drawer-open {
   position: fixed;
   height: 76px;
   padding: 0 clamp(16px, 4vw, 48px);
-  background: linear-gradient(180deg, rgba(4, 5, 4, 0.92), rgba(4, 5, 4, 0.62));
+  background: rgba(4, 5, 4, 0.96);
   border-bottom: 1px solid rgba(185, 245, 66, 0.1);
-  backdrop-filter: blur(20px) saturate(140%);
   animation: navSlideDown 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   transition:
     height 0.28s ease,
@@ -12124,13 +12114,11 @@ body.shop-drawer-open {
   padding: 6px;
   border: 1px solid rgba(185, 245, 66, 0.2);
   border-radius: 999px;
-  background: rgba(4, 6, 4, 0.88);
+  background: rgba(4, 6, 4, 0.96);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 14px 40px rgba(0, 0, 0, 0.35),
     0 0 32px rgba(185, 245, 66, 0.06);
-  backdrop-filter: blur(28px) saturate(150%);
-  animation: navDockPulse 6s ease-in-out infinite;
 }
 
 .ks-v2 .navbar-v2 .navigation-track a {
@@ -12266,7 +12254,6 @@ body.shop-drawer-open {
     transparent 70%
   );
   transform: translateX(-120%);
-  animation: navCtaShine 4.5s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -12437,8 +12424,7 @@ html[lang='is'] .ks-v2 .hero-title-accent {
   border: 1px solid rgba(185, 245, 66, 0.14);
   border-radius: 24px;
   background: linear-gradient(145deg, rgba(185, 245, 66, 0.06), transparent 48%),
-    rgba(8, 10, 8, 0.82);
-  backdrop-filter: blur(16px);
+    rgba(8, 10, 8, 0.96);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
 }
 
@@ -12466,8 +12452,6 @@ html[lang='is'] .ks-v2 .hero-title-accent {
   object-position: center 34%;
   transform: scale(1.48);
   transform-origin: center 34%;
-  filter: saturate(1) contrast(1.12) brightness(0.9) sepia(0.1) hue-rotate(50deg);
-  animation: heroImageFloat 9s ease-in-out infinite alternate;
 }
 
 .ks-v2 .hero-image-v2::after {
@@ -12479,7 +12463,6 @@ html[lang='is'] .ks-v2 .hero-title-accent {
   background:
     radial-gradient(circle at 68% 28%, rgba(185, 245, 66, 0.28), transparent 46%),
     linear-gradient(120deg, rgba(4, 28, 14, 0.18), transparent 52%, rgba(8, 52, 24, 0.38));
-  mix-blend-mode: soft-light;
 }
 
 .ks-v2 .hero-stats-v2 {
@@ -12777,13 +12760,11 @@ html[lang='is'] .ks-v2 .hero-title-accent {
 }
 
 .ks-v2 .galleryCard-v2 .galleryImage {
-  filter: saturate(0.95) contrast(1.12) brightness(0.86) sepia(0.12) hue-rotate(54deg);
-  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .ks-v2 .galleryCard-v2:hover .galleryImage {
   transform: scale(1.055);
-  filter: saturate(1.08) contrast(1.14) brightness(0.94) sepia(0.08) hue-rotate(42deg);
 }
 
 .ks-v2 .galleryCard-v2::after {
@@ -14640,7 +14621,7 @@ body.nav-menu-open {
   border-radius: 50%;
   filter: blur(90px);
   opacity: 0.72;
-  animation: orbFloat 14s ease-in-out infinite alternate;
+  /* static — animated blur orbs were a major GPU cost while scrolling */
 }
 
 .page-bg-orb-a {
@@ -14657,8 +14638,6 @@ body.nav-menu-open {
   width: min(420px, 55vw);
   height: min(420px, 55vw);
   background: rgba(90, 140, 30, 0.12);
-  animation-delay: -7s;
-  animation-duration: 24s;
 }
 
 .page-bg-grid-lines {
@@ -14670,7 +14649,6 @@ body.nav-menu-open {
     linear-gradient(90deg, rgba(185, 245, 66, 0.65) 1px, transparent 1px);
   background-size: 72px 72px;
   mask-image: radial-gradient(circle at 50% 42%, black, transparent 74%);
-  animation: gridDrift 48s linear infinite;
 }
 
 .page-bg-watermark {
@@ -14702,68 +14680,32 @@ body.nav-menu-open {
   );
 }
 
-.page-bg-rich .page-bg-center {
-  animation: bgCenterPulse 16s ease-in-out infinite alternate;
-}
+/* No infinite filter/opacity pulses on fixed background — too expensive on scroll */
 
-.page-bg-rich .page-bg-glow-center {
-  animation: glowPulse 10s ease-in-out infinite alternate;
-}
-
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(64px);
-  transition:
-    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
-}
-
+.scroll-reveal,
 .scroll-reveal.scroll-reveal-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 .ks-v2 .hero-v2 .hero-panel-copy > * {
-  opacity: 0;
-  animation: heroFadeUp 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  opacity: 1;
+  animation: none;
 }
 
-.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(1) {
-  animation-delay: 0.08s;
-}
-
-.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(2) {
-  animation-delay: 0.16s;
-}
-
-.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(3) {
-  animation-delay: 0.24s;
-}
-
-.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(4) {
-  animation-delay: 0.32s;
-}
-
-.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(5) {
-  animation-delay: 0.4s;
-}
-
-.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(6) {
-  animation-delay: 0.48s;
-}
-
+.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(1),
+.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(2),
+.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(3),
+.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(4),
+.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(5),
+.ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(6),
 .ks-v2 .hero-v2 .hero-panel-copy > *:nth-child(7) {
-  animation-delay: 0.56s;
+  animation-delay: 0s;
 }
 
 .ks-v2 .hero-v2 .hero-panel-media {
-  opacity: 0;
-  animation: heroMediaIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
-}
-
-.ks-v2 .hero-image-v2 img {
-  animation: heroImageFloat 9s ease-in-out infinite alternate;
+  opacity: 1;
+  animation: none;
 }
 
 .ks-v2 .hero-panel,
@@ -14968,5 +14910,68 @@ body.nav-menu-open {
   .ks-v2 .navbar-v2 .navigation-track {
     animation: none !important;
   }
+}
+
+/* ==========================================================
+   PERF · kill GPU-heavy compositing (blur / glass / blend)
+========================================================== */
+
+.page-bg-lite {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(185, 245, 66, 0.08), transparent 55%),
+    #050605;
+}
+
+.ks-v2 .navbar-v2,
+.ks-v2 .navbar-v2 .navigation-track,
+.ks-v2 .hero-panel,
+.ks-v2 .benefitCard-v2,
+.ks-v2 .serviceCard-v2,
+.ks-v2 .configurator-hub-card-v2,
+.ks-v2 .galleryCard-v2,
+.ks-v2 .review-card-v2,
+.ks-v2 .contact-form-v2,
+.ks-v2 .faq-item-v2,
+.ks-v2 .configurator-hub,
+.ks-v2 section,
+.ks-v2 .footer,
+.ks-v2 .footer-instagram-tile,
+.ks-v2 .btn-ghost,
+.ks-v2 .nav-mobile-menu {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.ks-v2 .hero-image-v2 img,
+.ks-v2 .galleryCard-v2 img,
+.ks-v2 .serviceCard-v2 img,
+.ks-v2 .footer-instagram-tile img,
+.ks-v2 .configurator-hub-card-v2 img,
+.ks-v2 img {
+  filter: none !important;
+  animation: none !important;
+}
+
+.ks-v2 .hero-image-v2::after,
+.ks-v2 .page-bg-watermark,
+.ks-v2 [class*='overlay'] {
+  mix-blend-mode: normal !important;
+}
+
+.ks-v2 .navbar-v2 {
+  animation: none !important;
+}
+
+.ks-v2 * {
+  will-change: auto !important;
+}
+
+/* Stop leftover infinite keyframes from older/shared CSS */
+.ks-v2 .hero-image img,
+.floating-photo,
+.photo-marquee-track,
+.page-bg-tile {
+  animation: none !important;
+  filter: none !important;
 }
 
