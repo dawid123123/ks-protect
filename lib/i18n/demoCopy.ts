@@ -85,5 +85,5 @@ export function applyDemoCopy(t: Translations): Translations {
       kicker: 'SNIÐMÁT · 404',
       description: scrub(t.notFound.description),
     },
-  };
+  } as unknown as Translations;
 }
