@@ -2,7 +2,8 @@
  * Real client brand vs blank template demo for marketplace preview.
  * Set NEXT_PUBLIC_DEMO=1 only when intentionally previewing the blank template.
  */
-export const isDemo = false;
+/** Always demo on this Next deploy — real client site is WordPress at ksprotect.is */
+export const isDemo = true;
 
 const demo = {
   logoPrimary: 'Logo',
@@ -19,7 +20,7 @@ const demo = {
   showInstagram: true,
   kt: '000000-0000',
   vsk: '000000',
-  agencyUrl: process.env.NEXT_PUBLIC_AGENCY_URL || 'http://localhost:3020',
+  agencyUrl: process.env.NEXT_PUBLIC_AGENCY_URL || 'http://localhost:3001',
   agencyName: 'Leigsíða',
 };
 

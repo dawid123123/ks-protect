@@ -12,28 +12,44 @@ export function applyDemoCopy(t: Translations): Translations {
       .replace(/@ks_protect/gi, '@instagram')
       .replace(/ksprotect@ksprotect\.is/gi, 'netfang@fyrirtaeki.is');
 
+  const deepScrub = (value: unknown): unknown => {
+    if (typeof value === 'string') return scrub(value);
+    if (Array.isArray(value)) return value.map(deepScrub);
+    if (value && typeof value === 'object') {
+      return Object.fromEntries(
+        Object.entries(value as Record<string, unknown>).map(([k, v]) => [
+          k,
+          deepScrub(v),
+        ])
+      );
+    }
+    return value;
+  };
+
+  const scrubbed = deepScrub(t) as Translations;
+
   return {
-    ...t,
+    ...scrubbed,
     metadata: {
-      ...t.metadata,
+      ...scrubbed.metadata,
       title: 'Sniðmát · PPF, Tint & Grafín',
       description:
         'Sýnishorn af sniðmáti — merki, litir og texti verða sérsniðin að þínu fyrirtæki.',
       applicationName: 'Sniðmát',
     },
     nav: {
-      ...t.nav,
+      ...scrubbed.nav,
       socialLabel: 'Samfélagsmiðlar',
     },
     footer: {
-      ...t.footer,
+      ...scrubbed.footer,
       tagline: 'Vernd, glöggun og þjónusta — merkið þitt kemur hér.',
       hoursNote: 'Bókaðu tíma í gegnum vefsíðu eða hafðu samband.',
       copyright: '© Sniðmát — sýnishorn. ',
       instagramFollow: 'Fylgja @instagram',
       instagramPhotoAlt: 'Sýnishorn Instagram mynd',
       company: {
-        ...t.footer.company,
+        ...scrubbed.footer.company,
         email: 'netfang@fyrirtaeki.is',
         phone: '000-0000',
         address: 'Heimilisfang, Reykjavík',
@@ -41,49 +57,36 @@ export function applyDemoCopy(t: Translations): Translations {
         vsk: '000000',
       },
     },
-    faq: {
-      ...t.faq,
-      lead: scrub(t.faq.lead),
-      items: Object.fromEntries(
-        Object.entries(t.faq.items).map(([key, item]) => [
-          key,
-          { q: scrub(item.q), a: scrub(item.a) },
-        ])
-      ) as typeof t.faq.items,
-    },
     about: {
-      ...t.about,
+      ...scrubbed.about,
       introKicker: 'SNIÐMÁT · GRAFÍN LAKKVÖRN',
-      introText: scrub(t.about.introText),
       imageAlt: 'Sýnishorn — grafín lakkvörn',
-      ceramic: {
-        ...t.about.ceramic,
-        note: scrub(t.about.ceramic.note),
-      },
     },
     hero: {
-      ...t.hero,
+      ...scrubbed.hero,
       kicker: 'SNIÐMÁT · DEMO',
       description:
         'PPF lakkvarnarfilmur og grafínlakkvörn — fagleg uppsetning og vernd. Texti og merki verða þín.',
       imageAlt: 'Sýnishorn af bílaþjónustusíðu',
     },
+    gallery: {
+      ...scrubbed.gallery,
+      imageAlt: 'Sýnishorn myndasafn',
+    },
     contact: {
-      ...t.contact,
+      ...scrubbed.contact,
       phonePlaceholder: '000 0000',
       locationValue: 'Heimilisfang, Reykjavík',
       lead: 'Fylltu út formið — í leigðu útgáfunni opnast póstur til þíns fyrirtækis.',
       formNote: 'Í sýnishorninu opnast póstur á placeholder netfang.',
     },
     shop: {
-      ...t.shop,
+      ...scrubbed.shop,
       eyebrow: 'SNIÐMÁT · NETVERSLUN',
-      lead: scrub(t.shop.lead),
     },
     notFound: {
-      ...t.notFound,
+      ...scrubbed.notFound,
       kicker: 'SNIÐMÁT · 404',
-      description: scrub(t.notFound.description),
     },
-  } as unknown as Translations;
+  };
 }
