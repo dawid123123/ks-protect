@@ -5,7 +5,7 @@ import { isBlobConfigured, uploadShopImage } from '../../../../lib/shopServerSto
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
-  if (!isShopAdminAuthenticated()) {
+  if (!(await isShopAdminAuthenticated())) {
     return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
   }
 

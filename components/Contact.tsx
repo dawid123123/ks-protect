@@ -1,54 +1,77 @@
 'use client';
 
-import { FormEvent } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import { useTranslation } from '../lib/i18n/context';
 import { brand } from '../lib/brand';
 import SectionIntro from './SectionIntro';
+import TurnstileField from './TurnstileField';
 
 export default function Contact() {
   const t = useTranslation();
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
+  const [errorKey, setErrorKey] = useState('');
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const onToken = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
 
-    const data = new FormData(event.currentTarget);
-    const name = String(data.get('name') || '');
-    const phone = String(data.get('phone') || '');
-    const email = String(data.get('email') || '');
-    const vehicle = String(data.get('vehicle') || '');
-    const service = String(data.get('service') || '');
-    const message = String(data.get('message') || '');
+    const needsCaptcha = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+    if (needsCaptcha && !turnstileToken) {
+      setStatus('error');
+      setErrorKey('captcha');
+      return;
+    }
 
-    const subject = encodeURIComponent(t.contact.mailSubject + ' ' + name);
-    const body = encodeURIComponent(
-      t.contact.name +
-        ': ' +
-        name +
-        '\n' +
-        t.contact.phoneLabel +
-        ': ' +
-        phone +
-        '\n' +
-        t.contact.emailLabel +
-        ': ' +
-        email +
-        '\n' +
-        t.contact.vehicle +
-        ': ' +
-        vehicle +
-        '\n' +
-        t.contact.service +
-        ': ' +
-        service +
-        '\n\n' +
-        t.contact.message +
-        ':\n' +
-        message
-    );
+    setStatus('sending');
+    setErrorKey('');
 
-    window.location.href =
-      'mailto:' + brand.email + '?subject=' + subject + '&body=' + body;
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: String(data.get('name') || ''),
+          phone: String(data.get('phone') || ''),
+          email: String(data.get('email') || ''),
+          vehicle: String(data.get('vehicle') || ''),
+          service: String(data.get('service') || ''),
+          message: String(data.get('message') || ''),
+          turnstileToken,
+        }),
+      });
+
+      const result = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !result.ok) {
+        setStatus('error');
+        setErrorKey(result.error || 'send_failed');
+        return;
+      }
+
+      setStatus('ok');
+      form.reset();
+      setTurnstileToken('');
+    } catch {
+      setStatus('error');
+      setErrorKey('send_failed');
+    }
   }
+
+  const errorText =
+    errorKey === 'captcha'
+      ? t.contact.errors.captcha
+      : errorKey === 'mail_not_configured'
+        ? t.contact.errors.mailNotConfigured
+        : t.contact.errors.sendFailed;
 
   return (
     <section className="contact contact-v2" id="contact">
@@ -150,10 +173,26 @@ export default function Contact() {
             </label>
           </div>
 
-          <button className="quote-submit" type="submit">
-            {t.contact.sendInquiry} <span>{'\u2197'}</span>
+          <TurnstileField onToken={onToken} />
+
+          <button
+            className="quote-submit"
+            type="submit"
+            disabled={status === 'sending'}
+          >
+            {status === 'sending'
+              ? t.contact.sending
+              : t.contact.sendInquiry}{' '}
+            <span>{'\u2192'}</span>
           </button>
-          <p className="form-note">{t.contact.formNote}</p>
+
+          {status === 'ok' ? (
+            <p className="form-note form-note-ok">{t.contact.success}</p>
+          ) : status === 'error' ? (
+            <p className="form-note form-note-error">{errorText}</p>
+          ) : (
+            <p className="form-note">{t.contact.formNote}</p>
+          )}
         </form>
       </div>
     </section>

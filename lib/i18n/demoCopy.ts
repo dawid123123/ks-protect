@@ -78,7 +78,7 @@ export function applyDemoCopy(t: Translations): Translations {
       phonePlaceholder: '000 0000',
       locationValue: 'Heimilisfang, Reykjavík',
       lead: 'Fylltu út formið — í leigðu útgáfunni opnast póstur til þíns fyrirtækis.',
-      formNote: 'Í sýnishorninu opnast póstur á placeholder netfang.',
+      formNote: 'Í sýnishorninu þarf RESEND_API_KEY til að senda póst.',
     },
     shop: {
       ...scrubbed.shop,

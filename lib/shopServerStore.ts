@@ -1,7 +1,13 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { list, put, del } from '@vercel/blob';
-import { ShopProduct, shopProducts } from '../components/shopData';
+import {
+  ShopCategoryDef,
+  ShopProduct,
+  mergeCatalogCategories,
+  shopProducts,
+  cloneDefaultCategories,
+} from '../components/shopData';
 
 const CATALOG_PATHNAME = 'ks-protect/shop-catalog.json';
 const LOCAL_CATALOG_PATH = path.join(
@@ -13,6 +19,7 @@ const LOCAL_CATALOG_PATH = path.join(
 export type ShopCatalogPayload = {
   updatedAt: string;
   products: ShopProduct[];
+  categories: ShopCategoryDef[];
 };
 
 function normalizeProducts(products: ShopProduct[]): ShopProduct[] {
@@ -22,23 +29,32 @@ function normalizeProducts(products: ShopProduct[]): ShopProduct[] {
   }));
 }
 
-function defaultCatalog(): ShopCatalogPayload {
+function normalizeCatalog(
+  products: ShopProduct[],
+  categories?: ShopCategoryDef[]
+): ShopCatalogPayload {
+  const normalizedProducts = normalizeProducts(products);
   return {
     updatedAt: new Date().toISOString(),
-    products: normalizeProducts(shopProducts),
+    products: normalizedProducts,
+    categories: mergeCatalogCategories(categories, normalizedProducts),
   };
+}
+
+function defaultCatalog(): ShopCatalogPayload {
+  return normalizeCatalog(shopProducts, cloneDefaultCategories());
 }
 
 async function readLocalCatalog(): Promise<ShopCatalogPayload | null> {
   try {
     const raw = await fs.readFile(LOCAL_CATALOG_PATH, 'utf8');
-    const parsed = JSON.parse(raw) as ShopCatalogPayload;
+    const parsed = JSON.parse(raw) as Partial<ShopCatalogPayload>;
     if (!Array.isArray(parsed.products)) {
       return null;
     }
     return {
+      ...normalizeCatalog(parsed.products, parsed.categories),
       updatedAt: parsed.updatedAt || new Date().toISOString(),
-      products: normalizeProducts(parsed.products),
     };
   } catch {
     return null;
@@ -72,14 +88,14 @@ async function readBlobCatalog(): Promise<ShopCatalogPayload | null> {
     return null;
   }
 
-  const parsed = (await response.json()) as ShopCatalogPayload;
+  const parsed = (await response.json()) as Partial<ShopCatalogPayload>;
   if (!Array.isArray(parsed.products)) {
     return null;
   }
 
   return {
+    ...normalizeCatalog(parsed.products, parsed.categories),
     updatedAt: parsed.updatedAt || new Date().toISOString(),
-    products: normalizeProducts(parsed.products),
   };
 }
 
@@ -116,11 +132,11 @@ export async function getShopCatalog(): Promise<ShopCatalogPayload> {
   return defaultCatalog();
 }
 
-export async function saveShopCatalog(products: ShopProduct[]) {
-  const payload: ShopCatalogPayload = {
-    updatedAt: new Date().toISOString(),
-    products: normalizeProducts(products),
-  };
+export async function saveShopCatalog(
+  products: ShopProduct[],
+  categories?: ShopCategoryDef[]
+) {
+  const payload = normalizeCatalog(products, categories);
 
   if (hasBlobToken()) {
     await writeBlobCatalog(payload);
@@ -130,7 +146,6 @@ export async function saveShopCatalog(products: ShopProduct[]) {
     };
   }
 
-  // Local / preview without Blob: persist to public file.
   await writeLocalCatalog(payload);
   return {
     ...payload,
@@ -140,7 +155,6 @@ export async function saveShopCatalog(products: ShopProduct[]) {
 
 export async function uploadShopImage(file: File) {
   if (!hasBlobToken()) {
-    // Local fallback: keep data URL from client (handled there).
     throw new Error('BLOB_NOT_CONFIGURED');
   }
 

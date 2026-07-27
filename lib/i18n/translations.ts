@@ -37,7 +37,7 @@ export const translations = {
       copyright: '\u00a9 2026 KS Protect. Allur r\u00e9ttur \u00e1skilinn.',
       terms: 'Skilm\u00e1lar',
       company: {
-        address: 'Skemmuvegi 28 (bleik gata)',
+        address: 'Skemmuvegi 28 · bleik gata, 200 Kópavogur',
         ktLabel: 'Kt',
         kt: '530718-1310',
         vskLabel: 'Vsk nr',
@@ -58,9 +58,8 @@ export const translations = {
       eyebrow: 'UMSAGNIR VI\u00d0SKIPTAVINA',
       title: '\u00deJ\u00d3NUSTA SEM SKILUR EFTIR SIG.',
       lead:
-        'Vi\u00f0 leggjum \u00e1herslu \u00e1 faglega uppsetningu, hreint verk og sk\u00fdra samskipti \u2014 \u00feetta eru d\u00e6miger\u00f0ar umsagnir fr\u00e1 vi\u00f0skiptavinum okkar.',
-      note:
-        'S\u00fdnishorn umsagna fyrir vefs\u00ed\u00f0una \u2014 uppf\u00e6ra m\u00e1 me\u00f0 raunverulegum ums\u00f6gnum \u00far Google e\u00f0a Facebook.',
+        'Raunverulegar umsagnir fr\u00e1 Google um KS Protect \u2014 fagleg uppsetning, hreint verk og sk\u00fdr samskipti.',
+      note: '',
       items: {
         one: {
           text:
@@ -196,7 +195,7 @@ export const translations = {
       ctaPackages: 'SKO\u00d0A PAKKA',
     },
     hero: {
-      kicker: 'KS PROTECT \u00b7 REYKJAV\u00cdK',
+      kicker: 'KS PROTECT \u00b7 K\u00d3PAVOGUR',
       titleLine1: 'GLJ\u00c1I',
       titleLine2: 'OG',
       titleLine3: 'VERND',
@@ -225,6 +224,8 @@ export const translations = {
       tierLabel: 'Stig',
       tierOf: 'af 4',
       viewPackage: 'SKO\u00d0A ME\u00d0FER\u00d0',
+      closePackage: 'Loka',
+      packageIncludes: 'HVA\u00d0 ER INNIHALDI\u00d0?',
       packages: {
         bronze: {
           name: 'BRONS ME\u00d0FER\u00d0',
@@ -235,6 +236,8 @@ export const translations = {
             'Graf\u00edn bori\u00f0 \u00e1 allt ytra byr\u00f0i lakks',
             'Graf\u00edn bori\u00f0 \u00ed hur\u00f0arf\u00f6ls',
           ],
+          details:
+            '\u00cd Brons me\u00f0fer\u00f0 er \u00f6kut\u00e6ki\u00f0 massa\u00f0 me\u00f0 1 til 2 \u00ferepa m\u00f6ssun eftir \u00fe\u00f6rfum og a\u00f0 \u00fev\u00ed loknu er lakki\u00f0 hreinsa\u00f0 vandlega. Graf\u00edn er svo bori\u00f0 \u00e1 allt ytra byr\u00f0i lakks og \u00ed hur\u00f0arf\u00f6ls \u2014 sterkur grunnur me\u00f0 dj\u00fapum glj\u00e1a.',
           note: 'Ver\u00f0 r\u00e6\u00f0st af st\u00e6r\u00f0 bifrei\u00f0ar.',
         },
         silver: {
@@ -246,6 +249,8 @@ export const translations = {
             'Hita\u00feolin varnarh\u00fa\u00f0 \u00e1 felgur',
             'S\u00e9rst\u00f6k varnarh\u00fa\u00f0 \u00e1 gler',
           ],
+          details:
+            '\u00cd Silfur me\u00f0fer\u00f0 er \u00f6kut\u00e6ki\u00f0 massa\u00f0 me\u00f0 1 til 2 \u00ferepa m\u00f6ssun eftir \u00fe\u00f6rfum og a\u00f0 \u00fev\u00ed loknu er lakki\u00f0 hreinsa\u00f0 vandlega. Graf\u00edn er svo bori\u00f0 \u00e1 allt ytra byr\u00f0i lakks og \u00ed hur\u00f0arf\u00f6ls. Felgur eru me\u00f0h\u00f6ndla\u00f0ar me\u00f0 h\u00fa\u00f0 sem \u00feolir verulegan hita og gler er h\u00fa\u00f0a\u00f0 me\u00f0 s\u00e9rstakri glerh\u00fa\u00f0.',
           note: 'Ver\u00f0 r\u00e6\u00f0st af st\u00e6r\u00f0 bifrei\u00f0ar.',
         },
         gold: {
@@ -258,6 +263,8 @@ export const translations = {
             'Varnarh\u00fa\u00f0 \u00e1 felgur',
             'Varnarh\u00fa\u00f0 \u00e1 gler',
           ],
+          details:
+            '\u00cd Gull me\u00f0fer\u00f0 er bifrei\u00f0in vandlega m\u00f6ssu\u00f0 eftir \u00fe\u00f6rfum og a\u00f0 \u00fev\u00ed loknu er lakki\u00f0 hreinsa\u00f0 vandlega. Waxedshine PPS Pro er bori\u00f0 \u00e1 allt ytra byr\u00f0i lakks og \u00ed hur\u00f0arf\u00f6ls. Waxedshine self-heal graf\u00edn er svo bori\u00f0 yfir PPS Pro h\u00fa\u00f0ina. B\u00edllinn f\u00e6r \u00feannig \u00feykkan og glansandi varnarhj\u00fap me\u00f0 sj\u00e1lfgr\u00e6\u00f0andi yfirbor\u00f0i. Felgur eru h\u00fa\u00f0a\u00f0ar me\u00f0 Waxedshine Wheel og gler me\u00f0 Waxedshine Glass.',
           note: 'Ver\u00f0 r\u00e6\u00f0st af st\u00e6r\u00f0 og \u00e1standi bifrei\u00f0ar.',
         },
         diamond: {
@@ -269,6 +276,8 @@ export const translations = {
             'Varnarh\u00fa\u00f0 \u00e1 felgur og gler',
             'Innr\u00e9tting, s\u00e6ti og teppi varin me\u00f0 s\u00e9rstakri innanh\u00fassh\u00fa\u00f0',
           ],
+          details:
+            '\u00cd Demants me\u00f0fer\u00f0 f\u00e6r\u00f0u allt \u00far Gull pakkanum: vandlega m\u00f6ssun, PPS Pro, sj\u00e1lfgr\u00e6\u00f0andi graf\u00edn, h\u00fa\u00f0 \u00e1 felgur og gler. A\u00f0 auki er \u00f6ll innr\u00e9tting, s\u00e6ti og teppi me\u00f0h\u00f6ndlu\u00f0 me\u00f0 s\u00e9rstakri Interior h\u00fa\u00f0 \u2014 heildarv\u00f6rn innan sem utan.',
           note: 'Ver\u00f0 r\u00e6\u00f0st af st\u00e6r\u00f0 og \u00e1standi bifrei\u00f0ar.',
         },
       },
@@ -307,7 +316,7 @@ export const translations = {
       phone: 'S\u00cdMI',
       email: 'NETFANG',
       location: 'STA\u00d0SETNING',
-      locationValue: 'Skemmuvegi 28 (bleik gata)',
+      locationValue: 'Skemmuvegi 28 · bleik gata, 200 Kópavogur',
       bookDirectly: 'B\u00d3KA T\u00cdMA BEINT',
       formHeading: 'Tilbo\u00f0sbei\u00f0ni',
       formSubheading: 'Fylltu \u00fat uppl\u00fdsingarnar h\u00e9r a\u00f0 ne\u00f0an.',
@@ -330,9 +339,16 @@ export const translations = {
       messagePlaceholder:
         'Seg\u00f0u okkur a\u00f0eins fr\u00e1 b\u00edlnum og \u00f3skunum \u00fe\u00ednum...',
       sendInquiry: 'SENDA FYRIRSPURN',
+      sending: 'Sendi...',
+      success: 'Fyrirspurnin var send. Vi\u00f0 h\u00f6fum samband flj\u00f3tlega.',
       formNote:
-        'Vi\u00f0 opnum tilb\u00fainn t\u00f6lvup\u00f3st til KS Protect me\u00f0 uppl\u00fdsingunum \u00fe\u00ednum.',
+        'Smelltu \u00e1 Senda \u2014 vi\u00f0 f\u00e1um fyrirspurnina beint \u00e1 ksprotect@ksprotect.is.',
       mailSubject: 'Tilbo\u00f0sbei\u00f0ni fr\u00e1',
+      errors: {
+        captcha: 'Staðfestu a\u00f0 \u00fe\u00fa s\u00e9rt ekki v\u00e9lmenni.',
+        mailNotConfigured: 'T\u00f6lvup\u00f3stur er ekki uppsettur enn (RESEND_API_KEY).',
+        sendFailed: 'Gat ekki sent fyrirspurn. Reyndu aftur.',
+      },
     },
     configuratorHub: {
       eyebrow: 'INTERAKT\u00cdV STILLING',
@@ -395,60 +411,7 @@ export const translations = {
         popular: 'VINS\u00c6LT',
         top: 'TOP',
       },
-      products: {
-        'foam-wash': {
-          name: 'Ultra Foam Shampoo',
-          subtitle: 'Tv\u00f6falt virkt \u00fevottu\u00f0ni fyrir h\u00e1r\u00fer\u00f0',
-        },
-        'ph-wash': {
-          name: 'pH Neutral Wash',
-          subtitle: 'Mild h\u00e1r\u00fer\u00f0 sem hentar PPF og lakk',
-        },
-        'apc-d': {
-          name: 'APC+D Fj\u00f3lhreinsir',
-          subtitle: 'Alhli\u00f0a hreinsir fyrir ytra og innra',
-        },
-        interior: {
-          name: 'Interior Cleaner',
-          subtitle: 'Hreinsir fyrir s\u00e6ti, m\u00f6ttu og pl\u00e1st',
-        },
-        'aqua-bead': {
-          name: 'Aqua Bead Spray',
-          subtitle: 'Spray-on sealant fyrir vi\u00f0hald og glans',
-        },
-        'ceramic-boost': {
-          name: 'Ceramic Boost',
-          subtitle: 'Styrkir v\u00f6rn og gefur dj\u00fapan glj\u00e1a',
-        },
-        'cut-compound': {
-          name: 'Cutting Compound',
-          subtitle: 'Fyrir m\u00f6ssun og fjarl\u00e6gingu ri\u00f0a',
-        },
-        'finish-polish': {
-          name: 'Finishing Polish',
-          subtitle: 'Lokah\u00e6tting fyrir dj\u00fapan, speglandi glj\u00e1a',
-        },
-        'wheel-clean': {
-          name: 'Wheel Cleaner',
-          subtitle: 'S\u00e9rform\u00fala fyrir felgur og bremsur\u00f0',
-        },
-        'tire-dress': {
-          name: 'Tire Dressing',
-          subtitle: 'Dekk me\u00f0 mattri, hreinni \u00fats\u00fdnd',
-        },
-        applicator: {
-          name: 'B\u00f3np\u00fa\u00f0ar \u00f6rtrefja',
-          subtitle: '3 stk. fyrir b\u00f3n, sealant og vi\u00f0hald',
-        },
-        microfiber: {
-          name: 'Microfiber Bundle',
-          subtitle: '5 \u00f6rtrefja\u00fer\u00f0ar fyrir \u00fevo\u00f0 og \u00feurrkun',
-        },
-        'ppf-spray': {
-          name: 'PPF Maintenance Spray',
-          subtitle: 'Vi\u00f0hald og glans \u00e1 PPF og l\u00e6singu',
-        },
-      },
+      products: {} as Record<string, { name: string; subtitle: string }>,
       cart: {
         kicker: 'KS PROTECT \u00b7 NETVERSLUN',
         cartTitle: 'Karfa',
@@ -470,7 +433,7 @@ export const translations = {
         total: 'Samtals',
         continue: 'Halda \u00e1fram \u2192',
         checkoutLead:
-          'Fylltu \u00fat uppl\u00fdsingar og vi\u00f0 sta\u00f0festum p\u00f6ntun me\u00f0 s\u00edmtali e\u00f0a netfangi.',
+          'Fylltu \u00fat uppl\u00fdsingar. P\u00f6ntun er s\u00f3tt \u00ed verslun og greidd \u00e1 sta\u00f0num.',
         name: 'Nafn',
         namePlaceholder: 'Fullt nafn',
         phone: 'S\u00edmi',
@@ -478,17 +441,36 @@ export const translations = {
         email: 'Netfang',
         emailPlaceholder: 'nafn@email.is',
         address: 'Heimilisfang',
-        addressPlaceholder: 'Heimilisfang',
+        addressPlaceholder: 'Heimilisfang (ef heimsending)',
+        addressOptional: 'Valfrj\u00e1lst',
         delivery: 'Afhending',
         deliveryPickup: 'S\u00e6kja \u00ed verslun',
+        deliveryPickupHint: 'Skemmuvegi 28, bleik gata, 200 K\u00f3pavogur',
         deliveryHome: 'Heimsending \u00ed Reykjav\u00edk',
+        deliveryHomeHint: 'Kemur flj\u00f3tlega',
+        payment: 'Grei\u00f0sla',
+        paymentOnSite: 'Borga \u00e1 sta\u00f0num',
+        paymentOnSiteHint: 'Greitt \u00ed verslun \u00feegar \u00fe\u00fa s\u00e6kir p\u00f6ntunina.',
+        paymentCard: 'Borga me\u00f0 korti (Valitor)',
+        paymentCardHint: 'Kemur flj\u00f3tlega',
+        paymentCardSoon: '',
+        comingSoon: 'Flj\u00f3tlega',
         notes: 'Athugasemdir',
         notesPlaceholder: 'S\u00e9rstakar \u00f3skir e\u00f0a spurningar...',
         item: 'vara',
         items: 'v\u00f6rur',
         discountLabel: 'Afsl\u00e1ttur:',
         sendOrder: 'Senda p\u00f6ntun \u2197',
+        sendOrderPayOnSite: 'Sta\u00f0festa p\u00f6ntun \u2192',
+        sendOrderCard: 'Panta \u2014 grei\u00f0slulink \u2192',
+        sending: 'Sendi p\u00f6ntun...',
+        success: 'P\u00f6ntun send. Vi\u00f0 sta\u00f0festum flj\u00f3tlega.',
         orderSubject: 'P\u00f6ntun fr\u00e1',
+        errors: {
+          captcha: 'Staðfestu a\u00f0 \u00fe\u00fa s\u00e9rt ekki v\u00e9lmenni.',
+          mailNotConfigured: 'T\u00f6lvup\u00f3stur er ekki uppsettur enn (RESEND_API_KEY).',
+          sendFailed: 'Gat ekki sent p\u00f6ntun. Reyndu aftur.',
+        },
       },
       couponErrors: {
         invalid: '\u00d3gildur afsl\u00e1ttark\u00f3\u00f0i',
@@ -703,7 +685,7 @@ export const translations = {
       copyright: '\u00a9 2026 KS Protect. All rights reserved.',
       terms: 'Terms',
       company: {
-        address: 'Skemmuvegur 28 (pink street)',
+        address: 'Skemmuvegur 28 · pink street, 200 Kópavogur',
         ktLabel: 'Co. ID',
         kt: '530718-1310',
         vskLabel: 'VAT no.',
@@ -724,9 +706,8 @@ export const translations = {
       eyebrow: 'CUSTOMER REVIEWS',
       title: 'SERVICE THAT LEAVES A MARK.',
       lead:
-        'We focus on professional installation, clean workmanship, and clear communication \u2014 these are representative reviews from our customers.',
-      note:
-        'Sample reviews for the website skeleton \u2014 replace with real Google or Facebook reviews when available.',
+        'Real Google reviews for KS Protect \u2014 professional installation, clean workmanship, and clear communication.',
+      note: '',
       items: {
         one: {
           text:
@@ -862,7 +843,7 @@ export const translations = {
       ctaPackages: 'VIEW PACKAGES',
     },
     hero: {
-      kicker: 'KS PROTECT \u00b7 REYKJAV\u00cdK',
+      kicker: 'KS PROTECT \u00b7 K\u00d3PAVOGUR',
       titleLine1: 'PROTECT',
       titleLine2: 'WHAT',
       titleLine3: 'YOU DRIVE',
@@ -891,6 +872,8 @@ export const translations = {
       tierLabel: 'Tier',
       tierOf: 'of 4',
       viewPackage: 'VIEW PACKAGE',
+      closePackage: 'Close',
+      packageIncludes: 'WHAT\'S INCLUDED?',
       packages: {
         bronze: {
           name: 'BRONZE PACKAGE',
@@ -901,6 +884,8 @@ export const translations = {
             'Graphene applied to all exterior paint',
             'Graphene applied to door jambs',
           ],
+          details:
+            'In the Bronze package the vehicle is polished in 1\u20132 stages as needed, then the paint is carefully cleaned. Graphene is applied to all exterior paint and door jambs \u2014 a strong foundation with deep gloss.',
           note: 'Price depends on vehicle size.',
         },
         silver: {
@@ -912,6 +897,8 @@ export const translations = {
             'Heat-resistant coating on wheels',
             'Dedicated glass protection',
           ],
+          details:
+            'In the Silver package the vehicle is polished in 1\u20132 stages as needed, then the paint is carefully cleaned. Graphene is applied to all exterior paint and door jambs. Wheels get a heat-resistant coating and glass is protected with a dedicated glass coating.',
           note: 'Price depends on vehicle size.',
         },
         gold: {
@@ -924,6 +911,8 @@ export const translations = {
             'Wheel protection',
             'Glass protection',
           ],
+          details:
+            'In the Gold package the vehicle is carefully polished as needed, then the paint is thoroughly cleaned. Waxedshine PPS Pro is applied to all exterior paint and door jambs. Waxedshine self-heal graphene is then layered over the PPS Pro. The result is a thick, high-gloss protective shell with a self-healing surface. Wheels are coated with Waxedshine Wheel and glass with Waxedshine Glass.',
           note: 'Price depends on vehicle size and condition.',
         },
         diamond: {
@@ -935,6 +924,8 @@ export const translations = {
             'Wheel and glass protection',
             'Interior, seats, and carpets protected with dedicated interior coating',
           ],
+          details:
+            'The Diamond package includes everything from Gold: careful polishing, PPS Pro, self-healing graphene, plus wheel and glass coating. On top of that, the full interior \u2014 seats and carpets included \u2014 is treated with a dedicated Interior coating for complete inside-and-out protection.',
           note: 'Price depends on vehicle size and condition.',
         },
       },
@@ -973,7 +964,7 @@ export const translations = {
       phone: 'PHONE',
       email: 'EMAIL',
       location: 'LOCATION',
-      locationValue: 'Skemmuvegur 28 (pink street)',
+      locationValue: 'Skemmuvegur 28 · pink street, 200 Kópavogur',
       bookDirectly: 'BOOK DIRECTLY',
       formHeading: 'Quote request',
       formSubheading: 'Fill in your details below.',
@@ -995,9 +986,16 @@ export const translations = {
       message: 'Message',
       messagePlaceholder: 'Tell us a little about your car and what you want...',
       sendInquiry: 'SEND INQUIRY',
+      sending: 'Sending...',
+      success: 'Your inquiry was sent. We will get back to you soon.',
       formNote:
-        'We will open a ready-to-send email to KS Protect with your details.',
+        'Click Send and we receive your inquiry directly at ksprotect@ksprotect.is.',
       mailSubject: 'Quote request from',
+      errors: {
+        captcha: 'Please confirm you are not a robot.',
+        mailNotConfigured: 'Email is not configured yet (RESEND_API_KEY).',
+        sendFailed: 'Could not send inquiry. Please try again.',
+      },
     },
     configuratorHub: {
       eyebrow: 'INTERACTIVE CONFIGURATOR',
@@ -1060,60 +1058,7 @@ export const translations = {
         popular: 'POPULAR',
         top: 'TOP',
       },
-      products: {
-        'foam-wash': {
-          name: 'Ultra Foam Shampoo',
-          subtitle: 'Dual-action foam wash for safe cleaning',
-        },
-        'ph-wash': {
-          name: 'pH Neutral Wash',
-          subtitle: 'Gentle wash safe for PPF and paint',
-        },
-        'apc-d': {
-          name: 'APC+D All-Purpose Cleaner',
-          subtitle: 'Multi-surface cleaner for interior and exterior',
-        },
-        interior: {
-          name: 'Interior Cleaner',
-          subtitle: 'Cleaner for seats, trim, and plastics',
-        },
-        'aqua-bead': {
-          name: 'Aqua Bead Spray',
-          subtitle: 'Spray sealant for maintenance and gloss',
-        },
-        'ceramic-boost': {
-          name: 'Ceramic Boost',
-          subtitle: 'Boosts protection and adds deep gloss',
-        },
-        'cut-compound': {
-          name: 'Cutting Compound',
-          subtitle: 'For polishing and defect removal',
-        },
-        'finish-polish': {
-          name: 'Finishing Polish',
-          subtitle: 'Final step for deep, mirror-like gloss',
-        },
-        'wheel-clean': {
-          name: 'Wheel Cleaner',
-          subtitle: 'Dedicated formula for wheels and brakes',
-        },
-        'tire-dress': {
-          name: 'Tire Dressing',
-          subtitle: 'Clean, matte tire finish',
-        },
-        applicator: {
-          name: 'Microfiber Applicators',
-          subtitle: '3 pcs for coating, sealant, and maintenance',
-        },
-        microfiber: {
-          name: 'Microfiber Bundle',
-          subtitle: '5 microfiber towels for wash and dry',
-        },
-        'ppf-spray': {
-          name: 'PPF Maintenance Spray',
-          subtitle: 'Maintenance and gloss for PPF and paint',
-        },
-      },
+      products: {} as Record<string, { name: string; subtitle: string }>,
       cart: {
         kicker: 'KS PROTECT \u00b7 SHOP',
         cartTitle: 'Cart',
@@ -1135,7 +1080,7 @@ export const translations = {
         total: 'Total',
         continue: 'Continue \u2192',
         checkoutLead:
-          'Fill in your details and we will confirm your order by phone or email.',
+          'Fill in your details. Orders are picked up in store and paid on site.',
         name: 'Name',
         namePlaceholder: 'Full name',
         phone: 'Phone',
@@ -1143,17 +1088,36 @@ export const translations = {
         email: 'Email',
         emailPlaceholder: 'name@email.com',
         address: 'Address',
-        addressPlaceholder: 'Address',
+        addressPlaceholder: 'Address (if delivery)',
+        addressOptional: 'Optional',
         delivery: 'Delivery',
         deliveryPickup: 'Pick up in store',
+        deliveryPickupHint: 'Skemmuvegur 28, pink street, 200 K\u00f3pavogur',
         deliveryHome: 'Home delivery in Reykjav\u00edk',
+        deliveryHomeHint: 'Coming soon',
+        payment: 'Payment',
+        paymentOnSite: 'Pay in store',
+        paymentOnSiteHint: 'Pay at the shop when you collect your order.',
+        paymentCard: 'Pay by card (Valitor)',
+        paymentCardHint: 'Coming soon',
+        paymentCardSoon: '',
+        comingSoon: 'Coming soon',
         notes: 'Notes',
         notesPlaceholder: 'Special requests or questions...',
         item: 'item',
         items: 'items',
         discountLabel: 'Discount:',
         sendOrder: 'Send order \u2197',
+        sendOrderPayOnSite: 'Confirm order \u2192',
+        sendOrderCard: 'Order \u2014 payment link \u2192',
+        sending: 'Sending order...',
+        success: 'Order sent. We will confirm shortly.',
         orderSubject: 'Order from',
+        errors: {
+          captcha: 'Please confirm you are not a robot.',
+          mailNotConfigured: 'Email is not configured yet (RESEND_API_KEY).',
+          sendFailed: 'Could not send order. Please try again.',
+        },
       },
       couponErrors: {
         invalid: 'Invalid discount code',

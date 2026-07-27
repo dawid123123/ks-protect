@@ -1,6 +1,18 @@
-import { ShopProduct, shopProducts } from '../components/shopData';
+import {
+  ShopCategoryDef,
+  ShopProduct,
+  cloneDefaultCategories,
+  mergeCatalogCategories,
+  shopProducts,
+} from '../components/shopData';
 
-export const SHOP_STORAGE_KEY = 'ks-shop-products-v1';
+export const SHOP_STORAGE_KEY = 'ks-shop-catalog-v6';
+
+export type StoredShopCatalog = {
+  updatedAt?: string;
+  products: ShopProduct[];
+  categories: ShopCategoryDef[];
+};
 
 export function cloneDefaultProducts(): ShopProduct[] {
   return shopProducts.map((product) => ({
@@ -9,7 +21,7 @@ export function cloneDefaultProducts(): ShopProduct[] {
   }));
 }
 
-export function loadStoredProducts(): ShopProduct[] | null {
+export function loadStoredCatalog(): StoredShopCatalog | null {
   if (typeof window === 'undefined') {
     return null;
   }
@@ -20,21 +32,35 @@ export function loadStoredProducts(): ShopProduct[] | null {
       return null;
     }
 
-    const parsed = JSON.parse(raw) as { products?: ShopProduct[] };
+    const parsed = JSON.parse(raw) as Partial<StoredShopCatalog>;
     if (!Array.isArray(parsed.products) || parsed.products.length === 0) {
       return null;
     }
 
-    return parsed.products.map((product) => ({
+    const products = parsed.products.map((product) => ({
       ...product,
       active: product.active !== false,
     }));
+
+    return {
+      updatedAt: parsed.updatedAt,
+      products,
+      categories: mergeCatalogCategories(parsed.categories, products),
+    };
   } catch {
     return null;
   }
 }
 
-export function saveStoredProducts(products: ShopProduct[]) {
+/** @deprecated use loadStoredCatalog */
+export function loadStoredProducts(): ShopProduct[] | null {
+  return loadStoredCatalog()?.products || null;
+}
+
+export function saveStoredCatalog(
+  products: ShopProduct[],
+  categories?: ShopCategoryDef[]
+) {
   if (typeof window === 'undefined') {
     return;
   }
@@ -44,8 +70,14 @@ export function saveStoredProducts(products: ShopProduct[]) {
     JSON.stringify({
       updatedAt: new Date().toISOString(),
       products,
-    })
+      categories: mergeCatalogCategories(categories, products),
+    } satisfies StoredShopCatalog)
   );
+}
+
+/** @deprecated use saveStoredCatalog */
+export function saveStoredProducts(products: ShopProduct[]) {
+  saveStoredCatalog(products);
 }
 
 export function clearStoredProducts() {
@@ -56,22 +88,28 @@ export function clearStoredProducts() {
   window.localStorage.removeItem(SHOP_STORAGE_KEY);
 }
 
-export async function loadPublicCatalog(): Promise<ShopProduct[] | null> {
+export async function loadPublicCatalog(): Promise<StoredShopCatalog | null> {
   try {
     const response = await fetch('/shop-catalog.json', { cache: 'no-store' });
     if (!response.ok) {
       return null;
     }
 
-    const data = (await response.json()) as { products?: ShopProduct[] };
+    const data = (await response.json()) as Partial<StoredShopCatalog>;
     if (!Array.isArray(data.products) || data.products.length === 0) {
       return null;
     }
 
-    return data.products.map((product) => ({
+    const products = data.products.map((product) => ({
       ...product,
       active: product.active !== false,
     }));
+
+    return {
+      updatedAt: data.updatedAt,
+      products,
+      categories: mergeCatalogCategories(data.categories, products),
+    };
   } catch {
     return null;
   }
@@ -120,3 +158,5 @@ export function resizeImageFile(
     reader.readAsDataURL(file);
   });
 }
+
+export { cloneDefaultCategories };

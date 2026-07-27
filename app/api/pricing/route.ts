@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  if (!isShopAdminAuthenticated()) {
+  if (!(await isShopAdminAuthenticated())) {
     return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
   }
 

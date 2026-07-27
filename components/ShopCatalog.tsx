@@ -7,10 +7,11 @@ import {
   useTranslation,
 } from '../lib/i18n/context';
 import {
+  cloneDefaultCategories,
   cloneDefaultProducts,
   loadPublicCatalog,
-  loadStoredProducts,
-  saveStoredProducts,
+  loadStoredCatalog,
+  saveStoredCatalog,
 } from '../lib/shopStorage';
 import ShopAdmin from './ShopAdmin';
 import ShopCartDrawer from './ShopCartDrawer';
@@ -22,7 +23,15 @@ import {
   isValidCoupon,
   normalizeCoupon,
 } from './shopCartUtils';
-import { ShopCategory, ShopProduct, shopCategories } from './shopData';
+import {
+  ShopCategory,
+  ShopCategoryDef,
+  ShopProduct,
+  categoryLabel,
+  getProductCategories,
+  getSalePercent,
+  productHasCategory,
+} from './shopData';
 
 type SortMode = 'default' | 'price-asc' | 'price-desc' | 'name';
 type DrawerStep = 'cart' | 'checkout';
@@ -44,6 +53,9 @@ export default function ShopCatalog() {
   const [products, setProducts] = useState<ShopProduct[]>(() =>
     cloneDefaultProducts()
   );
+  const [categories, setCategories] = useState<ShopCategoryDef[]>(() =>
+    cloneDefaultCategories()
+  );
   const [ready, setReady] = useState(false);
   const [category, setCategory] = useState<ShopCategory>('all');
   const [sort, setSort] = useState<SortMode>('default');
@@ -56,6 +68,15 @@ export default function ShopCatalog() {
   const [adminOpen, setAdminOpen] = useState(false);
   const [secretClicks, setSecretClicks] = useState(0);
 
+  function applyCatalog(nextProducts: ShopProduct[], nextCategories?: ShopCategoryDef[]) {
+    setProducts(nextProducts);
+    const cats = nextCategories?.length
+      ? nextCategories
+      : cloneDefaultCategories();
+    setCategories(cats);
+    saveStoredCatalog(nextProducts, cats);
+  }
+
   useEffect(() => {
     let cancelled = false;
 
@@ -63,10 +84,12 @@ export default function ShopCatalog() {
       try {
         const response = await fetch('/api/shop/products', { cache: 'no-store' });
         if (response.ok) {
-          const data = (await response.json()) as { products?: ShopProduct[] };
+          const data = (await response.json()) as {
+            products?: ShopProduct[];
+            categories?: ShopCategoryDef[];
+          };
           if (!cancelled && Array.isArray(data.products) && data.products.length) {
-            setProducts(data.products);
-            saveStoredProducts(data.products);
+            applyCatalog(data.products, data.categories);
             setReady(true);
             return;
           }
@@ -75,10 +98,10 @@ export default function ShopCatalog() {
         // fall through
       }
 
-      const stored = loadStoredProducts();
+      const stored = loadStoredCatalog();
       if (stored) {
         if (!cancelled) {
-          setProducts(stored);
+          applyCatalog(stored.products, stored.categories);
           setReady(true);
         }
         return;
@@ -86,22 +109,16 @@ export default function ShopCatalog() {
 
       const published = await loadPublicCatalog();
       if (!cancelled) {
-        setProducts(published || cloneDefaultProducts());
+        if (published) {
+          applyCatalog(published.products, published.categories);
+        } else {
+          applyCatalog(cloneDefaultProducts(), cloneDefaultCategories());
+        }
         setReady(true);
       }
     }
 
     load();
-
-    function openAdminFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('admin') === '1' || window.location.hash === '#admin') {
-        setAdminOpen(true);
-      }
-    }
-
-    openAdminFromUrl();
-    window.setTimeout(openAdminFromUrl, 0);
 
     return () => {
       cancelled = true;
@@ -117,24 +134,18 @@ export default function ShopCatalog() {
     let items =
       category === 'all'
         ? visibleProducts
-        : visibleProducts.filter((item) => item.category === category);
+        : visibleProducts.filter((item) => productHasCategory(item, category));
 
     if (sort === 'price-asc') {
       items = [...items].sort((a, b) => a.price - b.price);
     } else if (sort === 'price-desc') {
       items = [...items].sort((a, b) => b.price - a.price);
     } else if (sort === 'name') {
-      items = [...items].sort((a, b) => {
-        const nameA =
-          t.shop.products[a.id as keyof typeof t.shop.products]?.name ?? a.name;
-        const nameB =
-          t.shop.products[b.id as keyof typeof t.shop.products]?.name ?? b.name;
-        return nameA.localeCompare(nameB);
-      });
+      items = [...items].sort((a, b) => a.name.localeCompare(b.name, 'is'));
     }
 
     return items;
-  }, [category, sort, t, visibleProducts]);
+  }, [category, sort, visibleProducts]);
 
   const cartCount = getCartCount(cart);
   const subtotal = getCartTotal(cart, products);
@@ -201,10 +212,6 @@ export default function ShopCatalog() {
     setCouponError('');
   }
 
-  function productCopy(id: string) {
-    return t.shop.products[id as keyof typeof t.shop.products];
-  }
-
   function badgeLabel(badge: string | undefined) {
     if (badge === 'POPULAR') {
       return t.shop.badges.popular;
@@ -212,7 +219,14 @@ export default function ShopCatalog() {
     if (badge === 'TOP') {
       return t.shop.badges.top;
     }
+    if (badge === 'UPPSELT') {
+      return lang === 'en' ? 'OUT OF STOCK' : 'UPPSELT';
+    }
     return badge;
+  }
+
+  function isOutOfStock(product: ShopProduct) {
+    return product.badge === 'UPPSELT';
   }
 
   function onSecretClick() {
@@ -245,16 +259,23 @@ export default function ShopCatalog() {
           <div className="shop-layout">
             <aside className="shop-sidebar">
               <div className="shop-panel">
-                <h3>{'CATEGORIES'}</h3>
+                <h3>{lang === 'en' ? 'CATEGORIES' : 'FLOKKAR'}</h3>
                 <div className="shop-category-list">
-                  {shopCategories.map((item) => (
+                  <button
+                    type="button"
+                    className={category === 'all' ? 'active' : ''}
+                    onClick={() => setCategory('all')}
+                  >
+                    {t.shop.categories.all}
+                  </button>
+                  {categories.map((item) => (
                     <button
                       key={item.id}
                       type="button"
                       className={category === item.id ? 'active' : ''}
                       onClick={() => setCategory(item.id)}
                     >
-                      {t.shop.categories[item.id]}
+                      {categoryLabel(item, lang)}
                     </button>
                   ))}
                 </div>
@@ -263,13 +284,6 @@ export default function ShopCatalog() {
               <div className="shop-panel shop-panel-note">
                 <h3>{t.shop.pickUpInStore}</h3>
                 <p>{t.shop.pickUpNote}</p>
-                <button
-                  type="button"
-                  className="shop-admin-link"
-                  onClick={() => setAdminOpen(true)}
-                >
-                  Admin
-                </button>
               </div>
             </aside>
 
@@ -299,48 +313,74 @@ export default function ShopCatalog() {
 
               <div className="shop-grid">
                 {filtered.map((product) => {
-                  const copy = productCopy(product.id);
+                  const salePercent = getSalePercent(product);
                   return (
                     <article
                       className={'shop-card shop-card-' + product.tone}
                       key={product.id}
                     >
-                      {product.badge && (
+                      {salePercent > 0 ? (
+                        <span className="shop-card-badge shop-card-badge-sale">
+                          -{salePercent}%
+                        </span>
+                      ) : product.badge ? (
                         <span className="shop-card-badge">
                           {badgeLabel(product.badge)}
                         </span>
-                      )}
+                      ) : null}
                       <div className="shop-card-visual">
                         {product.image ? (
                           <img
                             className="shop-card-image"
                             src={product.image}
-                            alt={copy?.name ?? product.name}
+                            alt={product.name}
                           />
                         ) : (
-                          <div className="shop-bottle">
-                            <span>{product.size}</span>
-                          </div>
+                          <div className="shop-bottle" aria-hidden="true" />
                         )}
                       </div>
                       <div className="shop-card-meta">
-                        <span>{t.shop.categories[product.category]}</span>
-                        <h3>{copy?.name ?? product.name}</h3>
-                        <p>{copy?.subtitle ?? product.subtitle}</p>
-                        {product.description ? (
-                          <p className="shop-card-desc">{product.description}</p>
-                        ) : null}
+                        <div className="shop-card-meta-top">
+                          <span>
+                            {getProductCategories(product)
+                              .map((id) =>
+                                categoryLabel(
+                                  categories.find((c) => c.id === id),
+                                  lang,
+                                  id
+                                )
+                              )
+                              .join(' · ')}
+                          </span>
+                          {product.size ? (
+                            <em className="shop-card-size">{product.size}</em>
+                          ) : null}
+                        </div>
+                        <h3>{product.name}</h3>
+                        <p className="shop-card-blurb">
+                          {product.subtitle || product.description}
+                        </p>
                       </div>
                       <div className="shop-card-footer">
-                        <strong>
-                          {formatLocalizedPrice(lang, product.price)}
-                        </strong>
+                        <div className="shop-card-price">
+                          {salePercent > 0 && product.compareAtPrice ? (
+                            <s>
+                              {formatLocalizedPrice(lang, product.compareAtPrice)}
+                            </s>
+                          ) : null}
+                          <strong>
+                            {formatLocalizedPrice(lang, product.price)}
+                          </strong>
+                        </div>
                         <button
                           type="button"
+                          disabled={isOutOfStock(product)}
                           onClick={() => addToCart(product.id)}
                         >
                           <CartIcon />
-                          {t.shop.addToCart}
+                          {isOutOfStock(product)
+                            ? badgeLabel('UPPSELT')
+                            : t.shop.addToCart}
                         </button>
                       </div>
                     </article>
@@ -381,13 +421,21 @@ export default function ShopCatalog() {
         onCouponInputChange={setCouponInput}
         onApplyCoupon={applyCoupon}
         onClearCoupon={clearCoupon}
+        onOrderSuccess={() => {
+          setCart({});
+          setAppliedCoupon(null);
+          setCouponInput('');
+        }}
       />
 
       <ShopAdmin
         open={adminOpen}
         products={products}
+        categories={categories}
         onClose={() => setAdminOpen(false)}
-        onProductsChange={setProducts}
+        onCatalogChange={(nextProducts, nextCategories) => {
+          applyCatalog(nextProducts, nextCategories);
+        }}
       />
     </>
   );

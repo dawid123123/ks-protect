@@ -1,17 +1,40 @@
 'use client';
 
-import { verifiedCarPhotos, photoThumb } from './siteImages';
+import { useEffect, useState } from 'react';
 import { useTranslation } from '../lib/i18n/context';
 import { brand } from '../lib/brand';
-
-const instagramPhotos = verifiedCarPhotos.map((url) => photoThumb(url, 640));
+import {
+  INSTAGRAM_ROTATE_MS,
+  INSTAGRAM_VISIBLE,
+  instagramPosts,
+} from '../lib/instagramPosts';
 
 export default function InstagramStrip() {
   const t = useTranslation();
+  const [offset, setOffset] = useState(0);
 
-  if (!brand.showInstagram) {
+  const total = instagramPosts.length;
+  const visibleCount = Math.min(INSTAGRAM_VISIBLE, total);
+
+  useEffect(() => {
+    if (total <= visibleCount) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setOffset((prev) => (prev + 1) % total);
+    }, INSTAGRAM_ROTATE_MS);
+
+    return () => window.clearInterval(timer);
+  }, [total, visibleCount]);
+
+  if (!brand.showInstagram || total === 0) {
     return null;
   }
+
+  const visible = Array.from({ length: visibleCount }, (_, index) => {
+    return instagramPosts[(offset + index) % total];
+  });
 
   return (
     <div className="footer-instagram">
@@ -31,16 +54,17 @@ export default function InstagramStrip() {
       </div>
 
       <div className="footer-instagram-grid">
-        {instagramPhotos.map((src, index) => (
+        {visible.map((post) => (
           <a
-            key={src + index}
+            key={post.id + '-' + offset}
             className="footer-instagram-tile"
-            href={brand.instagramUrl}
-            target={brand.instagramUrl.startsWith('http') ? '_blank' : undefined}
-            rel={brand.instagramUrl.startsWith('http') ? 'noreferrer' : undefined}
-            aria-label={t.footer.instagramPhotoAlt + ' ' + (index + 1)}
+            href={post.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={t.footer.instagramPhotoAlt}
           >
-            <img src={src} alt="" loading="lazy" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={post.src} alt="" loading="lazy" decoding="async" />
           </a>
         ))}
       </div>

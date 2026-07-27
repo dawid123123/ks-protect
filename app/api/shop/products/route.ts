@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ShopProduct } from '../../../../components/shopData';
+import { ShopCategoryDef, ShopProduct } from '../../../../components/shopData';
 import { isShopAdminAuthenticated } from '../../../../lib/shopAuth';
 import {
   getShopCatalog,
@@ -18,11 +18,11 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  if (!isShopAdminAuthenticated()) {
+  if (!(await isShopAdminAuthenticated())) {
     return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
   }
 
-  let body: { products?: ShopProduct[] } = {};
+  let body: { products?: ShopProduct[]; categories?: ShopCategoryDef[] } = {};
   try {
     body = await request.json();
   } catch {
@@ -34,7 +34,7 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const saved = await saveShopCatalog(body.products);
+    const saved = await saveShopCatalog(body.products, body.categories);
     return NextResponse.json({
       ok: true,
       ...saved,

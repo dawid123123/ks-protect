@@ -1,19 +1,11 @@
 'use client';
 
+import { useEffect, useId, useState } from 'react';
 import { useTranslation } from '../lib/i18n/context';
-import { isDemo } from '../lib/brand';
 import SectionIntro from './SectionIntro';
 
 const packageKeys = ['silver', 'gold', 'diamond'] as const;
-
-/** Real site links to old WP package pages; demo stays inside the template. */
-const packageHrefs: Record<(typeof packageKeys)[number], string> = {
-  silver: 'https://ksprotect.is/services/silfur/',
-  gold: 'https://ksprotect.is/services/gull/',
-  diamond: 'https://ksprotect.is/services/demants/',
-};
-
-const demoPackageHref = '/#contact';
+type PackageKey = (typeof packageKeys)[number];
 
 const benefitKeys = ['hydrophobic', 'heat', 'dust', 'chemical'] as const;
 
@@ -64,13 +56,39 @@ function BenefitIcon({ type }: { type: (typeof benefitKeys)[number] }) {
 
 export default function Graphene() {
   const t = useTranslation();
+  const titleId = useId();
+  const [activePackage, setActivePackage] = useState<PackageKey | null>(null);
 
-  const packages = packageKeys.map((key, index) => ({
+  const packages = packageKeys.map((key) => ({
+    key,
     featured: key === 'gold',
-    href: isDemo ? demoPackageHref : packageHrefs[key],
-    external: !isDemo,
     ...t.services.packages[key],
   }));
+
+  const active = activePackage
+    ? packages.find((item) => item.key === activePackage) || null
+    : null;
+
+  useEffect(() => {
+    if (!activePackage) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActivePackage(null);
+      }
+    };
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [activePackage]);
 
   return (
     <section className="services services-v2" id="graphene">
@@ -84,8 +102,10 @@ export default function Graphene() {
         <div className="serviceGrid serviceGrid-v2">
           {packages.map((item) => (
             <article
-              className={'serviceCard serviceCard-v2' + (item.featured ? ' featured' : '')}
-              key={item.name}
+              className={
+                'serviceCard serviceCard-v2' + (item.featured ? ' featured' : '')
+              }
+              key={item.key}
             >
               {item.featured && (
                 <span className="popular-badge">{t.services.mostPopular}</span>
@@ -100,15 +120,13 @@ export default function Graphene() {
                 ))}
               </ul>
               <p className="package-note">{item.note}</p>
-              <a
-                href={item.href}
+              <button
+                type="button"
                 className="service-link"
-                {...(item.external
-                  ? { target: '_blank', rel: 'noreferrer' }
-                  : {})}
+                onClick={() => setActivePackage(item.key)}
               >
-                {t.services.viewPackage} <span>{'\u2197'}</span>
-              </a>
+                {t.services.viewPackage} <span>{'\u2192'}</span>
+              </button>
             </article>
           ))}
         </div>
@@ -138,6 +156,70 @@ export default function Graphene() {
           </div>
         </div>
       </div>
+
+      {active ? (
+        <div
+          className="package-detail-overlay"
+          role="presentation"
+          onClick={() => setActivePackage(null)}
+        >
+          <div
+            className={
+              'package-detail-panel' +
+              (active.featured ? ' package-detail-panel-featured' : '')
+            }
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="package-detail-close"
+              onClick={() => setActivePackage(null)}
+              aria-label={t.services.closePackage}
+            >
+              ×
+            </button>
+
+            {active.featured ? (
+              <span className="package-detail-badge">{t.services.mostPopular}</span>
+            ) : null}
+
+            <p className="package-detail-tag">{active.tag}</p>
+            <h3 id={titleId}>{active.name}</h3>
+            <p className="package-detail-copy">{active.details}</p>
+
+            <div className="package-detail-includes">
+              <small>{t.services.packageIncludes}</small>
+              <ul>
+                {active.items.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="package-detail-note">{active.note}</p>
+
+            <div className="package-detail-actions">
+              <a
+                href="/#contact"
+                className="btn-primary"
+                onClick={() => setActivePackage(null)}
+              >
+                {t.services.getFreeQuote} <span>{'\u2192'}</span>
+              </a>
+              <button
+                type="button"
+                className="package-detail-secondary"
+                onClick={() => setActivePackage(null)}
+              >
+                {t.services.closePackage}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

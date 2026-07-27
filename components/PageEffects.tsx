@@ -1,12 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
-
-/** Marks motion CSS as ready. No per-scroll style writes (those tanked FPS). */
+/** Kept for layout compatibility — no motion / scroll effects. */
 export default function PageEffects() {
-  useEffect(() => {
-    document.documentElement.classList.add('motion-ready');
-  }, []);
-
   return null;
 }

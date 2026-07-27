@@ -150,17 +150,17 @@ export default function Navbar() {
           <div className="nav-mobile-footer">
             <div className="navSocials" aria-label={t.nav.socialLabel}>
               <a
-                href="https://www.facebook.com/"
-                target="_blank"
-                rel="noreferrer"
+                href={brand.facebookUrl}
+                target={brand.facebookUrl.startsWith('http') ? '_blank' : undefined}
+                rel={brand.facebookUrl.startsWith('http') ? 'noreferrer' : undefined}
                 aria-label="Facebook"
               >
                 <FacebookIcon />
               </a>
               <a
                 href={brand.instagramUrl}
-                target="_blank"
-                rel="noreferrer"
+                target={brand.instagramUrl.startsWith('http') ? '_blank' : undefined}
+                rel={brand.instagramUrl.startsWith('http') ? 'noreferrer' : undefined}
                 aria-label="Instagram"
               >
                 <InstagramIcon />
@@ -181,17 +181,17 @@ export default function Navbar() {
       <div className="navRight">
         <div className="navSocials" aria-label={t.nav.socialLabel}>
           <a
-            href="https://www.facebook.com/"
-            target="_blank"
-            rel="noreferrer"
+            href={brand.facebookUrl}
+            target={brand.facebookUrl.startsWith('http') ? '_blank' : undefined}
+            rel={brand.facebookUrl.startsWith('http') ? 'noreferrer' : undefined}
             aria-label="Facebook"
           >
             <FacebookIcon />
           </a>
           <a
             href={brand.instagramUrl}
-            target="_blank"
-            rel="noreferrer"
+            target={brand.instagramUrl.startsWith('http') ? '_blank' : undefined}
+            rel={brand.instagramUrl.startsWith('http') ? 'noreferrer' : undefined}
             aria-label="Instagram"
           >
             <InstagramIcon />

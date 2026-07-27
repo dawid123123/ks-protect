@@ -60,6 +60,9 @@ export function getCartGrandTotal(
   return subtotal - getCartDiscount(subtotal, appliedCoupon);
 }
 
+export type ShopDelivery = 'pickup' | 'delivery';
+export type ShopPayment = 'pay_on_site' | 'card_valitor';
+
 export function buildOrderMailBody(
   cart: CartState,
   form: {
@@ -68,6 +71,7 @@ export function buildOrderMailBody(
     email: string;
     address: string;
     delivery: string;
+    payment: string;
     notes: string;
   },
   appliedCoupon: string | null = null,
@@ -75,21 +79,21 @@ export function buildOrderMailBody(
   products: ShopProduct[] = shopProducts
 ) {
   const cartT = translations[lang].shop.cart;
-  const productLabels = translations[lang].shop.products;
   const lines = getCartLines(cart, products);
   const subtotal = getCartTotal(cart, products);
   const discount = getCartDiscount(subtotal, appliedCoupon);
   const grandTotal = subtotal - discount;
   const deliveryLabel =
     form.delivery === 'pickup' ? cartT.deliveryPickup : cartT.deliveryHome;
+  const paymentLabel =
+    form.payment === 'card_valitor'
+      ? cartT.paymentCard
+      : cartT.paymentOnSite;
   const items = lines
     .map((line) => {
-      const productCopy =
-        productLabels[line.product.id as keyof typeof productLabels];
-      const name = productCopy?.name ?? line.product.name;
       return (
         '- ' +
-        name +
+        line.product.name +
         ' (' +
         line.product.size +
         ') x' +
@@ -117,11 +121,15 @@ export function buildOrderMailBody(
     '\n' +
     cartT.address +
     ': ' +
-    form.address +
+    (form.address || '-') +
     '\n' +
     cartT.delivery +
     ': ' +
     deliveryLabel +
+    '\n' +
+    cartT.payment +
+    ': ' +
+    paymentLabel +
     '\n\nProducts:\n' +
     items +
     '\n\n' +
