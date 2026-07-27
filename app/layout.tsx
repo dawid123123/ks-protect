@@ -5,13 +5,11 @@ import PageBackground from '../components/PageBackground';
 import PageEffects from '../components/PageEffects';
 import Providers from '../components/Providers';
 import { heroImage } from '../components/siteImages';
-import { isDemo } from '../lib/brand';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const siteDescription = isDemo
-  ? 'Sýnishorn af sniðmáti — PPF, tint og grafín. Merki og texti verða sérsniðin.'
-  : 'Heimsklassa PPF, gluggatint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk \u2014 stilltu verndina \u00fe\u00edna \u00e1 netinu.';
+const siteDescription =
+  'Heimsklassa PPF, gluggatint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk \u2014 stilltu verndina \u00fe\u00edna \u00e1 netinu.';
 
 function getSiteUrl() {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
@@ -26,13 +24,12 @@ function getSiteUrl() {
 }
 
 const siteUrl = getSiteUrl();
-const brandName = isDemo ? 'Sniðmát' : 'KS Protect';
+const brandName = 'KS Protect';
+const siteTitle = 'KS Protect \u00b7 PPF, Tint & Graf\u00edn';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: isDemo
-    ? 'Sniðmát · PPF, Tint & Grafín'
-    : 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
+  title: siteTitle,
   description: siteDescription,
   applicationName: brandName,
   authors: [{ name: brandName }],
@@ -49,26 +46,20 @@ export const metadata: Metadata = {
     alternateLocale: ['en_US'],
     url: siteUrl,
     siteName: brandName,
-    title: isDemo
-      ? 'Sniðmát · PPF, Tint & Grafín'
-      : 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
+    title: siteTitle,
     description: siteDescription,
     images: [
       {
         url: heroImage,
         width: 1200,
         height: 630,
-        alt: isDemo
-          ? 'Sniðmát — PPF, tint og grafín'
-          : 'KS Protect \u2014 PPF, tint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk',
+        alt: 'KS Protect \u2014 PPF, tint og graf\u00ednv\u00f6rn \u00ed Reykjav\u00edk',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: isDemo
-      ? 'Sniðmát · PPF, Tint & Grafín'
-      : 'KS Protect \u00b7 PPF, Tint & Graf\u00edn',
+    title: siteTitle,
     description: siteDescription,
     images: [heroImage],
   },

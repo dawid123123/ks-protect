@@ -1,32 +1,10 @@
 /**
  * KS Protect live brand.
- * Set NEXT_PUBLIC_DEMO=1 only when intentionally previewing the blank template.
+ * Demo / blank-template mode lives on Leigsíða — not in this repo.
  */
-export const isDemo =
-  process.env.NEXT_PUBLIC_DEMO === '1' ||
-  process.env.NEXT_PUBLIC_DEMO === 'true';
+export const isDemo = false;
 
-const demo = {
-  logoPrimary: 'Logo',
-  logoAccent: '',
-  email: 'netfang@fyrirtaeki.is',
-  phoneDisplay: '000 0000',
-  phoneTel: '#contact',
-  address: 'Heimilisfang, Reykjavík',
-  facebookUrl: '#',
-  instagramHandle: '@instagram',
-  instagramUrl: '#',
-  bookingUrl: '#contact',
-  mapQuery: '',
-  showMap: false,
-  showInstagram: true,
-  kt: '000000-0000',
-  vsk: '000000',
-  agencyUrl: process.env.NEXT_PUBLIC_AGENCY_URL || '',
-  agencyName: 'Leigsíða',
-};
-
-const real = {
+export const brand = {
   logoPrimary: 'KS',
   logoAccent: 'PROTECT',
   email: 'ksprotect@ksprotect.is',
@@ -45,5 +23,3 @@ const real = {
   agencyUrl: '',
   agencyName: '',
 };
-
-export const brand = isDemo ? demo : real;

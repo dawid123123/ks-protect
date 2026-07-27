@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '../lib/i18n/context';
-import { brand, isDemo } from '../lib/brand';
+import { brand } from '../lib/brand';
 import InstagramStrip from './InstagramStrip';
 
 const MAP_QUERY = brand.mapQuery;
@@ -132,15 +132,6 @@ export default function Footer() {
             </a>
           </p>
         </div>
-
-        {isDemo && brand.agencyUrl ? (
-          <p className="footer-agency">
-            Sniðmát frá{' '}
-            <a href={brand.agencyUrl} target="_blank" rel="noreferrer">
-              {brand.agencyName}
-            </a>
-          </p>
-        ) : null}
       </div>
     </footer>
   );
