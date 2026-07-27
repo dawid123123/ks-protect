@@ -62,9 +62,22 @@ export default function Hero() {
         <div className="hero-panel hero-panel-media">
           <div className="hero-image hero-image-v2">
             <img src={heroImage} alt={t.hero.imageAlt} />
-            <div className="hero-media-badge">
-              <span>12</span>
-              {t.hero.warranty}
+            <div className="hero-media-badge" aria-label={t.hero.warrantyAria}>
+              <div className="hero-media-badge-row">
+                <span>10</span>
+                <div>
+                  <strong>{t.hero.warrantyFilm}</strong>
+                  <em>{t.hero.warrantyLabel}</em>
+                </div>
+              </div>
+              <div className="hero-media-badge-divider" />
+              <div className="hero-media-badge-row">
+                <span>5</span>
+                <div>
+                  <strong>{t.hero.warrantyGraphene}</strong>
+                  <em>{t.hero.warrantyLabel}</em>
+                </div>
+              </div>
             </div>
           </div>
         </div>

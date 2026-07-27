@@ -206,7 +206,10 @@ export const translations = {
       statsExperience: '\u00c1RA REYNSLA',
       statsCars: 'VAR\u00d0IR B\u00cdLAR',
       statsSatisfaction: '\u00c1N\u00c6GJA',
-      warranty: '\u00c1RA \u00c1BYRG\u00d0',
+      warrantyLabel: '\u00c1RA \u00c1BYRG\u00d0',
+      warrantyFilm: 'FILMA',
+      warrantyGraphene: 'GRAF\u00cdN',
+      warrantyAria: '10 \u00e1ra \u00e1byrg\u00f0 \u00e1 filmu, 5 \u00e1ra \u00e1byrg\u00f0 \u00e1 graf\u00edn',
       imageAlt: 'Mercedes-AMG GT \u00ed gr\u00e6nu KS Protect umhverfi',
       quickLinks: {
         ppfConfigurator: 'PPF STILLINGAR',
@@ -854,7 +857,10 @@ export const translations = {
       statsExperience: 'YEARS EXPERIENCE',
       statsCars: 'CARS PROTECTED',
       statsSatisfaction: 'SATISFACTION',
-      warranty: 'YEAR WARRANTY',
+      warrantyLabel: 'YEAR WARRANTY',
+      warrantyFilm: 'FILM',
+      warrantyGraphene: 'GRAPHENE',
+      warrantyAria: '10 year film warranty, 5 year graphene warranty',
       imageAlt: 'Mercedes-AMG GT in KS Protect green studio setting',
       quickLinks: {
         ppfConfigurator: 'PPF CONFIGURATOR',
