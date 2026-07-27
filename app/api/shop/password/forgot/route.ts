@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server';
-import {
-  adminNotifyEmail,
-  isShopAdminAuthenticated,
-  verifyShopPassword,
-} from '../../../../../lib/shopAuth';
+import { adminNotifyEmail } from '../../../../../lib/shopAuth';
 import {
   generateOtpCode,
   hashOtpCode,
@@ -15,23 +11,9 @@ import { passwordCodeEmail } from '../../../../../lib/mailTemplates';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
-  if (!(await isShopAdminAuthenticated())) {
-    return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
-  }
+const COOLDOWN_MS = 60_000;
 
-  let body: { currentPassword?: string } = {};
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
-  }
-
-  const currentPassword = String(body.currentPassword || '');
-  if (!(await verifyShopPassword(currentPassword))) {
-    return NextResponse.json({ ok: false, error: 'wrong_password' }, { status: 401 });
-  }
-
+export async function POST() {
   if (!isMailConfigured()) {
     return NextResponse.json(
       { ok: false, error: 'mail_not_configured' },
@@ -39,19 +21,25 @@ export async function POST(request: Request) {
     );
   }
 
-  const code = generateOtpCode();
   const record = await readShopAuthRecord();
+  const lastRequest = record.otp?.requestedAt || 0;
+  if (Date.now() - lastRequest < COOLDOWN_MS) {
+    return NextResponse.json({ ok: false, error: 'too_soon' }, { status: 429 });
+  }
+
+  const code = generateOtpCode();
+  const to = adminNotifyEmail();
+
   await writeShopAuthRecord({
     ...record,
     otp: {
       hash: hashOtpCode(code),
       expiresAt: Date.now() + 15 * 60 * 1000,
       requestedAt: Date.now(),
-      purpose: 'change',
+      purpose: 'reset',
     },
   });
 
-  const to = adminNotifyEmail();
   const mail = passwordCodeEmail(code);
   try {
     await sendMail({

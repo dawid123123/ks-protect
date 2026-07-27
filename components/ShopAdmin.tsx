@@ -116,6 +116,14 @@ export default function ShopAdmin({
   const [query, setQuery] = useState('');
   const [showTools, setShowTools] = useState(false);
   const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [loginView, setLoginView] = useState<'login' | 'forgot'>('login');
+  const [forgotStep, setForgotStep] = useState<'request' | 'confirm'>('request');
+  const [forgotCode, setForgotCode] = useState('');
+  const [forgotNext, setForgotNext] = useState('');
+  const [forgotNext2, setForgotNext2] = useState('');
+  const [forgotBusy, setForgotBusy] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState('');
+  const [forgotError, setForgotError] = useState('');
   const [pwCurrent, setPwCurrent] = useState('');
   const [pwCode, setPwCode] = useState('');
   const [pwNext, setPwNext] = useState('');
@@ -179,6 +187,16 @@ export default function ShopAdmin({
             importJson: 'Flytja inn JSON',
             reset: 'Endurstilla',
             wrongPassword: 'Rangt lykilor\u00f0',
+            forgotPassword: 'Gleymt lykilor\u00f0i?',
+            forgotTitle: 'Endurstilla lykilor\u00f0',
+            forgotLead:
+              'Vi\u00f0 sendum sta\u00f0festingark\u00f3\u00f0a \u00e1 netfang KS Protect. Settu svo n\u00fdtt lykilor\u00f0.',
+            sendResetCode: 'Senda k\u00f3\u00f0a \u00ed t\u00f6lvup\u00f3st',
+            resetCodeSent: 'K\u00f3\u00f0i sendur',
+            resetPassword: 'Vista n\u00fdtt lykilor\u00f0',
+            backToLogin: 'Til baka \u00ed innskr\u00e1ningu',
+            tooSoon: 'B\u00ed\u00f0u a\u00f0eins \u2014 reyntu aftur eftir sm\u00e1 stund',
+            otpInvalid: 'Rangur e\u00f0a \u00fatrunninn k\u00f3\u00f0i',
             changePassword: 'Breyta lykilor\u00f0i',
             currentPassword: 'N\u00faverandi lykilor\u00f0',
             newPassword: 'N\u00fdtt lykilor\u00f0',
@@ -248,6 +266,16 @@ export default function ShopAdmin({
             importJson: 'Import JSON',
             reset: 'Reset defaults',
             wrongPassword: 'Wrong password',
+            forgotPassword: 'Forgot password?',
+            forgotTitle: 'Reset password',
+            forgotLead:
+              'We send a confirmation code to the KS Protect email. Then set a new password.',
+            sendResetCode: 'Send email code',
+            resetCodeSent: 'Code sent',
+            resetPassword: 'Save new password',
+            backToLogin: 'Back to sign in',
+            tooSoon: 'Wait a moment — try again shortly',
+            otpInvalid: 'Invalid or expired code',
             changePassword: 'Change password',
             currentPassword: 'Current password',
             newPassword: 'New password',
@@ -376,8 +404,16 @@ export default function ShopAdmin({
     setAuthed(false);
     setPassword('');
     setLoginError('');
+    setNotice('');
     setDraft(emptyDraft());
     setEditingId(null);
+    setLoginView('login');
+    setForgotStep('request');
+    setForgotCode('');
+    setForgotNext('');
+    setForgotNext2('');
+    setForgotMessage('');
+    setForgotError('');
     onClose();
   }
 
@@ -404,6 +440,16 @@ export default function ShopAdmin({
     setPassword('');
   }
 
+  function resetForgotState() {
+    setLoginView('login');
+    setForgotStep('request');
+    setForgotCode('');
+    setForgotNext('');
+    setForgotNext2('');
+    setForgotMessage('');
+    setForgotError('');
+  }
+
   async function handleLogout() {
     await fetch('/api/shop/logout', { method: 'POST' });
     setAuthed(false);
@@ -417,6 +463,92 @@ export default function ShopAdmin({
     setPwNext2('');
     setPwMessage('');
     setPwError('');
+    resetForgotState();
+  }
+
+  async function requestForgotCode(event: FormEvent) {
+    event.preventDefault();
+    setForgotBusy(true);
+    setForgotError('');
+    setForgotMessage('');
+    try {
+      const response = await fetch('/api/shop/password/forgot', {
+        method: 'POST',
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+        sentToHint?: string;
+      };
+      if (!response.ok || !data.ok) {
+        setForgotError(
+          data.error === 'too_soon'
+            ? copy.tooSoon
+            : copy.passwordMailFailed
+        );
+        return;
+      }
+      setForgotMessage(
+        data.sentToHint
+          ? `${copy.resetCodeSent}: ${data.sentToHint}`
+          : copy.resetCodeSent
+      );
+      setForgotStep('confirm');
+    } catch {
+      setForgotError(copy.passwordMailFailed);
+    } finally {
+      setForgotBusy(false);
+    }
+  }
+
+  async function confirmForgotReset(event: FormEvent) {
+    event.preventDefault();
+    setForgotBusy(true);
+    setForgotError('');
+
+    if (forgotNext !== forgotNext2) {
+      setForgotError(copy.passwordMismatch);
+      setForgotBusy(false);
+      return;
+    }
+    if (forgotNext.length < 8) {
+      setForgotError(copy.passwordWeak);
+      setForgotBusy(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/shop/password/reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: forgotCode,
+          newPassword: forgotNext,
+        }),
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+      };
+      if (!response.ok || !data.ok) {
+        const map: Record<string, string> = {
+          weak_password: copy.passwordWeak,
+          otp_invalid: copy.otpInvalid,
+          otp_expired: copy.otpInvalid,
+          otp_missing: copy.otpInvalid,
+        };
+        setForgotError(map[data.error || ''] || copy.otpInvalid);
+        return;
+      }
+
+      resetForgotState();
+      setLoginError('');
+      setNotice(copy.passwordChanged);
+    } catch {
+      setForgotError(copy.otpInvalid);
+    } finally {
+      setForgotBusy(false);
+    }
   }
 
   async function requestPasswordCode(event: FormEvent) {
@@ -900,26 +1032,120 @@ export default function ShopAdmin({
             <div className="shop-admin-head">
               <div>
                 <p className="eyebrow">{copy.title}</p>
-                <h2>{copy.login}</h2>
-                <p>{copy.lead}</p>
+                <h2>{loginView === 'login' ? copy.login : copy.forgotTitle}</h2>
+                <p>{loginView === 'login' ? copy.lead : copy.forgotLead}</p>
               </div>
             </div>
-            <form className="shop-admin-login" onSubmit={handleLogin}>
-              <label>
-                <span>{copy.password}</span>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  autoComplete="current-password"
-                  required
-                />
-              </label>
-              {loginError ? <p className="shop-admin-error">{loginError}</p> : null}
-              <button type="submit" className="btn-primary">
-                {copy.signIn}
-              </button>
-            </form>
+            {loginView === 'login' ? (
+              <form className="shop-admin-login" onSubmit={handleLogin}>
+                <label>
+                  <span>{copy.password}</span>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    autoComplete="current-password"
+                    required
+                  />
+                </label>
+                {loginError ? <p className="shop-admin-error">{loginError}</p> : null}
+                {notice ? <p className="shop-admin-note">{notice}</p> : null}
+                <button type="submit" className="btn-primary">
+                  {copy.signIn}
+                </button>
+                <button
+                  type="button"
+                  className="shop-admin-forgot-link"
+                  onClick={() => {
+                    setLoginView('forgot');
+                    setForgotStep('request');
+                    setForgotError('');
+                    setForgotMessage('');
+                    setLoginError('');
+                    setNotice('');
+                  }}
+                >
+                  {copy.forgotPassword}
+                </button>
+              </form>
+            ) : (
+              <div className="shop-admin-login shop-admin-forgot">
+                {forgotStep === 'request' ? (
+                  <form onSubmit={requestForgotCode}>
+                    <p className="shop-admin-note">{copy.forgotLead}</p>
+                    {forgotError ? (
+                      <p className="shop-admin-error">{forgotError}</p>
+                    ) : null}
+                    <button
+                      type="submit"
+                      className="btn-primary"
+                      disabled={forgotBusy}
+                    >
+                      {copy.sendResetCode}
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={confirmForgotReset}>
+                    <p className="shop-admin-note">
+                      {forgotMessage || copy.resetCodeSent}
+                    </p>
+                    <label>
+                      <span>{copy.otpCode}</span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={forgotCode}
+                        onChange={(e) => setForgotCode(e.target.value)}
+                        required
+                        autoComplete="one-time-code"
+                      />
+                    </label>
+                    <label>
+                      <span>{copy.newPassword}</span>
+                      <input
+                        type="password"
+                        value={forgotNext}
+                        onChange={(e) => setForgotNext(e.target.value)}
+                        required
+                        minLength={8}
+                        autoComplete="new-password"
+                      />
+                    </label>
+                    <label>
+                      <span>{copy.confirmPassword}</span>
+                      <input
+                        type="password"
+                        value={forgotNext2}
+                        onChange={(e) => setForgotNext2(e.target.value)}
+                        required
+                        minLength={8}
+                        autoComplete="new-password"
+                      />
+                    </label>
+                    {forgotError ? (
+                      <p className="shop-admin-error">{forgotError}</p>
+                    ) : null}
+                    <button
+                      type="submit"
+                      className="btn-primary"
+                      disabled={forgotBusy}
+                    >
+                      {copy.resetPassword}
+                    </button>
+                  </form>
+                )}
+                <button
+                  type="button"
+                  className="shop-admin-forgot-link"
+                  onClick={() => {
+                    resetForgotState();
+                    setNotice('');
+                  }}
+                >
+                  {copy.backToLogin}
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="shop-admin-body">

@@ -11665,6 +11665,31 @@ body.demo-mode .galleryCard::after {
   max-width: 360px;
 }
 
+.shop-admin-forgot form {
+  display: grid;
+  gap: 14px;
+}
+
+.shop-admin-forgot-link {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(185, 245, 66, 0.88);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.shop-admin-forgot-link:hover {
+  color: var(--acid);
+}
+
 .shop-admin-login label,
 .shop-admin-form label {
   display: grid;

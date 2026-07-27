@@ -12,6 +12,8 @@ export type ShopAuthRecord = {
   otp?: {
     hash: string;
     expiresAt: number;
+    requestedAt?: number;
+    purpose?: 'change' | 'reset';
   } | null;
 };
 

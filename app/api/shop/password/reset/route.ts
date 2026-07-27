@@ -1,15 +1,11 @@
 import { NextResponse } from 'next/server';
-import {
-  isShopAdminAuthenticated,
-  setShopPassword,
-  verifyShopPassword,
-} from '../../../../../lib/shopAuth';
+import { timingSafeEqual } from 'crypto';
+import { setShopPassword } from '../../../../../lib/shopAuth';
 import {
   hashOtpCode,
   readShopAuthRecord,
   writeShopAuthRecord,
 } from '../../../../../lib/shopAuthStore';
-import { timingSafeEqual } from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,28 +23,15 @@ function safeEqual(a: string, b: string) {
 }
 
 export async function POST(request: Request) {
-  if (!(await isShopAdminAuthenticated())) {
-    return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
-  }
-
-  let body: {
-    currentPassword?: string;
-    code?: string;
-    newPassword?: string;
-  } = {};
+  let body: { code?: string; newPassword?: string } = {};
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
   }
 
-  const currentPassword = String(body.currentPassword || '');
   const code = String(body.code || '').trim();
   const newPassword = String(body.newPassword || '');
-
-  if (!(await verifyShopPassword(currentPassword))) {
-    return NextResponse.json({ ok: false, error: 'wrong_password' }, { status: 401 });
-  }
 
   if (newPassword.length < 8) {
     return NextResponse.json({ ok: false, error: 'weak_password' }, { status: 400 });
@@ -58,7 +41,7 @@ export async function POST(request: Request) {
   if (!record.otp?.hash || !record.otp.expiresAt) {
     return NextResponse.json({ ok: false, error: 'otp_missing' }, { status: 400 });
   }
-  if (record.otp.purpose && record.otp.purpose !== 'change') {
+  if (record.otp.purpose && record.otp.purpose !== 'reset') {
     return NextResponse.json({ ok: false, error: 'otp_invalid' }, { status: 400 });
   }
   if (Date.now() > record.otp.expiresAt) {
