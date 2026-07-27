@@ -1643,6 +1643,7 @@ section {
 
 .hero::before {
   opacity: 0;
+  pointer-events: none;
 }
 
 .hero::after {
@@ -13169,9 +13170,19 @@ body.shop-drawer-open {
   background: transparent;
 }
 
+.ks-v2 .hero-v2::before,
 .ks-v2 .hero-v2::after,
 .ks-v2 .hero-overlay {
   display: none;
+  pointer-events: none;
+}
+
+.ks-v2 .hero-panel-copy,
+.ks-v2 .hero-actions,
+.ks-v2 .hero-actions a {
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
 }
 
 .ks-v2 .hero-shell {

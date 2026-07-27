@@ -32,7 +32,7 @@ export default function Hero() {
             <a className="btn-primary" href="/#contact">
               {t.hero.getFreeQuote}
             </a>
-            <a className="btn-ghost" href="#graphene">
+            <a className="btn-ghost" href="/#graphene">
               {t.hero.exploreServices} <span>{'\u2197'}</span>
             </a>
           </div>
