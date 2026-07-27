@@ -6,7 +6,7 @@ import {
   shopProducts,
 } from '../components/shopData';
 
-export const SHOP_STORAGE_KEY = 'ks-shop-catalog-v6';
+export const SHOP_STORAGE_KEY = 'ks-shop-catalog-v7';
 
 export type StoredShopCatalog = {
   updatedAt?: string;

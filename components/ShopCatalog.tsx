@@ -68,13 +68,24 @@ export default function ShopCatalog() {
   const [adminOpen, setAdminOpen] = useState(false);
   const [secretClicks, setSecretClicks] = useState(0);
 
-  function applyCatalog(nextProducts: ShopProduct[], nextCategories?: ShopCategoryDef[]) {
+  function applyCatalog(
+    nextProducts: ShopProduct[],
+    nextCategories?: ShopCategoryDef[],
+    persist = false
+  ) {
+    const usable = nextProducts.filter((item) => item.active !== false);
+    if (usable.length === 0) {
+      return;
+    }
+
     setProducts(nextProducts);
     const cats = nextCategories?.length
       ? nextCategories
       : cloneDefaultCategories();
     setCategories(cats);
-    saveStoredCatalog(nextProducts, cats);
+    if (persist) {
+      saveStoredCatalog(nextProducts, cats);
+    }
   }
 
   useEffect(() => {
@@ -88,8 +99,12 @@ export default function ShopCatalog() {
             products?: ShopProduct[];
             categories?: ShopCategoryDef[];
           };
-          if (!cancelled && Array.isArray(data.products) && data.products.length) {
-            applyCatalog(data.products, data.categories);
+          if (
+            !cancelled &&
+            Array.isArray(data.products) &&
+            data.products.some((item) => item.active !== false && item.image)
+          ) {
+            applyCatalog(data.products, data.categories, false);
             setReady(true);
             return;
           }
@@ -99,9 +114,12 @@ export default function ShopCatalog() {
       }
 
       const stored = loadStoredCatalog();
-      if (stored) {
+      if (
+        stored &&
+        stored.products.some((item) => item.active !== false && item.image)
+      ) {
         if (!cancelled) {
-          applyCatalog(stored.products, stored.categories);
+          applyCatalog(stored.products, stored.categories, false);
           setReady(true);
         }
         return;
@@ -109,10 +127,13 @@ export default function ShopCatalog() {
 
       const published = await loadPublicCatalog();
       if (!cancelled) {
-        if (published) {
-          applyCatalog(published.products, published.categories);
+        if (
+          published &&
+          published.products.some((item) => item.active !== false && item.image)
+        ) {
+          applyCatalog(published.products, published.categories, false);
         } else {
-          applyCatalog(cloneDefaultProducts(), cloneDefaultCategories());
+          applyCatalog(cloneDefaultProducts(), cloneDefaultCategories(), false);
         }
         setReady(true);
       }
@@ -434,7 +455,7 @@ export default function ShopCatalog() {
         categories={categories}
         onClose={() => setAdminOpen(false)}
         onCatalogChange={(nextProducts, nextCategories) => {
-          applyCatalog(nextProducts, nextCategories);
+          applyCatalog(nextProducts, nextCategories, true);
         }}
       />
     </>

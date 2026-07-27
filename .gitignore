@@ -32,7 +32,6 @@ yarn-error.log*
 .vercel
 
 # shop catalog runtime file (saved via admin API locally)
-/public/shop-catalog.json
 /public/pricing-overrides.json
 /data/
 

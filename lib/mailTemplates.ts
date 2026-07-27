@@ -11,10 +11,10 @@ function rowsHtml(rows: Array<[string, string]>) {
     .map(
       ([label, value]) => `
       <tr>
-        <td style="padding:10px 0;border-bottom:1px solid #1f241f;color:#9aa396;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;width:140px;vertical-align:top;">
+        <td style="padding:12px 14px;background:#f4f7f1;border:1px solid #e2e8dc;color:#5a6456;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;width:150px;vertical-align:top;">
           ${escapeHtml(label)}
         </td>
-        <td style="padding:10px 0;border-bottom:1px solid #1f241f;color:#ecf0e9;font-size:15px;line-height:1.45;">
+        <td style="padding:12px 14px;border:1px solid #e2e8dc;border-left:0;color:#152018;font-size:15px;line-height:1.5;vertical-align:top;">
           ${escapeHtml(value).replace(/\n/g, '<br/>')}
         </td>
       </tr>`
@@ -31,45 +31,56 @@ export function ksProtectEmailHtml(options: {
   footerNote?: string;
 }) {
   const intro = options.intro
-    ? `<p style="margin:0 0 22px;color:#c5ccc0;font-size:15px;line-height:1.6;">${escapeHtml(options.intro)}</p>`
+    ? `<p style="margin:0 0 20px;color:#4d5749;font-size:15px;line-height:1.6;">${escapeHtml(options.intro)}</p>`
     : '';
   const table = options.rows?.length
-    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:0 0 18px;">${rowsHtml(options.rows)}</table>`
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:separate;border-spacing:0;margin:0 0 18px;border-radius:12px;overflow:hidden;">${rowsHtml(options.rows)}</table>`
     : '';
   const body = options.body
-    ? `<div style="margin:18px 0 0;padding:16px;border:1px solid #2a322a;border-radius:14px;background:#0c0f0c;color:#d7ddd2;font-size:14px;line-height:1.6;white-space:pre-wrap;">${escapeHtml(options.body)}</div>`
+    ? `<div style="margin:8px 0 0;padding:16px 18px;border:1px solid #e2e8dc;border-radius:12px;background:#f7faf4;color:#243028;font-size:14px;line-height:1.65;">${escapeHtml(options.body).replace(/\n/g, '<br/>')}</div>`
     : '';
   const footer = options.footerNote
-    ? `<p style="margin:24px 0 0;color:#7d8678;font-size:12px;line-height:1.5;">${escapeHtml(options.footerNote)}</p>`
+    ? `<p style="margin:20px 0 0;color:#7a8474;font-size:12px;line-height:1.5;">${escapeHtml(options.footerNote)}</p>`
     : '';
 
   return `<!DOCTYPE html>
 <html>
-  <body style="margin:0;padding:0;background:#070807;font-family:Arial,Helvetica,sans-serif;">
-    <div style="max-width:640px;margin:0 auto;padding:28px 18px;">
-      <div style="border:1px solid #243024;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#121612 0%,#0a0c0a 100%);">
-        <div style="padding:18px 22px;border-bottom:1px solid #243024;background:#0e120e;">
-          <div style="color:#b9f542;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;">
-            KS PROTECT
-          </div>
-          <div style="margin-top:6px;color:#8f988a;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">
-            ${escapeHtml(options.eyebrow)}
-          </div>
-        </div>
-        <div style="padding:24px 22px 28px;">
-          <h1 style="margin:0 0 14px;color:#f3f7ef;font-size:26px;line-height:1.15;letter-spacing:-0.03em;">
-            ${escapeHtml(options.title)}
-          </h1>
-          ${intro}
-          ${table}
-          ${body}
-          ${footer}
-        </div>
-      </div>
-      <p style="margin:16px 8px 0;color:#5f675c;font-size:11px;line-height:1.5;">
-        Skemmuvegi 28 · bleik gata, 200 Kópavogur · ksprotect@ksprotect.is · 844 4456
-      </p>
-    </div>
+  <body style="margin:0;padding:0;background:#eef2ea;font-family:Arial,Helvetica,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef2ea;padding:28px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border:1px solid #d7dfd0;border-radius:18px;overflow:hidden;">
+            <tr>
+              <td style="padding:18px 24px;background:#0d120e;border-bottom:3px solid #b9f542;">
+                <div style="color:#b9f542;font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">
+                  KS PROTECT
+                </div>
+                <div style="margin-top:6px;color:#a7b0a2;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">
+                  ${escapeHtml(options.eyebrow)}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:28px 24px 24px;">
+                <h1 style="margin:0 0 12px;color:#101610;font-size:24px;line-height:1.25;">
+                  ${escapeHtml(options.title)}
+                </h1>
+                ${intro}
+                ${table}
+                ${body}
+                ${footer}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:16px 24px;background:#f7faf4;border-top:1px solid #e2e8dc;color:#667064;font-size:12px;line-height:1.55;">
+                Skemmuvegi 28 · bleik gata, 200 Kópavogur<br/>
+                ksprotect@ksprotect.is · 844 4456
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>`;
 }
@@ -107,7 +118,7 @@ export function contactInquiryEmail(input: {
       ['Þjónusta', input.service],
     ],
     body: input.message || '(engin skilaboð)',
-    footerNote: 'Send af ksprotect.is / contact form',
+    footerNote: 'Sent af ksprotect.is',
   });
 
   return {
@@ -126,7 +137,7 @@ export function shopOrderEmail(input: {
     title: `Pöntun frá ${input.name}`,
     intro: 'Ný pöntun úr netverslun KS Protect.',
     body: input.textBody,
-    footerNote: 'Send af ksprotect.is / netverslun',
+    footerNote: 'Sent af ksprotect.is / netverslun',
   });
 
   return {

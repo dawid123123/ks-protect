@@ -45,6 +45,25 @@ function defaultCatalog(): ShopCatalogPayload {
   return normalizeCatalog(shopProducts, cloneDefaultCategories());
 }
 
+/** Reject old demo placeholders / empty catalogs so defaults stay visible. */
+export function isUsableShopCatalog(products: ShopProduct[]) {
+  const active = products.filter((product) => product.active !== false);
+  if (active.length === 0) {
+    return false;
+  }
+
+  const withImage = active.filter((product) => Boolean(product.image)).length;
+  const knownIds = new Set(shopProducts.map((product) => product.id));
+  const knownMatch = active.filter((product) => knownIds.has(product.id)).length;
+
+  // Pure English placeholders with no images and no real product ids.
+  if (withImage === 0 && knownMatch === 0) {
+    return false;
+  }
+
+  return true;
+}
+
 async function readLocalCatalog(): Promise<ShopCatalogPayload | null> {
   try {
     const raw = await fs.readFile(LOCAL_CATALOG_PATH, 'utf8');
@@ -119,13 +138,24 @@ async function writeBlobCatalog(payload: ShopCatalogPayload) {
 export async function getShopCatalog(): Promise<ShopCatalogPayload> {
   if (hasBlobToken()) {
     const fromBlob = await readBlobCatalog();
-    if (fromBlob) {
+    if (fromBlob && isUsableShopCatalog(fromBlob.products)) {
       return fromBlob;
+    }
+
+    // Heal stale Blob placeholders so production stops flashing empty cards.
+    if (fromBlob && !isUsableShopCatalog(fromBlob.products)) {
+      const healed = defaultCatalog();
+      try {
+        await writeBlobCatalog(healed);
+      } catch {
+        // Still return defaults even if rewrite fails.
+      }
+      return healed;
     }
   }
 
   const fromLocal = await readLocalCatalog();
-  if (fromLocal) {
+  if (fromLocal && isUsableShopCatalog(fromLocal.products)) {
     return fromLocal;
   }
 
