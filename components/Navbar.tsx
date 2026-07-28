@@ -87,7 +87,7 @@ export default function Navbar() {
 
   return (
     <header className={headerClass}>
-      <BrandLockup className="logo logo-lockup" />
+      <BrandLockup mode="mark" className="logo logo-lockup" />
 
       <nav className="navigation navigation-v2" aria-label="Main">
         <div className="navigation-track">

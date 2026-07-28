@@ -27,7 +27,8 @@ export default function Footer() {
       <div className="footer-shell">
         <div className="footer-top">
           <div className="footer-brand">
-            <BrandLockup className="logo logo-lockup footer-logo-lockup" />
+            <BrandLockup mode="mark" className="logo logo-lockup footer-logo-lockup" />
+            <BrandLockup mode="partners" className="footer-partners" />
             <p>{t.footer.tagline}</p>
           </div>
 

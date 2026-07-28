@@ -13021,26 +13021,32 @@ body.shop-drawer-open {
 
 .ks-v2 .brand-lockup-ks {
   display: block;
-  height: 28px;
+  height: 30px;
   width: auto;
+}
+
+.ks-v2 .brand-partners {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .ks-v2 .brand-lockup-ws {
   display: block;
-  height: 22px;
+  height: 18px;
   width: auto;
-  opacity: 0.92;
+  opacity: 0.88;
 }
 
 .ks-v2 .brand-lockup-llumar {
   display: block;
-  height: 18px;
+  height: 15px;
   width: auto;
 }
 
 .ks-v2 .brand-lockup-divider {
   width: 1px;
-  height: 22px;
+  height: 16px;
   background: rgba(255, 255, 255, 0.22);
 }
 
@@ -13048,16 +13054,25 @@ body.shop-drawer-open {
   font-size: 0;
 }
 
+.ks-v2 .navbar-v2 .nav-partners {
+  margin-right: 4px;
+  opacity: 0.95;
+}
+
 .ks-v2 .footer-logo-lockup .brand-lockup-ks {
-  height: 34px;
+  height: 36px;
 }
 
-.ks-v2 .footer-logo-lockup .brand-lockup-ws {
-  height: 26px;
+.ks-v2 .footer-partners {
+  margin-top: 12px;
 }
 
-.ks-v2 .footer-logo-lockup .brand-lockup-llumar {
-  height: 22px;
+.ks-v2 .footer-partners .brand-lockup-ws {
+  height: 20px;
+}
+
+.ks-v2 .footer-partners .brand-lockup-llumar {
+  height: 16px;
 }
 
 .ks-v2 .gallery-partner {
@@ -14392,7 +14407,7 @@ body.nav-menu-open {
   }
 
   .ks-v2 .brand-lockup {
-    gap: 8px;
+    gap: 6px;
   }
 
   .ks-v2 .brand-lockup-ks {
@@ -14400,11 +14415,19 @@ body.nav-menu-open {
   }
 
   .ks-v2 .brand-lockup-ws {
-    height: 18px;
+    height: 14px;
+  }
+
+  .ks-v2 .brand-lockup-llumar {
+    height: 12px;
   }
 
   .ks-v2 .brand-lockup-divider {
-    height: 18px;
+    height: 14px;
+  }
+
+  .ks-v2 .navbar-v2 .nav-partners {
+    display: none;
   }
 
   .navRight {
