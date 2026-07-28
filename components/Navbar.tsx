@@ -87,9 +87,10 @@ export default function Navbar() {
 
   return (
     <header className={headerClass}>
-      <BrandLockup />
-
-      <PartnerMarks className="nav-partners-center" />
+      <div className="nav-brand">
+        <BrandLockup />
+        <PartnerMarks className="nav-partners" />
+      </div>
 
       <nav className="navigation navigation-v2" aria-label="Main">
         <div className="navigation-track">
