@@ -310,7 +310,7 @@ export const translations = {
       eyebrow: 'KS PROTECT · VERKEFNIN OKKAR',
       title: 'MYNDASAFN',
       imageAlt: 'KS Protect myndasafn',
-      partnerNote: 'LLumar PPF & tint · Certified WaxedShine — alvöru grafínhúð',
+      partnerNote: 'LLumar · WaxedShine',
     },
     contact: {
       eyebrow: 'F\u00c1 TILBO\u00d0',

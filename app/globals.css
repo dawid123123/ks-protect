@@ -13012,97 +13012,48 @@ body.shop-drawer-open {
   line-height: 1;
 }
 
-.ks-v2 .brand-lockup {
+.ks-v2 .partner-marks {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  text-decoration: none;
+  gap: 18px;
 }
 
-.ks-v2 .brand-lockup-ks {
+.ks-v2 .partner-mark {
   display: block;
-  height: 30px;
   width: auto;
+  opacity: 0.72;
 }
 
-.ks-v2 .brand-partners {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.ks-v2 .brand-lockup-ws {
-  display: block;
+.ks-v2 .partner-mark-ws {
   height: 18px;
-  width: auto;
-  opacity: 0.88;
 }
 
-.ks-v2 .brand-lockup-llumar {
-  display: block;
+.ks-v2 .partner-mark-llumar {
   height: 15px;
-  width: auto;
 }
 
-.ks-v2 .brand-lockup-divider {
-  width: 1px;
-  height: 16px;
-  background: rgba(255, 255, 255, 0.22);
-}
-
-.ks-v2 .navbar-v2 .logo.logo-lockup {
-  font-size: 0;
-}
-
-.ks-v2 .navbar-v2 .nav-partners {
-  margin-right: 4px;
-  opacity: 0.95;
-}
-
-.ks-v2 .nav-mobile-partners {
-  margin-bottom: 12px;
-}
-
-.ks-v2 .footer-logo-lockup .brand-lockup-ks {
-  height: 36px;
-}
-
-.ks-v2 .footer-partners {
-  margin-top: 12px;
-}
-
-.ks-v2 .footer-partners .brand-lockup-ws {
-  height: 20px;
-}
-
-.ks-v2 .footer-partners .brand-lockup-llumar {
-  height: 16px;
+.ks-v2 .footer-partner-marks {
+  margin-top: 16px;
 }
 
 .ks-v2 .gallery-partner {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  margin-top: 28px;
-  color: rgba(236, 240, 233, 0.62);
-  font-size: 12px;
-  letter-spacing: 0.4px;
-  flex-wrap: wrap;
-}
-
-.ks-v2 .gallery-partner-badges {
-  display: inline-flex;
-  align-items: center;
   gap: 10px;
+  margin-top: 28px;
+  color: rgba(236, 240, 233, 0.55);
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-align: center;
 }
 
-.ks-v2 .gallery-partner-badge {
-  width: 52px;
-  height: 52px;
-  object-fit: contain;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
+.ks-v2 .gallery-partner .partner-marks {
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .ks-v2 .navbar-v2 .navigation-v2 {
@@ -14408,30 +14359,6 @@ body.nav-menu-open {
   .logo {
     font-size: 20px;
     letter-spacing: 1px;
-  }
-
-  .ks-v2 .brand-lockup {
-    gap: 6px;
-  }
-
-  .ks-v2 .brand-lockup-ks {
-    height: 22px;
-  }
-
-  .ks-v2 .brand-lockup-ws {
-    height: 14px;
-  }
-
-  .ks-v2 .brand-lockup-llumar {
-    height: 12px;
-  }
-
-  .ks-v2 .brand-lockup-divider {
-    height: 14px;
-  }
-
-  .ks-v2 .navbar-v2 .nav-partners {
-    display: none;
   }
 
   .navRight {

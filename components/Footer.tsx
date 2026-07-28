@@ -2,7 +2,7 @@
 
 import { useTranslation } from '../lib/i18n/context';
 import { brand } from '../lib/brand';
-import BrandLockup from './BrandLockup';
+import BrandLockup, { PartnerMarks } from './BrandLockup';
 import InstagramStrip from './InstagramStrip';
 
 const MAP_QUERY = brand.mapQuery;
@@ -27,9 +27,9 @@ export default function Footer() {
       <div className="footer-shell">
         <div className="footer-top">
           <div className="footer-brand">
-            <BrandLockup mode="mark" className="logo logo-lockup footer-logo-lockup" />
-            <BrandLockup mode="partners" className="footer-partners" />
+            <BrandLockup />
             <p>{t.footer.tagline}</p>
+            <PartnerMarks className="footer-partner-marks" />
           </div>
 
           <div className="footer-contact-block">

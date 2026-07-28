@@ -2,6 +2,7 @@
 
 import { galleryProjects } from './siteImages';
 import SectionIntro from './SectionIntro';
+import { PartnerMarks } from './BrandLockup';
 import { useTranslation } from '../lib/i18n/context';
 import { brand } from '../lib/brand';
 
@@ -31,18 +32,7 @@ export default function Gallery() {
           ))}
         </div>
         <div className="gallery-partner">
-          <div className="gallery-partner-badges">
-            <img
-              src="/brand/llumar-badge.svg"
-              alt="LLumar PPF and tint"
-              className="gallery-partner-badge"
-            />
-            <img
-              src="/brand/waxedshine-certified.png"
-              alt="WaxedShine certified installer"
-              className="gallery-partner-badge"
-            />
-          </div>
+          <PartnerMarks />
           <p>{t.gallery.partnerNote}</p>
         </div>
       </div>
