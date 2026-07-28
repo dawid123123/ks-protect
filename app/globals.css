@@ -13059,12 +13059,21 @@ body.shop-drawer-open {
   color: rgba(236, 240, 233, 0.62);
   font-size: 12px;
   letter-spacing: 0.4px;
+  flex-wrap: wrap;
+}
+
+.ks-v2 .gallery-partner-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .ks-v2 .gallery-partner-badge {
   width: 52px;
   height: 52px;
   object-fit: contain;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .ks-v2 .navbar-v2 .navigation-v2 {

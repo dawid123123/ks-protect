@@ -31,11 +31,18 @@ export default function Gallery() {
           ))}
         </div>
         <div className="gallery-partner">
-          <img
-            src="/brand/waxedshine-certified.png"
-            alt="WaxedShine certified installer"
-            className="gallery-partner-badge"
-          />
+          <div className="gallery-partner-badges">
+            <img
+              src="/brand/llumar-badge.svg"
+              alt="LLumar PPF and tint"
+              className="gallery-partner-badge"
+            />
+            <img
+              src="/brand/waxedshine-certified.png"
+              alt="WaxedShine certified installer"
+              className="gallery-partner-badge"
+            />
+          </div>
           <p>{t.gallery.partnerNote}</p>
         </div>
       </div>
