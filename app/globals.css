@@ -13032,6 +13032,12 @@ body.shop-drawer-open {
   opacity: 0.92;
 }
 
+.ks-v2 .brand-lockup-llumar {
+  display: block;
+  height: 18px;
+  width: auto;
+}
+
 .ks-v2 .brand-lockup-divider {
   width: 1px;
   height: 22px;
@@ -13048,6 +13054,10 @@ body.shop-drawer-open {
 
 .ks-v2 .footer-logo-lockup .brand-lockup-ws {
   height: 26px;
+}
+
+.ks-v2 .footer-logo-lockup .brand-lockup-llumar {
+  height: 22px;
 }
 
 .ks-v2 .gallery-partner {

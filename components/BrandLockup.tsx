@@ -24,6 +24,12 @@ export default function BrandLockup({
         alt="WaxedShine"
         className="brand-lockup-ws"
       />
+      <span className="brand-lockup-divider" aria-hidden="true" />
+      <img
+        src="/brand/llumar-logo.svg"
+        alt="LLumar"
+        className="brand-lockup-llumar"
+      />
     </>
   );
 
