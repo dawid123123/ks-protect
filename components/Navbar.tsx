@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import BrandLockup from './BrandLockup';
+import BrandLockup, { PartnerMarks } from './BrandLockup';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from '../lib/i18n/context';
 import { brand } from '../lib/brand';
@@ -88,6 +88,8 @@ export default function Navbar() {
   return (
     <header className={headerClass}>
       <BrandLockup />
+
+      <PartnerMarks className="nav-partners-center" />
 
       <nav className="navigation navigation-v2" aria-label="Main">
         <div className="navigation-track">
