@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import BrandLockup from './BrandLockup';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from '../lib/i18n/context';
 import { brand } from '../lib/brand';
@@ -86,15 +87,7 @@ export default function Navbar() {
 
   return (
     <header className={headerClass}>
-      <Link href="/" className="logo">
-        {brand.logoPrimary}
-        {brand.logoAccent ? (
-          <>
-            {' '}
-            <span>{brand.logoAccent}</span>
-          </>
-        ) : null}
-      </Link>
+      <BrandLockup className="logo logo-lockup" />
 
       <nav className="navigation navigation-v2" aria-label="Main">
         <div className="navigation-track">

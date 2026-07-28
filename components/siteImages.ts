@@ -1,3 +1,5 @@
+import { instagramPosts } from '../lib/instagramPosts';
+
 const pexels = (id: number) =>
   'https://images.pexels.com/photos/' +
   id +
@@ -30,11 +32,24 @@ export const aboutPagePhotos = [
 
 export const centerBackgroundPhoto = photoThumb(verifiedCarPhotos[0], 1600);
 
-export const galleryProjects = [
-  { model: 'AMG GT R', type: 'GREEN HELL', image: verifiedCarPhotos[0] },
-  { model: 'AMG GT', type: 'NIGHT DETAIL', image: verifiedCarPhotos[1] },
-  { model: 'AMG GT R', type: 'FRONT DETAIL', image: verifiedCarPhotos[2] },
-  { model: 'AMG GT', type: 'GRAND TOURER', image: verifiedCarPhotos[3] },
-  { model: 'AMG GT', type: 'PERFORMANCE', image: verifiedCarPhotos[4] },
-  { model: 'AMG GT', type: 'COUP\u00c9', image: verifiedCarPhotos[5] },
-];
+const byId = Object.fromEntries(instagramPosts.map((post) => [post.id, post]));
+
+/** Front / 3/4 shots from @ks_protect — real workshop jobs. */
+const galleryShotIds = [
+  'DbHCFtvjjlL',
+  'DbHCRYQjk-g',
+  'DaduFk1DnzP',
+  'Dage9B_jth_',
+  'DYp4CDhjjFE',
+  'DVuBaa1DqlZ',
+] as const;
+
+export const galleryProjects = galleryShotIds
+  .map((id) => byId[id])
+  .filter(Boolean)
+  .map((post) => ({
+    model: post.id,
+    type: 'KS PROTECT',
+    image: post.src,
+    href: post.href,
+  }));

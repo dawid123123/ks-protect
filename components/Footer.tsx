@@ -2,6 +2,7 @@
 
 import { useTranslation } from '../lib/i18n/context';
 import { brand } from '../lib/brand';
+import BrandLockup from './BrandLockup';
 import InstagramStrip from './InstagramStrip';
 
 const MAP_QUERY = brand.mapQuery;
@@ -26,15 +27,7 @@ export default function Footer() {
       <div className="footer-shell">
         <div className="footer-top">
           <div className="footer-brand">
-            <strong>
-              {brand.logoPrimary}
-              {brand.logoAccent ? (
-                <>
-                  {' '}
-                  <span>{brand.logoAccent}</span>
-                </>
-              ) : null}
-            </strong>
+            <BrandLockup className="logo logo-lockup footer-logo-lockup" />
             <p>{t.footer.tagline}</p>
           </div>
 

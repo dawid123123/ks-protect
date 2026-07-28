@@ -307,9 +307,10 @@ export const translations = {
       getFreeQuote: 'F\u00c1 \u00d3KEYPIS TILBO\u00d0',
     },
     gallery: {
-      eyebrow: 'MERCEDES-BENZ \u00b7 VERKEFNIN OKKAR',
+      eyebrow: 'KS PROTECT · VERKEFNIN OKKAR',
       title: 'MYNDASAFN',
       imageAlt: 'KS Protect myndasafn',
+      partnerNote: 'Certified WaxedShine — alvöru grafínhúð',
     },
     contact: {
       eyebrow: 'F\u00c1 TILBO\u00d0',
@@ -958,9 +959,10 @@ export const translations = {
       getFreeQuote: 'GET A FREE QUOTE',
     },
     gallery: {
-      eyebrow: 'MERCEDES-BENZ \u00b7 OUR WORK',
+      eyebrow: 'KS PROTECT · OUR WORK',
       title: 'GALLERY',
       imageAlt: 'KS Protect gallery photo',
+      partnerNote: 'Certified WaxedShine graphene installer',
     },
     contact: {
       eyebrow: 'GET A QUOTE',
