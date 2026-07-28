@@ -141,6 +141,7 @@ export default function Navbar() {
           </nav>
 
           <div className="nav-mobile-footer">
+            <BrandLockup mode="partners" className="nav-mobile-partners" />
             <div className="navSocials" aria-label={t.nav.socialLabel}>
               <a
                 href={brand.facebookUrl}
@@ -172,6 +173,7 @@ export default function Navbar() {
       </div>
 
       <div className="navRight">
+        <BrandLockup mode="partners" className="nav-partners" />
         <div className="navSocials" aria-label={t.nav.socialLabel}>
           <a
             href={brand.facebookUrl}

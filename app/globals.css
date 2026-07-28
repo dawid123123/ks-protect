@@ -13059,6 +13059,10 @@ body.shop-drawer-open {
   opacity: 0.95;
 }
 
+.ks-v2 .nav-mobile-partners {
+  margin-bottom: 12px;
+}
+
 .ks-v2 .footer-logo-lockup .brand-lockup-ks {
   height: 36px;
 }
