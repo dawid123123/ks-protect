@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { timingSafeEqual } from 'crypto';
-import { setShopPassword } from '../../../../../lib/shopAuth';
+import {
+  setShopPassword,
+  verifyShopRecoveryPin,
+} from '../../../../../lib/shopAuth';
 import {
   hashOtpCode,
   readShopAuthRecord,
@@ -23,11 +26,15 @@ function safeEqual(a: string, b: string) {
 }
 
 export async function POST(request: Request) {
-  let body: { code?: string; newPassword?: string } = {};
+  let body: { pin?: string; code?: string; newPassword?: string } = {};
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
+  }
+
+  if (!verifyShopRecoveryPin(String(body.pin || ''))) {
+    return NextResponse.json({ ok: false, error: 'wrong_pin' }, { status: 401 });
   }
 
   const code = String(body.code || '').trim();

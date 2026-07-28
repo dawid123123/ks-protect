@@ -11,6 +11,13 @@ export function expectedEnvShopPassword() {
   return process.env.SHOP_ADMIN_PASSWORD || 'ksprotect2026';
 }
 
+/** Fixed recovery PIN for forgot-password. Not stored / not changeable. */
+export const SHOP_RECOVERY_PIN = '4456';
+
+export function verifyShopRecoveryPin(pin: string) {
+  return safeEqualString(String(pin || '').trim(), SHOP_RECOVERY_PIN);
+}
+
 export function adminNotifyEmail() {
   return (
     process.env.MAIL_TO ||

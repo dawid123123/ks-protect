@@ -118,6 +118,7 @@ export default function ShopAdmin({
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [loginView, setLoginView] = useState<'login' | 'forgot'>('login');
   const [forgotStep, setForgotStep] = useState<'request' | 'confirm'>('request');
+  const [forgotPin, setForgotPin] = useState('');
   const [forgotCode, setForgotCode] = useState('');
   const [forgotNext, setForgotNext] = useState('');
   const [forgotNext2, setForgotNext2] = useState('');
@@ -190,25 +191,27 @@ export default function ShopAdmin({
             forgotPassword: 'Gleymt lykilor\u00f0i?',
             forgotTitle: 'Endurstilla lykilor\u00f0',
             forgotLead:
-              'Vi\u00f0 sendum sta\u00f0festingark\u00f3\u00f0a \u00e1 netfang KS Protect. Settu svo n\u00fdtt lykilor\u00f0.',
-            sendResetCode: 'Senda k\u00f3\u00f0a \u00ed t\u00f6lvup\u00f3st',
-            resetCodeSent: 'K\u00f3\u00f0i sendur',
-            resetPassword: 'Vista n\u00fdtt lykilor\u00f0',
-            backToLogin: 'Til baka \u00ed innskr\u00e1ningu',
-            tooSoon: 'B\u00ed\u00f0u a\u00f0eins \u2014 reyntu aftur eftir sm\u00e1 stund',
-            otpInvalid: 'Rangur e\u00f0a \u00fatrunninn k\u00f3\u00f0i',
-            changePassword: 'Breyta lykilor\u00f0i',
-            currentPassword: 'N\u00faverandi lykilor\u00f0',
-            newPassword: 'N\u00fdtt lykilor\u00f0',
-            confirmPassword: 'Staðfesta n\u00fdtt lykilor\u00f0',
-            sendCode: 'Senda k\u00f3\u00f0a \u00ed t\u00f6lvup\u00f3st',
-            codeSent: 'K\u00f3\u00f0i sendur \u00e1 netfang KS Protect',
-            otpCode: 'Staðfestingark\u00f3\u00f0i',
-            savePassword: 'Vista n\u00fdtt lykilor\u00f0',
-            passwordChanged: 'Lykilor\u00f0i breytt \u2014 skr\u00e1\u00f0u \u00feig inn aftur',
-            passwordMismatch: 'N\u00fdju lykilor\u00f0in passa ekki',
-            passwordWeak: 'Lykilor\u00f0 \u00fearf a\u00f0 vera a.m.k. 8 stafir',
-            passwordMailFailed: 'Gat ekki sent k\u00f3\u00f0a \u2014 athuga\u00f0u RESEND_API_KEY',
+              'Sláðu inn öryggis-PIN til að fá staðfestingarkóða á netfang KS Protect. Síðan seturðu nýtt lykilorð.',
+            recoveryPin: 'Öryggis-PIN',
+            wrongPin: 'Rangur PIN',
+            sendResetCode: 'Senda kóða í tölvupóst',
+            resetCodeSent: 'Kóði sendur',
+            resetPassword: 'Vista nýtt lykilorð',
+            backToLogin: 'Til baka í innskráningu',
+            tooSoon: 'Bíddu aðeins — reyndu aftur eftir smá stund',
+            otpInvalid: 'Rangur eða útrunninn kóði',
+            changePassword: 'Breyta lykilorði',
+            currentPassword: 'Núverandi lykilorð',
+            newPassword: 'Nýtt lykilorð',
+            confirmPassword: 'Staðfesta nýtt lykilorð',
+            sendCode: 'Senda kóða í tölvupóst',
+            codeSent: 'Kóði sendur á netfang KS Protect',
+            otpCode: 'Staðfestingarkóði',
+            savePassword: 'Vista nýtt lykilorð',
+            passwordChanged: 'Lykilorði breytt — skráðu þig inn aftur',
+            passwordMismatch: 'Nýju lykilorðin passa ekki',
+            passwordWeak: 'Lykilorð þarf að vera a.m.k. 8 stafir',
+            passwordMailFailed: 'Gat ekki sent kóða — athugaðu RESEND_API_KEY',
             saved: 'Vista\u00f0',
             deleted: 'Vara fjarl\u00e6g\u00f0',
             resetDone: 'Sj\u00e1lfgefnar v\u00f6rur endurstilltar',
@@ -269,7 +272,9 @@ export default function ShopAdmin({
             forgotPassword: 'Forgot password?',
             forgotTitle: 'Reset password',
             forgotLead:
-              'We send a confirmation code to the KS Protect email. Then set a new password.',
+              'Enter the security PIN to get a confirmation code on the KS Protect email. Then set a new password.',
+            recoveryPin: 'Security PIN',
+            wrongPin: 'Wrong PIN',
             sendResetCode: 'Send email code',
             resetCodeSent: 'Code sent',
             resetPassword: 'Save new password',
@@ -409,6 +414,7 @@ export default function ShopAdmin({
     setEditingId(null);
     setLoginView('login');
     setForgotStep('request');
+    setForgotPin('');
     setForgotCode('');
     setForgotNext('');
     setForgotNext2('');
@@ -443,6 +449,7 @@ export default function ShopAdmin({
   function resetForgotState() {
     setLoginView('login');
     setForgotStep('request');
+    setForgotPin('');
     setForgotCode('');
     setForgotNext('');
     setForgotNext2('');
@@ -474,6 +481,8 @@ export default function ShopAdmin({
     try {
       const response = await fetch('/api/shop/password/forgot', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: forgotPin }),
       });
       const data = (await response.json().catch(() => ({}))) as {
         ok?: boolean;
@@ -482,9 +491,11 @@ export default function ShopAdmin({
       };
       if (!response.ok || !data.ok) {
         setForgotError(
-          data.error === 'too_soon'
-            ? copy.tooSoon
-            : copy.passwordMailFailed
+          data.error === 'wrong_pin'
+            ? copy.wrongPin
+            : data.error === 'too_soon'
+              ? copy.tooSoon
+              : copy.passwordMailFailed
         );
         return;
       }
@@ -522,6 +533,7 @@ export default function ShopAdmin({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          pin: forgotPin,
           code: forgotCode,
           newPassword: forgotNext,
         }),
@@ -532,6 +544,7 @@ export default function ShopAdmin({
       };
       if (!response.ok || !data.ok) {
         const map: Record<string, string> = {
+          wrong_pin: copy.wrongPin,
           weak_password: copy.passwordWeak,
           otp_invalid: copy.otpInvalid,
           otp_expired: copy.otpInvalid,
@@ -1073,6 +1086,17 @@ export default function ShopAdmin({
                 {forgotStep === 'request' ? (
                   <form onSubmit={requestForgotCode}>
                     <p className="shop-admin-note">{copy.forgotLead}</p>
+                    <label>
+                      <span>{copy.recoveryPin}</span>
+                      <input
+                        type="password"
+                        inputMode="numeric"
+                        value={forgotPin}
+                        onChange={(e) => setForgotPin(e.target.value)}
+                        required
+                        autoComplete="off"
+                      />
+                    </label>
                     {forgotError ? (
                       <p className="shop-admin-error">{forgotError}</p>
                     ) : null}
