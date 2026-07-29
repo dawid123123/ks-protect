@@ -241,7 +241,7 @@ export const translations = {
           ],
           details:
             '\u00cd Brons me\u00f0fer\u00f0 er \u00f6kut\u00e6ki\u00f0 massa\u00f0 me\u00f0 1 til 2 \u00ferepa m\u00f6ssun eftir \u00fe\u00f6rfum og a\u00f0 \u00fev\u00ed loknu er lakki\u00f0 hreinsa\u00f0 vandlega. Graf\u00edn er svo bori\u00f0 \u00e1 allt ytra byr\u00f0i lakks og \u00ed hur\u00f0arf\u00f6ls \u2014 sterkur grunnur me\u00f0 dj\u00fapum glj\u00e1a.',
-          note: 'Ver\u00f0 r\u00e6\u00f0st af st\u00e6r\u00f0 bifrei\u00f0ar.',
+          note: 'Ver\u00f0 r\u00e6\u00f0st af st\u00e6r\u00f0 og \u00e1standi bifrei\u00f0ar.',
         },
         silver: {
           name: 'SILFUR ME\u00d0FER\u00d0',
@@ -254,7 +254,7 @@ export const translations = {
           ],
           details:
             '\u00cd Silfur me\u00f0fer\u00f0 er \u00f6kut\u00e6ki\u00f0 massa\u00f0 me\u00f0 1 til 2 \u00ferepa m\u00f6ssun eftir \u00fe\u00f6rfum og a\u00f0 \u00fev\u00ed loknu er lakki\u00f0 hreinsa\u00f0 vandlega. Graf\u00edn er svo bori\u00f0 \u00e1 allt ytra byr\u00f0i lakks og \u00ed hur\u00f0arf\u00f6ls. Felgur eru me\u00f0h\u00f6ndla\u00f0ar me\u00f0 h\u00fa\u00f0 sem \u00feolir verulegan hita og gler er h\u00fa\u00f0a\u00f0 me\u00f0 s\u00e9rstakri glerh\u00fa\u00f0.',
-          note: 'Ver\u00f0 r\u00e6\u00f0st af st\u00e6r\u00f0 bifrei\u00f0ar.',
+          note: 'Ver\u00f0 r\u00e6\u00f0st af st\u00e6r\u00f0 og \u00e1standi bifrei\u00f0ar.',
         },
         gold: {
           name: 'GULL ME\u00d0FER\u00d0',
@@ -894,7 +894,7 @@ export const translations = {
           ],
           details:
             'In the Bronze package the vehicle is polished in 1\u20132 stages as needed, then the paint is carefully cleaned. Graphene is applied to all exterior paint and door jambs \u2014 a strong foundation with deep gloss.',
-          note: 'Price depends on vehicle size.',
+          note: 'Price depends on vehicle size and condition.',
         },
         silver: {
           name: 'SILVER PACKAGE',
@@ -907,7 +907,7 @@ export const translations = {
           ],
           details:
             'In the Silver package the vehicle is polished in 1\u20132 stages as needed, then the paint is carefully cleaned. Graphene is applied to all exterior paint and door jambs. Wheels get a heat-resistant coating and glass is protected with a dedicated glass coating.',
-          note: 'Price depends on vehicle size.',
+          note: 'Price depends on vehicle size and condition.',
         },
         gold: {
           name: 'GOLD PACKAGE',
