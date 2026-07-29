@@ -107,11 +107,13 @@ export default function Graphene() {
               }
               key={item.key}
             >
-              {item.featured && (
-                <span className="popular-badge">{t.services.mostPopular}</span>
-              )}
               <div className="package-top">
-                <small>{item.tag}</small>
+                <div className="package-top-row">
+                  <small>{item.tag}</small>
+                  {item.featured ? (
+                    <span className="popular-badge">{t.services.mostPopular}</span>
+                  ) : null}
+                </div>
               </div>
               <h3>{item.name}</h3>
               <ul className="service-list">

@@ -3787,9 +3787,10 @@ body.demo-mode .galleryCard::after {
 }
 
 .popular-badge {
-  position: absolute;
-  top: 18px;
-  right: 18px;
+  position: static;
+  top: auto;
+  right: auto;
+  flex-shrink: 0;
   width: auto !important;
   height: auto !important;
   margin: 0 !important;
@@ -3801,12 +3802,26 @@ body.demo-mode .galleryCard::after {
   font-size: 7px !important;
   font-weight: 850;
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 .package-top {
   display: grid;
   gap: 16px;
   margin-bottom: 20px;
+}
+
+.package-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.package-top-row small {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-right: 0;
 }
 
 .package-index {
@@ -14387,6 +14402,10 @@ body.nav-menu-open {
   .logo {
     font-size: 20px;
     letter-spacing: 1px;
+  }
+
+  .ks-v2 .nav-brand .nav-partners {
+    display: none;
   }
 
   .navRight {
