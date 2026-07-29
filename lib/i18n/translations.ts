@@ -248,9 +248,9 @@ export const translations = {
           tag: 'Felgur og gler f\u00e1 s\u00edna eigin varnarl\u00ednu',
           items: [
             '1\u20132 \u00ferepa m\u00f6ssun eftir \u00fe\u00f6rfum',
-            'Graf\u00edn \u00e1 ytra byr\u00f0i og \u00ed hur\u00f0arf\u00f6ls',
-            'Hita\u00feolin varnarh\u00fa\u00f0 \u00e1 felgur',
-            'S\u00e9rst\u00f6k varnarh\u00fa\u00f0 \u00e1 gler',
+            'Graf\u00edn \u00e1 lakk og hur\u00f0arf\u00f6ls',
+            'Varnarh\u00fa\u00f0 \u00e1 felgur',
+            'Varnarh\u00fa\u00f0 \u00e1 gler',
           ],
           details:
             '\u00cd Silfur me\u00f0fer\u00f0 er \u00f6kut\u00e6ki\u00f0 massa\u00f0 me\u00f0 1 til 2 \u00ferepa m\u00f6ssun eftir \u00fe\u00f6rfum og a\u00f0 \u00fev\u00ed loknu er lakki\u00f0 hreinsa\u00f0 vandlega. Graf\u00edn er svo bori\u00f0 \u00e1 allt ytra byr\u00f0i lakks og \u00ed hur\u00f0arf\u00f6ls. Felgur eru me\u00f0h\u00f6ndla\u00f0ar me\u00f0 h\u00fa\u00f0 sem \u00feolir verulegan hita og gler er h\u00fa\u00f0a\u00f0 me\u00f0 s\u00e9rstakri glerh\u00fa\u00f0.',
@@ -260,9 +260,9 @@ export const translations = {
           name: 'GULL ME\u00d0FER\u00d0',
           tag: 'PPS Pro + graf\u00edn \u2014 glans sem gr\u00e6\u00f0ir sig sj\u00e1lfur',
           items: [
-            'Vandleg m\u00f6ssun og hreinsun lakks',
+            'Vandleg m\u00f6ssun eftir \u00fe\u00f6rfum',
             'PPS Pro \u00e1 lakk og hur\u00f0arf\u00f6ls',
-            'Sj\u00e1lfgr\u00e6\u00f0andi graf\u00edn-h\u00fa\u00f0 yfir PPS Pro',
+            'Sj\u00e1lfgr\u00e6\u00f0andi graf\u00edn yfir PPS Pro',
             'Varnarh\u00fa\u00f0 \u00e1 felgur',
             'Varnarh\u00fa\u00f0 \u00e1 gler',
           ],
@@ -274,10 +274,11 @@ export const translations = {
           name: 'DEMANTS ME\u00d0FER\u00d0',
           tag: 'Innan, utan og allt \u00ed millum \u2014 engar m\u00e1lami\u00f0lanir',
           items: [
-            '\u00d6ll me\u00f0fer\u00f0in \u00far Gull pakkanum',
-            '\u00deykkur og glansandi sj\u00e1lfgr\u00e6\u00f0andi varnarhj\u00farpur',
-            'Varnarh\u00fa\u00f0 \u00e1 felgur og gler',
-            'Innr\u00e9tting, s\u00e6ti og teppi varin me\u00f0 s\u00e9rstakri innanh\u00fassh\u00fa\u00f0',
+            'Allt \u00far Gull me\u00f0fer\u00f0inni',
+            'PPS Pro + sj\u00e1lfgr\u00e6\u00f0andi graf\u00edn',
+            'Varnarh\u00fa\u00f0 \u00e1 felgur',
+            'Varnarh\u00fa\u00f0 \u00e1 gler',
+            'Varnarh\u00fa\u00f0 \u00e1 innr\u00e9ttingu og s\u00e6ti',
           ],
           details:
             '\u00cd Demants me\u00f0fer\u00f0 f\u00e6r\u00f0u allt \u00far Gull pakkanum: vandlega m\u00f6ssun, PPS Pro, sj\u00e1lfgr\u00e6\u00f0andi graf\u00edn, h\u00fa\u00f0 \u00e1 felgur og gler. A\u00f0 auki er \u00f6ll innr\u00e9tting, s\u00e6ti og teppi me\u00f0h\u00f6ndlu\u00f0 me\u00f0 s\u00e9rstakri Interior h\u00fa\u00f0 \u2014 heildarv\u00f6rn innan sem utan.',
@@ -899,10 +900,10 @@ export const translations = {
           name: 'SILVER PACKAGE',
           tag: 'Wheels and glass get their own protection line',
           items: [
-            '1\u20132 wash stages as needed',
-            'Graphene on exterior and door jambs',
-            'Heat-resistant coating on wheels',
-            'Dedicated glass protection',
+            '1\u20132 polish stages as needed',
+            'Graphene on paint and door jambs',
+            'Protection coating on wheels',
+            'Protection coating on glass',
           ],
           details:
             'In the Silver package the vehicle is polished in 1\u20132 stages as needed, then the paint is carefully cleaned. Graphene is applied to all exterior paint and door jambs. Wheels get a heat-resistant coating and glass is protected with a dedicated glass coating.',
@@ -912,11 +913,11 @@ export const translations = {
           name: 'GOLD PACKAGE',
           tag: 'PPS Pro + graphene \u2014 gloss that heals itself',
           items: [
-            'Detailed wash and paint prep',
+            'Careful polish as needed',
             'PPS Pro on paint and door jambs',
-            'Self-healing graphene layer over PPS Pro',
-            'Wheel protection',
-            'Glass protection',
+            'Self-healing graphene over PPS Pro',
+            'Protection coating on wheels',
+            'Protection coating on glass',
           ],
           details:
             'In the Gold package the vehicle is carefully polished as needed, then the paint is thoroughly cleaned. Waxedshine PPS Pro is applied to all exterior paint and door jambs. Waxedshine self-heal graphene is then layered over the PPS Pro. The result is a thick, high-gloss protective shell with a self-healing surface. Wheels are coated with Waxedshine Wheel and glass with Waxedshine Glass.',
@@ -927,9 +928,10 @@ export const translations = {
           tag: 'Inside, outside, and everything in between',
           items: [
             'Everything from the Gold package',
-            'Thick, glossy self-healing protection shell',
-            'Wheel and glass protection',
-            'Interior, seats, and carpets protected with dedicated interior coating',
+            'PPS Pro + self-healing graphene',
+            'Protection coating on wheels',
+            'Protection coating on glass',
+            'Protection coating on interior and seats',
           ],
           details:
             'The Diamond package includes everything from Gold: careful polishing, PPS Pro, self-healing graphene, plus wheel and glass coating. On top of that, the full interior \u2014 seats and carpets included \u2014 is treated with a dedicated Interior coating for complete inside-and-out protection.',
