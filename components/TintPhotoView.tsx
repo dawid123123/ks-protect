@@ -14,8 +14,8 @@ import { tintViewLabels, tintViewZones } from './tintPhotoZones';
 import { TintPhotoZonePath } from './TintPhotoZonePath';
 import { TintSavedPanelPath, TintSvgPathEditorOverlay } from './TintSvgPathEditor';
 
-const sidePhoto = '/gle-side.png';
-const rearPhoto = '/gle-rear.png';
+const sidePhoto = '/gle-side.jpg';
+const rearPhoto = '/gle-rear.jpg';
 
 type Props = {
   view: TintView;
@@ -74,17 +74,10 @@ export default function TintPhotoView({
   const photoSrc =
     view === 'front' ? frontPhoto : view === 'side' ? sidePhoto : rearPhoto;
 
-  const directionLabel =
-    view === 'front'
-      ? vehicleName + ' \u00b7 FRONT VIEW'
-      : view === 'side'
-        ? vehicleName + ' \u00b7 SIDE VIEW'
-        : vehicleName + ' \u00b7 REAR VIEW';
-
   if (!isPhotoMode) {
     return (
       <div className="tint-photo-fallback">
-        <p>Select Mercedes-Benz GLE to preview window tint on photo.</p>
+        <p>Select SUV to preview window tint on photo.</p>
       </div>
     );
   }
@@ -97,7 +90,6 @@ export default function TintPhotoView({
         (traceMode ? ' photo-car-trace-mode' : '')
       }
     >
-      <span className="direction-label">{directionLabel}</span>
       <img
         className={
           'vehicle-svg vehicle-photo ' +

@@ -186,33 +186,23 @@ function isPackageActive(id: PackageId, activePackages: PackageId[]): boolean {
 const vehicles = [
   {
     id: 'gle',
-    label: 'Mercedes-Benz GLE',
+    label: 'SUV',
     className: 'model-suv model-gle',
   },
   {
-    id: 'cla',
-    label: 'Mercedes-Benz CLA',
-    className: 'model-sedan model-cla',
-  },
-  {
     id: 'cclass',
-    label: 'Mercedes-Benz C-Class',
+    label: 'SEDAN',
     className: 'model-sedan model-cclass',
   },
   {
-    id: 'eclass',
-    label: 'Mercedes-Benz E-Class',
-    className: 'model-sedan model-eclass',
+    id: 'amggt',
+    label: 'COUPÉ',
+    className: 'model-coupe model-amggt',
   },
   {
     id: 'gclass',
-    label: 'Mercedes-Benz G-Class',
+    label: 'SUV · 4X4',
     className: 'model-boxy model-gclass',
-  },
-  {
-    id: 'amggt',
-    label: 'Mercedes-AMG GT',
-    className: 'model-coupe model-amggt',
   },
 ] as const;
 
@@ -410,6 +400,12 @@ export default function CarViewer({
               tracePoints={pathEditor.points}
               tracedPaths={pathEditor.savedPaths}
               onTracePoint={pathEditor.addPoint}
+              onUpdateTracePoint={pathEditor.updatePoint}
+              onInsertTracePoint={pathEditor.insertPoint}
+              onSelectTracePoint={pathEditor.setSelectedIndex}
+              onCloseTracePath={() => pathEditor.finalizePath()}
+              selectedTraceIndex={pathEditor.selectedIndex}
+              showTraceLabels={pathEditor.showLabels}
             />
           )}
           {view === 'side' && (
@@ -423,6 +419,12 @@ export default function CarViewer({
               tracePoints={pathEditor.points}
               tracedPaths={pathEditor.savedPaths}
               onTracePoint={pathEditor.addPoint}
+              onUpdateTracePoint={pathEditor.updatePoint}
+              onInsertTracePoint={pathEditor.insertPoint}
+              onSelectTracePoint={pathEditor.setSelectedIndex}
+              onCloseTracePath={() => pathEditor.finalizePath()}
+              selectedTraceIndex={pathEditor.selectedIndex}
+              showTraceLabels={pathEditor.showLabels}
             />
           )}
           {view === 'rear' && (
@@ -436,6 +438,12 @@ export default function CarViewer({
               tracePoints={pathEditor.points}
               tracedPaths={pathEditor.savedPaths}
               onTracePoint={pathEditor.addPoint}
+              onUpdateTracePoint={pathEditor.updatePoint}
+              onInsertTracePoint={pathEditor.insertPoint}
+              onSelectTracePoint={pathEditor.setSelectedIndex}
+              onCloseTracePath={() => pathEditor.finalizePath()}
+              selectedTraceIndex={pathEditor.selectedIndex}
+              showTraceLabels={pathEditor.showLabels}
             />
           )}
         </div>
@@ -449,11 +457,18 @@ export default function CarViewer({
             activePart={pathEditor.activePart}
             setActivePart={pathEditor.setActivePart}
             lastExported={pathEditor.lastExported}
+            selectedIndex={pathEditor.selectedIndex}
+            snapToGrid={pathEditor.snapToGrid}
+            showLabels={pathEditor.showLabels}
             onUndo={pathEditor.undoPoint}
             onClear={pathEditor.clearPoints}
             onFinalize={pathEditor.finalizePath}
             onRemoveSaved={pathEditor.removeSavedPath}
             onLoadSaved={pathEditor.loadSavedPath}
+            onReverse={pathEditor.reversePoints}
+            onNudge={pathEditor.nudgeSelected}
+            onToggleSnap={() => pathEditor.setSnapToGrid((v) => !v)}
+            onToggleLabels={() => pathEditor.setShowLabels((v) => !v)}
           />
         )}
 

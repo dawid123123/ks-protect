@@ -18,9 +18,15 @@ type Props = {
   tracePoints?: TracePoint[];
   tracedPaths?: SavedPanelPath[];
   onTracePoint?: (point: TracePoint) => void;
+  onUpdateTracePoint?: (index: number, point: TracePoint) => void;
+  onInsertTracePoint?: (index: number, point: TracePoint) => void;
+  onSelectTracePoint?: (index: number | null) => void;
+  onCloseTracePath?: () => void;
+  selectedTraceIndex?: number | null;
+  showTraceLabels?: boolean;
 };
 
-const rearPhoto = '/gle-rear.png';
+const rearPhoto = '/gle-rear.jpg';
 
 // Rear photo overlay (viewBox 0–100 = image %; traced paths may extend slightly outside).
 const rearZones: PhotoZone[] = [
@@ -96,6 +102,12 @@ export default function RearView({
   tracePoints = [],
   tracedPaths = [],
   onTracePoint,
+  onUpdateTracePoint,
+  onInsertTracePoint,
+  onSelectTracePoint,
+  onCloseTracePath,
+  selectedTraceIndex = null,
+  showTraceLabels = false,
 }: Props) {
   const isPhotoMode = vehicleId === 'gle';
 
@@ -108,9 +120,6 @@ export default function RearView({
         (traceMode ? ' photo-car-trace-mode' : '')
       }
     >
-      <span className="direction-label rear-view-label">
-        {vehicleName} · REAR VIEW
-      </span>
       {isPhotoMode ? (
         <>
           <img
@@ -141,6 +150,12 @@ export default function RearView({
               points={tracePoints}
               savedPaths={tracedPaths}
               onAddPoint={onTracePoint}
+              onUpdatePoint={onUpdateTracePoint}
+              onInsertPoint={onInsertTracePoint}
+              onSelectPoint={onSelectTracePoint}
+              onClosePath={onCloseTracePath}
+              selectedIndex={selectedTraceIndex}
+              showLabels={showTraceLabels}
             />
           )}
         </>

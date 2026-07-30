@@ -203,12 +203,10 @@ export const tintVehicles: {
   label: string;
   kind: string;
 }[] = [
-  { id: 'gle', label: 'Mercedes-Benz GLE', kind: 'SUV \u00b7 JEEP' },
-  { id: 'cla', label: 'Mercedes-Benz CLA', kind: 'SPORT SEDAN' },
-  { id: 'cclass', label: 'Mercedes-Benz C-Class', kind: 'SEDAN' },
-  { id: 'eclass', label: 'Mercedes-Benz E-Class', kind: 'EXECUTIVE SEDAN' },
-  { id: 'gclass', label: 'Mercedes-Benz G-Class', kind: 'SUV \u00b7 4X4' },
-  { id: 'amggt', label: 'Mercedes-AMG GT', kind: 'COUP\u00c9 \u00b7 2 DOOR' },
+  { id: 'gle', label: 'SUV', kind: 'SUV' },
+  { id: 'cclass', label: 'SEDAN', kind: 'SEDAN' },
+  { id: 'amggt', label: 'COUP\u00c9', kind: 'COUP\u00c9' },
+  { id: 'gclass', label: 'SUV \u00b7 4X4', kind: 'SUV \u00b7 4X4' },
 ];
 
 export function getTintWindowPrice(

@@ -488,7 +488,7 @@ export const translations = {
       ppfLead: 'Smelltu \u00e1 hluta e\u00f0a veldu \u00e1 b\u00edlnum til a\u00f0 b\u00e6ta vi\u00f0 vernd.',
       tintTitle: 'Veldu gluggatint',
       selectVehicle: 'VELDU B\u00cdL',
-      selectVehicleAria: 'Veldu Mercedes-Benz ger\u00f0',
+      selectVehicleAria: 'Veldu ger\u00f0 b\u00edls',
       selectVehicleSummaryAria: 'Veldu b\u00edl \u00ed samantekt',
       exitSvgEditor: 'Exit SVG editor',
       openSvgEditor: 'Open SVG path editor',
@@ -569,12 +569,12 @@ export const translations = {
       researchNote:
         'Ranns\u00f3kn: innan sama filmutegundar breytist ver\u00f0 yfirleitt litlu vi\u00f0 myrkun (VLT). D\u00f6kkari stig (5\u201315%) hafa sm\u00e1 aukagjald fyrir keram\u00edska filma og betri hitav\u00f6rn.',
       vehicles: {
-        gle: { kind: 'SUV \u00b7 JEEP' },
+        gle: { kind: 'SUV' },
         cla: { kind: 'SPORT SEDAN' },
         cclass: { kind: 'SEDAN' },
         eclass: { kind: 'EXECUTIVE SEDAN' },
         gclass: { kind: 'SUV \u00b7 4X4' },
-        amggt: { kind: 'COUP\u00c9 \u00b7 2 DYRA' },
+        amggt: { kind: 'COUP\u00c9' },
       },
     },
     notFound: {
@@ -1140,7 +1140,7 @@ export const translations = {
       ppfLead: 'Click a part or select on the car to add protection.',
       tintTitle: 'Choose window tint',
       selectVehicle: 'SELECT VEHICLE',
-      selectVehicleAria: 'Select Mercedes-Benz model',
+      selectVehicleAria: 'Select vehicle type',
       selectVehicleSummaryAria: 'Select vehicle in summary',
       exitSvgEditor: 'Exit SVG editor',
       openSvgEditor: 'Open SVG path editor',
@@ -1221,12 +1221,12 @@ export const translations = {
       researchNote:
         'Research: within the same film line, price usually changes little with darkness (VLT). Darker levels (5\u201315%) carry a modest premium for premium ceramic film and enhanced heat rejection.',
       vehicles: {
-        gle: { kind: 'SUV \u00b7 JEEP' },
+        gle: { kind: 'SUV' },
         cla: { kind: 'SPORT SEDAN' },
         cclass: { kind: 'SEDAN' },
         eclass: { kind: 'EXECUTIVE SEDAN' },
         gclass: { kind: 'SUV \u00b7 4X4' },
-        amggt: { kind: 'COUP\u00c9 \u00b7 2 DOOR' },
+        amggt: { kind: 'COUP\u00c9' },
       },
     },
     notFound: {

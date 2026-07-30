@@ -12,8 +12,26 @@ export type SavedPanelPath = {
   points: TracePoint[];
 };
 
+const SNAP_CLOSE_DIST = 1.6;
+const HIT_RADIUS = 1.4;
+const GRID_STEP = 0.5;
+
 function formatCoord(value: number) {
   return (Math.round(value * 10) / 10).toFixed(1);
+}
+
+function dist(a: TracePoint, b: TracePoint) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function snapPoint(point: TracePoint, enabled: boolean): TracePoint {
+  if (!enabled) return point;
+  return {
+    x: Math.round(point.x / GRID_STEP) * GRID_STEP,
+    y: Math.round(point.y / GRID_STEP) * GRID_STEP,
+  };
 }
 
 export function pointsToSvgPath(points: TracePoint[]) {
@@ -44,27 +62,126 @@ function getSvgPoint(
   };
 }
 
+function nearestPointIndex(points: TracePoint[], target: TracePoint, maxDist: number) {
+  let best = -1;
+  let bestDist = maxDist;
+  points.forEach((point, index) => {
+    const d = dist(point, target);
+    if (d <= bestDist) {
+      best = index;
+      bestDist = d;
+    }
+  });
+  return best;
+}
+
+function nearestEdgeInsert(
+  points: TracePoint[],
+  target: TracePoint,
+  maxDist: number
+): { index: number; point: TracePoint } | null {
+  if (points.length < 2) return null;
+  let best: { index: number; point: TracePoint; d: number } | null = null;
+
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const a = points[i];
+    const b = points[i + 1];
+    const abx = b.x - a.x;
+    const aby = b.y - a.y;
+    const len2 = abx * abx + aby * aby;
+    if (len2 === 0) continue;
+    let t = ((target.x - a.x) * abx + (target.y - a.y) * aby) / len2;
+    t = Math.max(0.05, Math.min(0.95, t));
+    const proj = { x: a.x + abx * t, y: a.y + aby * t };
+    const d = dist(proj, target);
+    if (d <= maxDist && (!best || d < best.d)) {
+      best = { index: i + 1, point: proj, d };
+    }
+  }
+
+  return best ? { index: best.index, point: best.point } : null;
+}
+
 export function useSvgPathEditor(initialPart: Part | null = null) {
   const [points, setPoints] = useState<TracePoint[]>([]);
   const [savedPaths, setSavedPaths] = useState<SavedPanelPath[]>([]);
   const [activePart, setActivePart] = useState<Part | null>(initialPart);
   const [lastExported, setLastExported] = useState<string | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [snapToGrid, setSnapToGrid] = useState(false);
+  const [showLabels, setShowLabels] = useState(false);
 
-  const addPoint = useCallback((point: TracePoint) => {
-    if (activePart === null) return;
-    setPoints((current) => [...current, point]);
-    setLastExported(null);
-  }, [activePart]);
+  const addPoint = useCallback(
+    (point: TracePoint) => {
+      if (activePart === null) return;
+      const next = snapPoint(point, snapToGrid);
+      setPoints((current) => [...current, next]);
+      setSelectedIndex(null);
+      setLastExported(null);
+    },
+    [activePart, snapToGrid]
+  );
+
+  const updatePoint = useCallback(
+    (index: number, point: TracePoint) => {
+      const next = snapPoint(point, snapToGrid);
+      setPoints((current) =>
+        current.map((item, i) => (i === index ? next : item))
+      );
+      setLastExported(null);
+    },
+    [snapToGrid]
+  );
+
+  const insertPoint = useCallback(
+    (index: number, point: TracePoint) => {
+      if (activePart === null) return;
+      const next = snapPoint(point, snapToGrid);
+      setPoints((current) => [
+        ...current.slice(0, index),
+        next,
+        ...current.slice(index),
+      ]);
+      setSelectedIndex(index);
+      setLastExported(null);
+    },
+    [activePart, snapToGrid]
+  );
 
   const undoPoint = useCallback(() => {
     setPoints((current) => current.slice(0, -1));
+    setSelectedIndex(null);
     setLastExported(null);
   }, []);
 
   const clearPoints = useCallback(() => {
     setPoints([]);
+    setSelectedIndex(null);
     setLastExported(null);
   }, []);
+
+  const reversePoints = useCallback(() => {
+    setPoints((current) => [...current].reverse());
+    setSelectedIndex(null);
+    setLastExported(null);
+  }, []);
+
+  const nudgeSelected = useCallback(
+    (dx: number, dy: number) => {
+      if (selectedIndex === null) return;
+      setPoints((current) => {
+        const point = current[selectedIndex];
+        if (!point) return current;
+        const next = snapPoint(
+          { x: Math.round((point.x + dx) * 10) / 10, y: Math.round((point.y + dy) * 10) / 10 },
+          snapToGrid
+        );
+        return current.map((item, i) => (i === selectedIndex ? next : item));
+      });
+      setLastExported(null);
+    },
+    [selectedIndex, snapToGrid]
+  );
 
   const finalizePath = useCallback(() => {
     if (activePart === null || points.length < 3) return false;
@@ -83,6 +200,7 @@ export function useSvgPathEditor(initialPart: Part | null = null) {
     });
     setLastExported(d);
     setPoints([]);
+    setSelectedIndex(null);
     return true;
   }, [activePart, points]);
 
@@ -94,6 +212,7 @@ export function useSvgPathEditor(initialPart: Part | null = null) {
     setActivePart(path.part);
     setPoints([...path.points]);
     setLastExported(path.d);
+    setSelectedIndex(null);
   }, []);
 
   return {
@@ -102,9 +221,19 @@ export function useSvgPathEditor(initialPart: Part | null = null) {
     activePart,
     setActivePart,
     lastExported,
+    selectedIndex,
+    setSelectedIndex,
+    snapToGrid,
+    setSnapToGrid,
+    showLabels,
+    setShowLabels,
     addPoint,
+    updatePoint,
+    insertPoint,
     undoPoint,
     clearPoints,
+    reversePoints,
+    nudgeSelected,
     finalizePath,
     removeSavedPath,
     loadSavedPath,
@@ -115,20 +244,122 @@ type OverlayProps = {
   points: TracePoint[];
   savedPaths: SavedPanelPath[];
   onAddPoint: (point: TracePoint) => void;
+  onUpdatePoint?: (index: number, point: TracePoint) => void;
+  onInsertPoint?: (index: number, point: TracePoint) => void;
+  onSelectPoint?: (index: number | null) => void;
+  onClosePath?: () => void;
+  selectedIndex?: number | null;
+  showLabels?: boolean;
 };
 
 export function SvgPathEditorOverlay({
   points,
   savedPaths,
   onAddPoint,
+  onUpdatePoint,
+  onInsertPoint,
+  onSelectPoint,
+  onClosePath,
+  selectedIndex = null,
+  showLabels = false,
 }: OverlayProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const dragIndexRef = useRef<number | null>(null);
+  const didDragRef = useRef(false);
+  const suppressClickRef = useRef(false);
+  const [cursor, setCursor] = useState<TracePoint | null>(null);
+  const [nearClose, setNearClose] = useState(false);
 
-  function handleClick(event: React.MouseEvent<SVGSVGElement>) {
+  function handlePointerMove(event: React.PointerEvent<SVGSVGElement>) {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const point = getSvgPoint(svg, event.clientX, event.clientY);
+    setCursor(point);
+
+    if (dragIndexRef.current !== null && onUpdatePoint) {
+      didDragRef.current = true;
+      onUpdatePoint(dragIndexRef.current, point);
+      return;
+    }
+
+    if (points.length >= 3) {
+      setNearClose(dist(point, points[0]) <= SNAP_CLOSE_DIST);
+    } else {
+      setNearClose(false);
+    }
+  }
+
+  function handlePointerDown(event: React.PointerEvent<SVGSVGElement>) {
     if (event.button !== 0) return;
     const svg = svgRef.current;
     if (!svg) return;
-    onAddPoint(getSvgPoint(svg, event.clientX, event.clientY));
+    const point = getSvgPoint(svg, event.clientX, event.clientY);
+    const hit = nearestPointIndex(points, point, HIT_RADIUS);
+
+    if (hit >= 0 && onUpdatePoint) {
+      event.preventDefault();
+      dragIndexRef.current = hit;
+      didDragRef.current = false;
+      onSelectPoint?.(hit);
+      svg.setPointerCapture(event.pointerId);
+      return;
+    }
+  }
+
+  function handlePointerUp(event: React.PointerEvent<SVGSVGElement>) {
+    const svg = svgRef.current;
+    if (dragIndexRef.current !== null) {
+      if (svg?.hasPointerCapture(event.pointerId)) {
+        svg.releasePointerCapture(event.pointerId);
+      }
+      if (didDragRef.current) {
+        suppressClickRef.current = true;
+      }
+      dragIndexRef.current = null;
+      didDragRef.current = false;
+    }
+  }
+
+  function handleClick(event: React.MouseEvent<SVGSVGElement>) {
+    if (event.button !== 0) return;
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
+    }
+
+    const svg = svgRef.current;
+    if (!svg) return;
+    const point = getSvgPoint(svg, event.clientX, event.clientY);
+    const hit = nearestPointIndex(points, point, HIT_RADIUS);
+
+    if (hit === 0 && points.length >= 3 && onClosePath) {
+      onClosePath();
+      return;
+    }
+
+    if (hit >= 0) {
+      onSelectPoint?.(hit);
+      return;
+    }
+
+    if (event.altKey && onInsertPoint) {
+      const edge = nearestEdgeInsert(points, point, 1.8);
+      if (edge) {
+        onInsertPoint(edge.index, {
+          x: Math.round(edge.point.x * 10) / 10,
+          y: Math.round(edge.point.y * 10) / 10,
+        });
+        return;
+      }
+    }
+
+    onSelectPoint?.(null);
+    onAddPoint(point);
+  }
+
+  function handlePointerLeave() {
+    setCursor(null);
+    setNearClose(false);
   }
 
   const previewPath =
@@ -139,11 +370,17 @@ export function SvgPathEditorOverlay({
   return (
     <svg
       ref={svgRef}
-      className="svg-path-editor-overlay"
+      className={
+        'svg-path-editor-overlay' + (nearClose ? ' is-near-close' : '')
+      }
       viewBox="0 0 100 100"
       preserveAspectRatio="xMidYMid meet"
       aria-label="SVG path editor - click to place points"
       onClick={handleClick}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerLeave}
     >
       {savedPaths.map((path) => (
         <path
@@ -165,23 +402,77 @@ export function SvgPathEditorOverlay({
         />
       )}
 
-      {points.map((point, index) => (
-        <g key={`${point.x}-${point.y}-${index}`}>
-          <circle
-            className="svg-path-editor-point"
-            cx={point.x}
-            cy={point.y}
-            r={index === 0 ? 1.4 : 1.1}
-          />
-          <text
-            className="svg-path-editor-point-label"
-            x={point.x + 1.6}
-            y={point.y - 1.4}
-          >
-            {index + 1}
-          </text>
+      {cursor && (
+        <g className="svg-path-editor-cursor" pointerEvents="none">
+          <line x1={cursor.x - 1.2} y1={cursor.y} x2={cursor.x + 1.2} y2={cursor.y} />
+          <line x1={cursor.x} y1={cursor.y - 1.2} x2={cursor.x} y2={cursor.y + 1.2} />
         </g>
-      ))}
+      )}
+
+      {nearClose && points[0] && (
+        <circle
+          className="svg-path-editor-close-ring"
+          cx={points[0].x}
+          cy={points[0].y}
+          r={SNAP_CLOSE_DIST}
+        />
+      )}
+
+      {points.map((point, index) => {
+        const isSelected = selectedIndex === index;
+        const isFirst = index === 0;
+        return (
+          <g key={`${point.x}-${point.y}-${index}`}>
+            <circle
+              className="svg-path-editor-point-hit"
+              cx={point.x}
+              cy={point.y}
+              r={HIT_RADIUS}
+            />
+            <line
+              className={
+                'svg-path-editor-point-cross' +
+                (isSelected ? ' is-selected' : '') +
+                (isFirst ? ' is-first' : '')
+              }
+              x1={point.x - 0.55}
+              y1={point.y}
+              x2={point.x + 0.55}
+              y2={point.y}
+            />
+            <line
+              className={
+                'svg-path-editor-point-cross' +
+                (isSelected ? ' is-selected' : '') +
+                (isFirst ? ' is-first' : '')
+              }
+              x1={point.x}
+              y1={point.y - 0.55}
+              x2={point.x}
+              y2={point.y + 0.55}
+            />
+            <circle
+              className={
+                'svg-path-editor-point' +
+                (isSelected ? ' is-selected' : '') +
+                (isFirst ? ' is-first' : '')
+              }
+              cx={point.x}
+              cy={point.y}
+              r={isSelected ? 0.38 : 0.28}
+            />
+            {(showLabels || isSelected || isFirst) && (
+              <text
+                className="svg-path-editor-point-label"
+                x={point.x + 0.9}
+                y={point.y - 0.7}
+              >
+                {index + 1}
+              </text>
+            )}
+          </g>
+        );
+      })}
     </svg>
   );
 }
@@ -194,11 +485,18 @@ type PanelProps = {
   activePart: Part | null;
   setActivePart: (part: Part | null) => void;
   lastExported: string | null;
+  selectedIndex?: number | null;
+  snapToGrid?: boolean;
+  showLabels?: boolean;
   onUndo: () => void;
   onClear: () => void;
   onFinalize: () => boolean;
   onRemoveSaved: (id: string) => void;
   onLoadSaved: (path: SavedPanelPath) => void;
+  onReverse?: () => void;
+  onNudge?: (dx: number, dy: number) => void;
+  onToggleSnap?: () => void;
+  onToggleLabels?: () => void;
 };
 
 export function SvgPathEditorPanel({
@@ -209,11 +507,18 @@ export function SvgPathEditorPanel({
   activePart,
   setActivePart,
   lastExported,
+  selectedIndex = null,
+  snapToGrid = false,
+  showLabels = false,
   onUndo,
   onClear,
   onFinalize,
   onRemoveSaved,
   onLoadSaved,
+  onReverse,
+  onNudge,
+  onToggleSnap,
+  onToggleLabels,
 }: PanelProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -221,6 +526,12 @@ export function SvgPathEditorPanel({
     function handleKeyDown(event: KeyboardEvent) {
       const tag = (event.target as HTMLElement | null)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'z') {
+        event.preventDefault();
+        onUndo();
+        return;
+      }
 
       if (event.key === 'Enter') {
         event.preventDefault();
@@ -231,12 +542,27 @@ export function SvgPathEditorPanel({
       } else if (event.key === 'Backspace' || event.key === 'Delete') {
         event.preventDefault();
         onUndo();
+      } else if (onNudge && selectedIndex !== null) {
+        const step = event.shiftKey ? 0.5 : 0.1;
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          onNudge(-step, 0);
+        } else if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          onNudge(step, 0);
+        } else if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          onNudge(0, -step);
+        } else if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          onNudge(0, step);
+        }
       }
     }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClear, onFinalize, onUndo]);
+  }, [onClear, onFinalize, onNudge, onUndo, selectedIndex]);
 
   async function copyText(text: string, id: string) {
     try {
@@ -249,6 +575,7 @@ export function SvgPathEditorPanel({
   }
 
   const livePath = points.length >= 3 ? pointsToSvgPath(points) : '';
+  const pointsJson = JSON.stringify(points);
   const exportSnippet = savedPaths
     .map(
       (path) =>
@@ -263,9 +590,10 @@ export function SvgPathEditorPanel({
           <p className="svg-path-editor-eyebrow">SVG PATH EDITOR</p>
           <h3>Trace body panels</h3>
           <p className="svg-path-editor-help">
-            Click on the car to place points. Press <kbd>Enter</kbd> to export
-            the polygon as an SVG path. <kbd>Backspace</kbd> removes the last
-            point. <kbd>Esc</kbd> clears the current polygon.
+            Tiny crosshairs mark points so you can see the panel edge.
+            Click to place · drag to move · click first point to close ·{' '}
+            <kbd>Alt</kbd>+click on an edge to insert · arrows nudge selected ·{' '}
+            <kbd>Enter</kbd> export · <kbd>⌫</kbd> undo · <kbd>Esc</kbd> clear.
           </p>
         </div>
         <label className="svg-path-editor-part-picker">
@@ -290,11 +618,45 @@ export function SvgPathEditorPanel({
 
       <div className="svg-path-editor-actions">
         <button type="button" className="svg-path-editor-btn" onClick={onUndo}>
-          Undo point
+          Undo
         </button>
         <button type="button" className="svg-path-editor-btn" onClick={onClear}>
           Clear
         </button>
+        {onReverse && (
+          <button
+            type="button"
+            className="svg-path-editor-btn"
+            disabled={points.length < 2}
+            onClick={onReverse}
+          >
+            Reverse
+          </button>
+        )}
+        {onToggleSnap && (
+          <button
+            type="button"
+            className={
+              'svg-path-editor-btn' + (snapToGrid ? ' is-active' : '')
+            }
+            aria-pressed={snapToGrid}
+            onClick={onToggleSnap}
+          >
+            Snap 0.5
+          </button>
+        )}
+        {onToggleLabels && (
+          <button
+            type="button"
+            className={
+              'svg-path-editor-btn' + (showLabels ? ' is-active' : '')
+            }
+            aria-pressed={showLabels}
+            onClick={onToggleLabels}
+          >
+            Labels
+          </button>
+        )}
         <button
           type="button"
           className="svg-path-editor-btn svg-path-editor-btn-primary"
@@ -305,14 +667,73 @@ export function SvgPathEditorPanel({
         </button>
       </div>
 
+      {onNudge && (
+        <div className="svg-path-editor-nudge">
+          <span>
+            {selectedIndex === null
+              ? 'Select a point to nudge'
+              : `Point ${selectedIndex + 1} selected`}
+          </span>
+          <div className="svg-path-editor-nudge-grid">
+            <button
+              type="button"
+              className="svg-path-editor-btn"
+              disabled={selectedIndex === null}
+              onClick={() => onNudge(0, -0.1)}
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              className="svg-path-editor-btn"
+              disabled={selectedIndex === null}
+              onClick={() => onNudge(-0.1, 0)}
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              className="svg-path-editor-btn"
+              disabled={selectedIndex === null}
+              onClick={() => onNudge(0.1, 0)}
+            >
+              →
+            </button>
+            <button
+              type="button"
+              className="svg-path-editor-btn"
+              disabled={selectedIndex === null}
+              onClick={() => onNudge(0, 0.1)}
+            >
+              ↓
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="svg-path-editor-status">
         <span>
           {activePart
-            ? `${points.length} points placed`
+            ? `${points.length} points · ${
+                snapToGrid ? 'grid on' : 'free place'
+              }`
             : 'Select a panel to begin'}
         </span>
         {livePath && (
           <code className="svg-path-editor-live-path">{livePath}</code>
+        )}
+        {points.length > 0 && (
+          <div className="svg-path-editor-export">
+            <span>Points JSON</span>
+            <code>{pointsJson}</code>
+            <button
+              type="button"
+              className="svg-path-editor-btn"
+              onClick={() => copyText(pointsJson, 'points')}
+            >
+              {copiedId === 'points' ? 'Copied' : 'Copy points'}
+            </button>
+          </div>
         )}
         {lastExported && (
           <div className="svg-path-editor-export">

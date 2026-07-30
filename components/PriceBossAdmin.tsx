@@ -42,8 +42,8 @@ type PriceGroup = {
   hint: string;
 };
 
-const SIDE_PHOTO = '/gle-side.png';
-const REAR_PHOTO = '/gle-rear.png';
+const SIDE_PHOTO = '/gle-side.jpg';
+const REAR_PHOTO = '/gle-rear.jpg';
 
 const ppfGroupParts: Record<string, Part[]> = {
   front: [

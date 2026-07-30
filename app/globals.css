@@ -7066,23 +7066,45 @@ body.demo-mode .galleryCard::after {
   opacity: 1;
 }
 
-/* Front photo — SVG hitboxes share the same box as object-fit: contain */
+/* Front photo — SVG hitboxes share the same box as the photo (matched aspect ratio) */
+.photo-car.car-model,
+.photo-car.car-model-front,
+.photo-car.car-model-side,
+.photo-car.car-model-rear {
+  width: min(860px, 100%);
+  height: auto;
+  aspect-ratio: 3 / 2;
+  max-height: none;
+}
+
 .photo-car.car-model-front .vehicle-photo-front {
   inset: 0;
-  transform: none;
-  object-fit: contain;
-  object-position: center;
-  filter: saturate(0.95) contrast(1.12) brightness(0.84) sepia(0.1) hue-rotate(52deg);
+  transform: scale(1.16);
+  transform-origin: center 58%;
+  object-fit: cover;
+  object-position: center 55%;
+  filter: contrast(1.06) saturate(1.04) brightness(1.02);
+  image-rendering: auto;
   pointer-events: none;
 }
 
 .photo-car.car-model-side .vehicle-photo,
 .photo-car.car-model-rear .vehicle-photo {
   inset: 0;
-  transform: none;
-  object-fit: contain;
-  object-position: center;
+  transform: scale(1.14);
+  transform-origin: center 60%;
+  object-fit: cover;
+  object-position: center 58%;
+  filter: contrast(1.06) saturate(1.04) brightness(1.02);
+  image-rendering: auto;
   pointer-events: none;
+}
+
+.photo-car-trace-mode.car-model-front .vehicle-photo-front,
+.photo-car-trace-mode.car-model-side .vehicle-photo,
+.photo-car-trace-mode.car-model-rear .vehicle-photo {
+  transform: none;
+  object-position: center center;
 }
 
 .photo-car.car-model-front .front-zone-svg,
@@ -7347,19 +7369,17 @@ body.demo-mode .galleryCard::after {
 
 .photo-car {
   filter: none;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #050505;
 }
 .photo-car::before {
-  left: 2%;
-  right: 2%;
-  top: 1%;
-  bottom: 1%;
-  border-radius: 28px;
-  background: radial-gradient(
-      circle at 50% 45%,
-      rgba(62, 118, 70, 0.2),
-      transparent 55%
-    ),
-    linear-gradient(145deg, #0b1b11, #050806);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 18px;
+  background: #050505;
   filter: none;
 }
 .vehicle-photo-frame {
@@ -7631,7 +7651,11 @@ body.demo-mode .galleryCard::after {
   left: 1.5%;
 }
 .photo-car .vehicle-photo {
-  filter: saturate(0.78) contrast(1.09) brightness(0.78);
+  filter: none;
+}
+
+.photo-car .vehicle-svg.vehicle-photo {
+  inset: 0;
 }
 
 /* Front photograph, calibrated to the visible GLE. */
@@ -8842,31 +8866,82 @@ body.demo-mode .galleryCard::after {
 .svg-path-editor-preview-line {
   fill: none;
   stroke: #b7f536;
-  stroke-width: 1.8;
-  stroke-dasharray: 4 3;
+  stroke-width: 1.1;
+  stroke-dasharray: 3 2.5;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
 
 .svg-path-editor-preview-fill {
-  fill: rgba(183, 245, 54, 0.16);
+  fill: rgba(183, 245, 54, 0.12);
   stroke: #b7f536;
-  stroke-width: 1.5;
+  stroke-width: 1;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
+}
+
+.svg-path-editor-cursor line {
+  stroke: rgba(212, 255, 77, 0.9);
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+}
+
+.svg-path-editor-close-ring {
+  fill: rgba(183, 245, 54, 0.08);
+  stroke: rgba(183, 245, 54, 0.85);
+  stroke-width: 0.9;
+  stroke-dasharray: 2 1.5;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.svg-path-editor-overlay.is-near-close {
+  cursor: pointer;
+}
+
+.svg-path-editor-point-hit {
+  fill: transparent;
+  stroke: none;
+  pointer-events: none;
+}
+
+.svg-path-editor-point-cross {
+  stroke: rgba(212, 255, 77, 0.95);
+  stroke-width: 0.55;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.svg-path-editor-point-cross.is-first {
+  stroke: #fff;
+}
+
+.svg-path-editor-point-cross.is-selected {
+  stroke: #fff;
+  stroke-width: 0.7;
 }
 
 .svg-path-editor-point {
   fill: #d4ff4d;
   stroke: #071007;
-  stroke-width: 0.35;
+  stroke-width: 0.2;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
 
-.svg-path-editor-point-label {
+.svg-path-editor-point.is-first {
   fill: #fff;
-  font-size: 3px;
+}
+
+.svg-path-editor-point.is-selected {
+  fill: #fff;
+  stroke: #b7f536;
+  stroke-width: 0.25;
+}
+
+.svg-path-editor-point-label {
+  fill: rgba(255, 255, 255, 0.88);
+  font-size: 1.55px;
   font-weight: 700;
   pointer-events: none;
   user-select: none;
@@ -8972,10 +9047,38 @@ body.demo-mode .galleryCard::after {
   cursor: not-allowed;
 }
 
+.svg-path-editor-btn.is-active {
+  border-color: rgba(185, 245, 66, 0.55);
+  background: rgba(185, 245, 66, 0.16);
+  color: #d4ff4d;
+}
+
 .svg-path-editor-btn-primary {
   border-color: rgba(185, 245, 66, 0.55);
   background: rgba(185, 245, 66, 0.16);
   color: #d4ff4d;
+}
+
+.svg-path-editor-nudge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+}
+
+.svg-path-editor-nudge-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.svg-path-editor-nudge-grid .svg-path-editor-btn {
+  min-width: 38px;
+  padding: 0;
 }
 
 .svg-path-editor-status {
@@ -9597,8 +9700,12 @@ body.demo-mode .galleryCard::after {
 }
 
 .ppf-v2 .viewerCanvas-mockup {
-  min-height: 280px;
-  padding-top: 10px;
+  min-height: 0;
+  padding-top: 8px;
+}
+
+.ppf-v2 .viewerCanvas-mockup .photo-car {
+  width: min(100%, 820px);
 }
 
 .ppf-v2 .ppf-view-tabs {
@@ -14481,8 +14588,18 @@ body.nav-menu-open {
 
   .ppf-v2 .viewerCanvas-mockup,
   .tint-configurator .viewerCanvas-mockup.tint-photo-canvas {
-    min-height: 220px;
-    padding-top: 8px;
+    min-height: 0;
+    padding-top: 6px;
+  }
+
+  .ppf-v2 .viewerCanvas-mockup .photo-car,
+  .photo-car.car-model,
+  .photo-car.car-model-front,
+  .photo-car.car-model-side,
+  .photo-car.car-model-rear {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1024 / 682;
   }
 
   .sidebar,
